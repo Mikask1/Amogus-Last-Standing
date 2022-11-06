@@ -30,11 +30,10 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	// Game Objects
 	Player player = new Player(this, keyH);
-	Voronoi map = new Voronoi(screenWidth, screenHeight);
 	
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-		this.setBackground(Color.white);
+		this.setBackground(new Color(181, 101, 30));
 		this.setDoubleBuffered(true);
 		this.addKeyListener(keyH);
 		this.setFocusable(true);
@@ -94,10 +93,7 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		Graphics2D g2 = (Graphics2D)g;
 		
-		map.drawCellColors(g2);
-		
 		player.draw(g2);
-		
 		
 		g2.dispose();
 	}

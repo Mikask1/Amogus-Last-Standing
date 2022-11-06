@@ -10,7 +10,7 @@ public class AmogusLastStanding {
 	
 		JFrame window = new JFrame();
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setResizable(true);
+		window.setResizable(false);
 		window.setTitle("Amogus: Last Stand");
 		
 		GamePanel gamePanel = new GamePanel();

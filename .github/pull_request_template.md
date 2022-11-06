@@ -2,9 +2,9 @@
 - [ ] I have performed a self-review of my code
 - [ ] If it is a core feature, I have tested everything else and it works as intended.
 - [ ] If this is a new Task, then describe the task.
-- [ ] I have documented the code in hard-to-understand aras.
+- [ ] I have documented the code in hard-to-understand areas.
 - [ ] My changes generate no new warnings.
-- [ ] The changes succesfsfully ran locally. 
+- [ ] The changes successfully ran locally. 
 
 
 **What kind of change does this PR introduce?** (Bug fix, feature, docs update, ...)

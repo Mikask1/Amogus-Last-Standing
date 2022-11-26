@@ -7,32 +7,46 @@ import java.awt.Graphics2D;
 import javax.swing.JPanel;
 
 import MapGenerator.Voronoi;
-import character.Player;
+import character.Player;;
 
 public class GamePanel extends JPanel implements Runnable{
-	// Screen Settings
-	final int originalTileSize = 16;
+	
+	//SCREEN SETTINGS
+	final int originalTileSize = 16; //16 x 16 tile
 	final int scale = 3;
 	
-	public int tileSize = originalTileSize * scale;
+	public int tileSize = originalTileSize * scale; //48 x 48 tile
+	public int maxScreenCol = 26;
+	public int maxScreenRow = 15;
+	public int screenWidth = tileSize * maxScreenCol; //768 pixels
+	public int screenHeight = tileSize * maxScreenRow; //576 pixels
 	
-	final int maxScreenCol = 27;
-	final int maxScreenRow = 15;
+	//WORLD SETTINGS
+	public final int maxWorldCol = 2 * maxScreenCol;
+	public final int maxWorldRow = 2 * maxScreenRow;
+	public final int worldWidth = tileSize * maxWorldCol;
+	public final int worldHeight = tileSize * maxWorldRow;
 	
-	final int screenWidth = tileSize * maxScreenCol;
-	final int screenHeight = tileSize * maxScreenRow;
-	
-	// FPS
+	//FPS
 	int FPS = 120;
 	
-	KeyHandler keyH = new KeyHandler();
+	//SYSTEM
+	KeyHandler keyH = new KeyHandler(this);
+	public UI ui = new UI(this);
 	Thread gameThread;
 	
-	// Game Objects
-	Player player = new Player(this, keyH);
-	Voronoi map = new Voronoi(screenWidth, screenHeight);
+	//ENTITY & OBJECT
+	public Player player = new Player(this, keyH);
+	public Voronoi map = new Voronoi(worldWidth, worldHeight, this);
+	
+	//GAME STATE
+	public int gameState;
+	public final int titleState = 0;
+	public final int playState = 1;
+	public final int pauseState = 2;
 	
 	public GamePanel() {
+		
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
 		this.setBackground(Color.white);
 		this.setDoubleBuffered(true);
@@ -41,9 +55,17 @@ public class GamePanel extends JPanel implements Runnable{
 		
 	}
 	
+	public void setupGame() {
+		
+		gameState = titleState;
+		
+	}
+	
 	public void startGameThread() {
+		
 		gameThread = new Thread(this);
 		gameThread.start();
+		
 	}
 
 	
@@ -84,22 +106,40 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	public void update() {
 		
-		player.update();
+		if(gameState == playState) {
+			player.update();
+		}
+		
+		if(gameState == pauseState) {
+			
+		}
+		
 		
 	}
 	
 	public void paintComponent(Graphics g) {
 		
 		super.paintComponent(g);
-		
 		Graphics2D g2 = (Graphics2D)g;
 		
-		map.drawCellColors(g2);
+		// Title Screen
+		if(gameState == titleState) {
+			ui.draw(g2);
+		}
 		
-		player.draw(g2);
+		else {
+			// Map
+			map.drawCellColors(g2);
+			
+			// Player
+			player.draw(g2);
+			
+			// UI
+			ui.draw(g2);
+		}
 		
+	
 		
 		g2.dispose();
 	}
-	
 }

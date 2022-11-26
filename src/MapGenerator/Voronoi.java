@@ -8,29 +8,31 @@ import java.util.Random;
 
 import MapGenerator.delaunator.DPoint;
 import MapGenerator.delaunator.Delaunator;
+import main.GamePanel;
 
 public class Voronoi {
 	int screenWidth;
 	int screenHeight;
-	
+
 	// CONSTANTS
 	final int GRIDSIZE = 25;
 	final double JITTER = 0.5;
 	final double WAVELENGTH = 0.5;
 
 	public Map map = new Map();
-
+	GamePanel gp;
 	private Vector<DPoint> points = new Vector<DPoint>();
 	private Delaunator delaunator;
 
-	public Voronoi(int screenWidth, int screenHeight) {
+	public Voronoi(int screenWidth, int screenHeight, GamePanel gp) {
+		this.gp = gp;
 		this.screenHeight = screenHeight;
 		this.screenWidth = screenWidth;
-		
+
 		for (int x = 0; x <= GRIDSIZE; x++) {
 			for (int y = 0; y <= GRIDSIZE; y++) {
-				double randX = (x + JITTER * (Math.random() - Math.random())) * (screenWidth/GRIDSIZE);
-				double randY = (y + JITTER * (Math.random() - Math.random())) * (screenHeight/GRIDSIZE);
+				double randX = (x + JITTER * (Math.random() - Math.random())) * (screenWidth / GRIDSIZE);
+				double randY = (y + JITTER * (Math.random() - Math.random())) * (screenHeight / GRIDSIZE);
 				DPoint point = new DPoint(randX, randY);
 				points.add(point);
 			}
@@ -67,20 +69,19 @@ public class Voronoi {
 
 	private Vector<Double> assignElevation() {
 		Random random = new Random();
-	
+
 		SimplexNoise noise = new SimplexNoise(1, 0.5, random.nextLong());
-		
+
 		Vector<Double> elevation = new Vector<Double>();
-		
+
 		for (int r = 0; r < map.numRegions; r++) {
-			double nx = ((points.get(r).x/(screenWidth/GRIDSIZE)) / GRIDSIZE - 0.5);
-			double ny = ((points.get(r).y/(screenHeight/GRIDSIZE)) / GRIDSIZE - 0.5);
+			double nx = ((points.get(r).x / (screenWidth / GRIDSIZE)) / GRIDSIZE - 0.5);
+			double ny = ((points.get(r).y / (screenHeight / GRIDSIZE)) / GRIDSIZE - 0.5);
 
 			elevation.insertElementAt((1 + noise.noise(nx / WAVELENGTH, ny / WAVELENGTH)) / 2, r);
-			
 
 			double d = (2 * Math.max(Math.abs(nx), Math.abs(ny)));
-			
+
 			elevation.insertElementAt((1 + elevation.get(r) - d) / 2, r);
 		}
 
@@ -112,6 +113,9 @@ public class Voronoi {
 	public void drawCellColors(Graphics2D g2) {
 		Vector<Integer> seen = new Vector<Integer>();
 
+		int screenX = gp.player.screenX - gp.player.worldX;
+		int screenY = gp.player.screenY - gp.player.worldY;
+
 		for (int e = 0; e < map.numEdges; e++) {
 			int r = map.triangles[delaunator.nextHalfEdge(e)];
 
@@ -127,10 +131,10 @@ public class Voronoi {
 					int edge = edgesAroundPoint.get(i);
 					DPoint vertice = map.centers.get(delaunator.triangleOfEdge(edge));
 
-					verticesX[i] = (int) vertice.x;
-					verticesY[i] = (int) vertice.y;
+					verticesX[i] = (int) vertice.x + screenX;
+					verticesY[i] = (int) vertice.y + screenY;
 				}
-				
+
 				// System.out.println(map.elevation.get(r));
 				if (map.elevation.get(r) < 0.3) {
 					g2.setColor(Color.white);

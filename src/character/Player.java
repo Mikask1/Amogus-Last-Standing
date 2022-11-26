@@ -1,8 +1,6 @@
 package character;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -12,34 +10,20 @@ import main.GamePanel;
 import main.KeyHandler;
 
 public class Player extends Character{
-
-	GamePanel gp;
 	KeyHandler keyH;
 	
-	public final int screenX;
-	public final int screenY;
-	
 	public Player(GamePanel gp, KeyHandler keyH) {
+		super(gp);
 		this.gp = gp;
 		this.keyH = keyH;
-		
-		screenX = gp.screenWidth / 2 - gp.tileSize / 2;
-		screenY = gp.screenHeight / 2 - gp.tileSize / 2;
-		
-		//collision
-		solidArea = new Rectangle();
-		solidArea.x = 5;
-		solidArea.y = 30;
-		solidArea.width = 36;
-		solidArea.height = 15;
 		
 		setDefaultValues();
 		getPlayerImage();
 	}
 	
 	public void setDefaultValues() {
-		worldX = gp.tileSize * 24;
-		worldY = gp.tileSize * 24;
+		x = 100;
+		y = 100;
 		speed = 4;
 		direction = "down";
 	}
@@ -69,79 +53,25 @@ public class Player extends Character{
 		
 		if(keyH.upPressed == true || keyH.leftPressed == true || keyH.downPressed == true || keyH.rightPressed == true) {
 			
-//			//CAN MOVE DIAGONALLY
-//			
-//			collisionOn = false;
-//			gp.cChecker.checkTile(this);
-//			
-//			if(keyH.upPressed == true) {
-//				direction = "up";
-//				if(collisionOn == false)
-//				worldY -= speed;
-//			}
-//			
-//			if(keyH.downPressed == true) {
-//				direction = "down";
-//				if(collisionOn == false)
-//				worldY += speed;
-//			}
-//			
-//			if(keyH.leftPressed == true) {
-//				direction = "left";
-//				if(collisionOn == false)
-//				worldX -= speed;
-//				
-//			}
-//			
-//			if(keyH.rightPressed == true) {
-//				direction = "right";	
-//				if(collisionOn == false)
-//				worldX += speed;
-//							
-//			}
-			
-			// CAN'T MOVE DIAGONALLY
-			
 			if(keyH.upPressed == true) {
 				direction = "up";
-			}
-			
-			if(keyH.downPressed == true) {
-				direction = "down";
+				y -= speed;
 			}
 			
 			if(keyH.leftPressed == true) {
 				direction = "left";
+				x -= speed;
+			}
+			
+			if(keyH.downPressed == true) {
+				direction = "down";
+				y += speed;
 			}
 			
 			if(keyH.rightPressed == true) {
-				direction = "right";				
+				direction = "right";
+				x += speed;
 			}
-			
-			//check collision
-			collisionOn = false;
-			
-			//if collision = false, player can move
-			if(collisionOn == false) {
-				switch(direction) {
-				case "up":
-					worldY -= speed;
-					break;
-					
-				case "down":
-					worldY += speed;
-					break;
-					
-				case "left":
-					worldX -= speed;
-					break;
-					
-				case "right":
-					worldX += speed;
-					break;
-				}
-			}
-			
 			
 			spriteCounter++;
 			if(spriteCounter > 6) {
@@ -166,10 +96,6 @@ public class Player extends Character{
 	}
 	
 	public void draw(Graphics2D g2) {
-		
-//		g2.setColor(Color.white);	
-//		g2.fillRect(x, y, gp.tileSize, gp.tileSize);
-		
 		BufferedImage image = null;
 		
 		switch(direction) {
@@ -247,14 +173,12 @@ public class Player extends Character{
 		
 		}
 		
-		g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null); 
+		g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null); 
 		
 	}
 
 	@Override
 	public void shoot() {
-		// TODO Auto-generated method stub
-		
 	}
 	
 }

@@ -7,43 +7,32 @@ import java.awt.Graphics2D;
 import javax.swing.JPanel;
 
 import MapGenerator.Voronoi;
-import character.Player;;
+import character.Player;
 
 public class GamePanel extends JPanel implements Runnable{
-	
-	//SCREEN SETTINGS
-	final int originalTileSize = 16; //16 x 16 tile
+	// Screen Settings
+	final int originalTileSize = 16;
 	final int scale = 3;
 	
-	public int tileSize = originalTileSize * scale; //48 x 48 tile
-	public int maxScreenCol = 26;
-	public int maxScreenRow = 15;
-	public int screenWidth = tileSize * maxScreenCol; //768 pixels
-	public int screenHeight = tileSize * maxScreenRow; //576 pixels
+	public int tileSize = originalTileSize * scale;
 	
-	//WORLD SETTINGS
-	public final int maxWorldCol = 2 * maxScreenCol;
-	public final int maxWorldRow = 2 * maxScreenRow;
-	public final int worldWidth = tileSize * maxWorldCol;
-	public final int worldHeight = tileSize * maxWorldRow;
+	final int maxScreenCol = 27;
+	final int maxScreenRow = 15;
 	
-	//FPS
+	final int screenWidth = tileSize * maxScreenCol;
+	final int screenHeight = tileSize * maxScreenRow;
+	
+	// FPS
 	int FPS = 120;
 	
-	//SYSTEM
 	KeyHandler keyH = new KeyHandler();
 	Thread gameThread;
 	
-	//ENTITY & OBJECT
-	public Player player = new Player(this, keyH);
-	public Voronoi map = new Voronoi(worldWidth, worldHeight, this);
-	
-	
-	//GAME STATE
-	public final int titleState = 0;
+	// Game Objects
+	Player player = new Player(this, keyH);
+	Voronoi map = new Voronoi(screenWidth, screenHeight);
 	
 	public GamePanel() {
-		
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
 		this.setBackground(Color.white);
 		this.setDoubleBuffered(true);
@@ -53,10 +42,8 @@ public class GamePanel extends JPanel implements Runnable{
 	}
 	
 	public void startGameThread() {
-		
 		gameThread = new Thread(this);
 		gameThread.start();
-		
 	}
 
 	
@@ -104,15 +91,15 @@ public class GamePanel extends JPanel implements Runnable{
 	public void paintComponent(Graphics g) {
 		
 		super.paintComponent(g);
+		
 		Graphics2D g2 = (Graphics2D)g;
 		
-		// Map
 		map.drawCellColors(g2);
 		
-		//PLAYER
 		player.draw(g2);
 		
 		
 		g2.dispose();
 	}
+	
 }

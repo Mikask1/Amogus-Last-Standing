@@ -1,5 +1,6 @@
 package character;
 
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import main.GamePanel;
@@ -7,6 +8,7 @@ import main.GamePanel;
 public abstract class Character {
 	GamePanel gp;
 	
+	public int worldX, worldY;
 	public int x,y;
 	public int speed;
 	
@@ -16,9 +18,8 @@ public abstract class Character {
 	public int spriteCounter = 0;
 	public int spriteNum = 1;
 	
-	public Character(GamePanel gp) {
-		this.gp = gp;
-	}
+	public Rectangle solidArea;
+	public boolean collisionOn = false;
 	
 	public abstract void shoot();
 	public abstract void update();

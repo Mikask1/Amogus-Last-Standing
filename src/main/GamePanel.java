@@ -4,13 +4,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.Currency;
-
 import javax.swing.JPanel;
 
-import entity.Player;
-import object.SuperObject;
-import tile.TileManager;
+import MapGenerator.Voronoi;
+import character.Player;;
 
 public class GamePanel extends JPanel implements Runnable{
 	
@@ -19,32 +16,27 @@ public class GamePanel extends JPanel implements Runnable{
 	final int scale = 3;
 	
 	public int tileSize = originalTileSize * scale; //48 x 48 tile
-	public int maxScreenCol = 16;
-	public int maxScreenRow = 12;
+	public int maxScreenCol = 26;
+	public int maxScreenRow = 15;
 	public int screenWidth = tileSize * maxScreenCol; //768 pixels
 	public int screenHeight = tileSize * maxScreenRow; //576 pixels
 	
 	//WORLD SETTINGS
-	public final int maxWorldCol = 50;
-	public final int maxWorldRow = 50;
-//	public final int worldWidth = tileSize * maxWorldCol;
-//	public final int worldHeight = tileSize * maxWorldRow;
+	public final int maxWorldCol = 2 * maxScreenCol;
+	public final int maxWorldRow = 2 * maxScreenRow;
+	public final int worldWidth = tileSize * maxWorldCol;
+	public final int worldHeight = tileSize * maxWorldRow;
 	
 	//FPS
-	int FPS = 60;
+	int FPS = 120;
 	
 	//SYSTEM
-	TileManager tileM = new TileManager(this);
 	KeyHandler keyH = new KeyHandler();
-	Sound sound = new Sound();
-	public CollisionChecker cChecker = new CollisionChecker(this);
-	public AssetSetter aSetter =  new AssetSetter(this);
 	Thread gameThread;
 	
 	//ENTITY & OBJECT
 	public Player player = new Player(this, keyH);
-	public SuperObject obj[] = new SuperObject[10];
-	
+	public Voronoi map = new Voronoi(worldWidth, worldHeight, this);
 	
 	
 	//GAME STATE
@@ -53,18 +45,10 @@ public class GamePanel extends JPanel implements Runnable{
 	public GamePanel() {
 		
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-		this.setBackground(Color.gray);
+		this.setBackground(Color.white);
 		this.setDoubleBuffered(true);
 		this.addKeyListener(keyH);
 		this.setFocusable(true);
-		
-	}
-	
-	public void setupGame() {
-		
-		aSetter.setObject();
-		
-		playMusic(0);
 		
 	}
 	
@@ -122,42 +106,13 @@ public class GamePanel extends JPanel implements Runnable{
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D)g;
 		
-//		//TITLE SCREEN
-//		if(gameState == titleState)
-		
-		//TILE
-		tileM.draw(g2);
-		
-		//OBJECT
-		for(int i = 0; i < obj.length; i++) {
-			if(obj[i] != null) {
-				obj[i].draw(g2, this);
-			}
-		}
+		// Map
+		map.drawCellColors(g2);
 		
 		//PLAYER
 		player.draw(g2);
 		
+		
 		g2.dispose();
 	}
-	
-	public void playMusic(int i) {
-		
-		sound.setFile(i);
-		sound.play();
-		sound.loop();
-		
-	}
-	
-	public void stopMusic() {
-		
-		sound.stop();
-		
-	}
-	
-	public void playSE(int i) {
-		sound.setFile(i);
-		sound.play();
-	}
-	
 }

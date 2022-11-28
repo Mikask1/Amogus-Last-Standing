@@ -4,13 +4,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.io.IOException;
 
 import javax.swing.JPanel;
 
 import MapGenerator.Voronoi;
 import character.Player;;
 
+@SuppressWarnings("serial")
 public class GamePanel extends JPanel implements Runnable {
 
 	// SCREEN SETTINGS
@@ -24,7 +24,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public int screenHeight = tileSize * maxScreenRow; // 576 pixels
 
 	// WORLD SETTINGS
-	public int sizeMultiplier = 4; // minimal 2
+	public int sizeMultiplier = 2; // minimal 2
 	public final int maxWorldCol = sizeMultiplier * maxScreenCol;
 	public final int maxWorldRow = sizeMultiplier * maxScreenRow;
 	public final int worldWidth = tileSize * maxWorldCol;
@@ -47,21 +47,18 @@ public class GamePanel extends JPanel implements Runnable {
 
 	// GAME STATE
 	public final int titleState = 0;
-
+	
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
 		this.setBackground(Color.white);
 		this.setDoubleBuffered(true);
-		this.addKeyListener(keyH);
 		this.setFocusable(true);
-
+		this.addKeyListener(keyH);
 	}
 
 	public void startGameThread() {
-
 		gameThread = new Thread(this);
 		gameThread.start();
-
 	}
 
 	@Override
@@ -109,14 +106,15 @@ public class GamePanel extends JPanel implements Runnable {
 	public void paintComponent(Graphics g) {
 
 		super.paintComponent(g);
-		Graphics2D g2 = (Graphics2D) g;
-
+		Graphics2D g2 = (Graphics2D)g;
+		
+		// Map
 		map.drawCellColors(g2);
 		
-		// PLAYER
+		//PLAYER
 		player.draw(g2);
 		
-		g2.setColor(Color.blue);
+//		g2.setColor(Color.blue);
 //		g2.drawRect(player.screenX + player.solidArea.x, player.screenY + player.solidArea.y, player.solidArea.width, player.solidArea.height);
 
 		g2.dispose();

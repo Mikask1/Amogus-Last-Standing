@@ -1,3 +1,11 @@
+<<<<<<< HEAD
+=======
+/maps/
+/objects/
+/player/
+/sound/
+/tiles/
+>>>>>>> 618e7d8a0fd403b5a1a76806fb4f6497d666c374
 /main/
 /character/
 /MapGenerator/

@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 
 import main.GamePanel;
 
-public abstract class Character {
+public class Character {
 	GamePanel gp;
 	
 	public int worldX, worldY;
@@ -20,7 +20,4 @@ public abstract class Character {
 	
 	public Rectangle solidArea;
 	public boolean collisionOn = false;
-	
-	public abstract void shoot();
-	public abstract void update();
 }

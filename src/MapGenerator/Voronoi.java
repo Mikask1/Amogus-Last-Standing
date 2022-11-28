@@ -2,7 +2,21 @@ package MapGenerator;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Polygon;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.security.PublicKey;
 import java.util.Vector;
+
+import javax.imageio.ImageIO;
+import javax.lang.model.type.NullType;
+
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -15,16 +29,34 @@ public class Voronoi {
 	int screenHeight;
 
 	// CONSTANTS
-	final int GRIDSIZE = 25;
+	final int GRIDSIZE = 15;
 	final double JITTER = 0.5;
 	final double WAVELENGTH = 0.5;
-
+	final double THRESHOLD = 0.4;
+	final int PADDING = 10;
+	
 	public Map map = new Map();
 	GamePanel gp;
 	private Vector<DPoint> points = new Vector<DPoint>();
 	private Delaunator delaunator;
 
+	private BufferedImage image;
+	private BufferedImage imageSecondary;
+	private boolean toggle = true;
+
+	public Vector<Rectangle> lava;
+	public Vector<Image> landImage;
+	public Vector<Rectangle> land;
+
 	public Voronoi(int screenWidth, int screenHeight, GamePanel gp) {
+		try {
+			imageSecondary = ImageIO.read(getClass().getResourceAsStream("/tiles/dirtSecondary.png"));
+			image = ImageIO.read(getClass().getResourceAsStream("/tiles/dirt.png"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		this.gp = gp;
 		this.screenHeight = screenHeight;
 		this.screenWidth = screenWidth;
@@ -48,6 +80,7 @@ public class Voronoi {
 		map.numTriangles = delaunator.triangles.length;
 		map.centers = calculateCentroids();
 		map.elevation = assignElevation();
+		processCells();
 	}
 
 	private Vector<DPoint> calculateCentroids() {
@@ -99,26 +132,34 @@ public class Voronoi {
 
 	public void drawCells(Graphics2D g2) {
 
+		int screenX = gp.player.screenX - gp.player.worldX;
+		int screenY = gp.player.screenY - gp.player.worldY;
+
 		g2.setColor(Color.black);
 
 		for (int e = 0; e < map.numEdges; e++) {
 			if (e < delaunator.halfedges[e]) {
 				DPoint p = map.centers.get(delaunator.triangleOfEdge(e));
 				DPoint q = map.centers.get(delaunator.triangleOfEdge(map.halfEdges[e]));
-				g2.drawLine((int) p.x, (int) p.y, (int) q.x, (int) q.y);
+				g2.drawLine((int) p.x + screenX, (int) p.y + screenY, (int) q.x + screenX, (int) q.y + screenY);
 			}
 		}
 	}
 
-	public void drawCellColors(Graphics2D g2) {
+	public void processCells() {
+//		TODO: P3 Make all of these Rectangles in the first place (performance, simpler)
+//		TODO: P2 Make drawCellColors() using vectors instead of arrays (performance, simpler)
+		
+//    	ALTERNATIVE
+//		TODO: P1 Make the map bounding box the inside of the polygon (O(n^3)) -> might be worth checking out -> no code on the internet
+		
 		Vector<Integer> seen = new Vector<Integer>();
-
-		int screenX = gp.player.screenX - gp.player.worldX;
-		int screenY = gp.player.screenY - gp.player.worldY;
+		land = new Vector<Rectangle>();
+		landImage = new Vector<Image>();
+		lava = new Vector<Rectangle>();
 
 		for (int e = 0; e < map.numEdges; e++) {
 			int r = map.triangles[delaunator.nextHalfEdge(e)];
-
 			if (!seen.contains(r)) {
 				seen.add(r);
 
@@ -131,19 +172,66 @@ public class Voronoi {
 					int edge = edgesAroundPoint.get(i);
 					DPoint vertice = map.centers.get(delaunator.triangleOfEdge(edge));
 
-					verticesX[i] = (int) vertice.x + screenX;
-					verticesY[i] = (int) vertice.y + screenY;
+					verticesX[i] = (int) vertice.x;
+					verticesY[i] = (int) vertice.y;
 				}
 
-				// System.out.println(map.elevation.get(r));
-				if (map.elevation.get(r) < 0.3) {
-					g2.setColor(Color.white);
-				} else {
-					g2.setColor(new Color(180, 101, 30));
+				Shape polygon = new Polygon(verticesX, verticesY, verticesX.length);
+				Rectangle bounds = polygon.getBounds();
+				if (map.elevation.get(r) > THRESHOLD) {
+					land.add(bounds);
+					
+					int scaleX = bounds.width + (2 * gp.player.solidArea.width) + 2*PADDING;
+					int scaleY = bounds.height + (2 * gp.player.solidArea.height) + 2*PADDING;
+					
+					if (toggle) {
+						landImage.add(image.getScaledInstance(scaleX, scaleY, Image.SCALE_DEFAULT));
+					}
+					else {
+						landImage.add(imageSecondary.getScaledInstance(scaleX, scaleY, Image.SCALE_DEFAULT));						
+					}
 				}
-
-				g2.fillPolygon(verticesX, verticesY, verticesX.length);
+				else {
+					lava.add(bounds);
+				}
+				
+				toggle = !toggle;
 			}
 		}
+		
+		land.trimToSize();
+		landImage.trimToSize();
+		lava.trimToSize();
+	}
+
+	public void drawCellColors(Graphics2D g2) {
+		
+		Vector<Integer> seen = new Vector<Integer>();
+
+		int screenX = gp.player.screenX - gp.player.worldX;
+		int screenY = gp.player.screenY - gp.player.worldY;
+		
+		int solidX = gp.player.solidArea.width + PADDING;
+		int solidY = gp.player.solidArea.height + PADDING;
+		
+		for (int i = 0; i < land.size(); i++) {
+			g2.drawImage(landImage.get(i), land.get(i).x + screenX - solidX, land.get(i).y + screenY - solidY, null);
+		}
+		
+	}
+	
+	public boolean inside(int top, int bottom, int left, int right) {
+		for (int i = 0; i < land.size(); i++) {
+			boolean intersect = true;
+			Rectangle mapRect = land.get(i);
+			
+			int width = gp.player.solidArea.width + PADDING;
+			int height = gp.player.solidArea.height + PADDING;
+			
+			if (right <= (mapRect.x + mapRect.width + width) && left >= mapRect.x - width && top >= mapRect.y - height && bottom <= (mapRect.y + mapRect.height + height)){
+				return true;
+			}
+		}
+		return false;
 	}
 }

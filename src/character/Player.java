@@ -38,8 +38,8 @@ public class Player extends Character{
 	}
 	
 	public void setDefaultValues() {
-		worldX = gp.tileSize * 24;
-		worldY = gp.tileSize * 24;
+		worldX = gp.tileSize * gp.maxWorldCol/2;
+		worldY = gp.tileSize * gp.maxWorldRow/2;
 		speed = 4;
 		direction = "down";
 	}
@@ -118,8 +118,10 @@ public class Player extends Character{
 				direction = "right";				
 			}
 			
-			//check collision
+			// check collision
 			collisionOn = false;
+			
+			gp.cChecker.checkTile(this);
 			
 			//if collision = false, player can move
 			if(collisionOn == false) {
@@ -248,13 +250,6 @@ public class Player extends Character{
 		}
 		
 		g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null); 
-		
-	}
-
-	@Override
-	public void shoot() {
-		// TODO Auto-generated method stub
-		
 	}
 	
 }

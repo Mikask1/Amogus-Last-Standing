@@ -24,11 +24,12 @@ public class GamePanel extends JPanel implements Runnable {
 	public int screenHeight = tileSize * maxScreenRow; // 576 pixels
 
 	// WORLD SETTINGS
-	public int sizeMultiplier = 2; // minimal 2
-	public final int maxWorldCol = sizeMultiplier * maxScreenCol;
-	public final int maxWorldRow = sizeMultiplier * maxScreenRow;
-	public final int worldWidth = tileSize * maxWorldCol;
-	public final int worldHeight = tileSize * maxWorldRow;
+	public int sizeMultiplier = 1;
+	public int maxWorldCol = sizeMultiplier * maxScreenCol;
+	public int maxWorldRow = sizeMultiplier * maxScreenRow;
+	public int worldWidth = tileSize * maxWorldCol;
+	public int worldHeight = tileSize * maxWorldRow;
+
 	public int screenX = 0;
 	public int screenY = 0;
 
@@ -37,7 +38,8 @@ public class GamePanel extends JPanel implements Runnable {
 
 	// SYSTEM
 	public CollisionChecker cChecker = new CollisionChecker(this);
-	KeyHandler keyH = new KeyHandler();
+	KeyHandler keyH = new KeyHandler(this);
+	public UI ui = new UI(this);
 	Thread gameThread;
 
 	// ENTITY & OBJECT
@@ -46,7 +48,10 @@ public class GamePanel extends JPanel implements Runnable {
 	public Voronoi map = new Voronoi(worldWidth, worldHeight, this);
 
 	// GAME STATE
+	public int gameState;
 	public final int titleState = 0;
+	public final int playState = 1;
+	public final int pauseState = 2;
 	
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -54,6 +59,10 @@ public class GamePanel extends JPanel implements Runnable {
 		this.setDoubleBuffered(true);
 		this.setFocusable(true);
 		this.addKeyListener(keyH);
+	}
+	
+	public void setupGame() {
+		gameState = titleState;
 	}
 
 	public void startGameThread() {
@@ -96,10 +105,15 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 
 	public void update() {
-		screenX = player.screenX - player.worldX;
-		screenY = player.screenY - player.worldY;
+		if(gameState == playState) {
+			screenX = player.screenX - player.worldX;
+			screenY = player.screenY - player.worldY;
+			player.update();
+		}
 		
-		player.update();
+		if(gameState == pauseState) {
+			
+		}
 
 	}
 
@@ -107,15 +121,27 @@ public class GamePanel extends JPanel implements Runnable {
 
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D)g;
-		
-		// Map
-		map.drawCellColors(g2);
-		
-		//PLAYER
-		player.draw(g2);
-		
-//		g2.setColor(Color.blue);
-//		g2.drawRect(player.screenX + player.solidArea.x, player.screenY + player.solidArea.y, player.solidArea.width, player.solidArea.height);
+
+		// Title Screen
+		if(gameState == titleState) {
+			ui.draw(g2);
+		}
+				
+		else {
+			// Map
+			map.drawCellColors(g2);
+				
+			// Player
+			player.draw(g2);
+			
+			// Bounding Box
+//			g2.setColor(Color.blue);
+//			g2.drawRect(player.screenX + player.solidArea.x, player.screenY + player.solidArea.y, player.solidArea.width, player.solidArea.height);					
+			
+			// UI
+			ui.draw(g2);
+		}		
+	
 
 		g2.dispose();
 	}

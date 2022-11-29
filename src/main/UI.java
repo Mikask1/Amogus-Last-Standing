@@ -28,7 +28,8 @@ public class UI {
 	int messageCounter = 0;
 	public boolean gameFinished = false;
 	public int commandNum = 0;
-	public int titleSubState = 0; // 0 : main menu, 1 : ?
+	public int mapNum = 1;
+	public int titleSubState = 0; // 0 : main menu, 1 : map menu
 	public int highScore = 0;
 	
 	
@@ -84,6 +85,7 @@ public class UI {
 	
 	public void drawMainMenu() {
 		
+		// Main Menu
 		if(titleSubState == 0) {
 			g2.setColor(new Color (54, 31, 2));
 			g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
@@ -101,16 +103,13 @@ public class UI {
 			x = gp.screenWidth / 2 - (gp.tileSize * 6) / 2 + 5;
 			y -= gp.tileSize * 3;
 			try {
-				
 				BufferedImage logo = ImageIO.read(getClass().getResourceAsStream("/player/Alsus.png"));
 				g2.drawImage(logo, x, y, gp.tileSize * 6, gp.tileSize * 6, null);
-				
 			} catch (IOException e) {
-
 				e.printStackTrace();
 			}
 
-			// Menu
+			// Menu Option
 			g2.setFont(OEM8514.deriveFont(Font.PLAIN, 30F));
 
 			text = "START GAME";
@@ -173,9 +172,85 @@ public class UI {
 			g2.drawString(text, x, y);
 		}
 		
+		// Map menu
 		else if(titleSubState == 1) {
+			g2.setColor(new Color (54, 31, 2));
+			g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
 			
-//			g2.setColor(null)
+			// Map Name
+			g2.setFont(maruMonica.deriveFont(Font.BOLD, 96F));
+			String text = "Choose Map Size :";
+			int x = getXforCenteredText(text);
+			int y = 200;
+			g2.setColor(Color.WHITE);
+			g2.drawString(text, x, y);
+
+			
+			x = gp.screenWidth / 2 - (gp.tileSize * 5) / 2;
+			y += gp.tileSize * 3;
+			
+			// map
+			BufferedImage map;
+			try {
+				map = ImageIO.read(getClass().getResourceAsStream("/tiles/map.png"));
+					g2.drawImage(map, x-gp.tileSize*3, y+gp.tileSize*3, gp.tileSize, gp.tileSize, null);
+					g2.drawImage(map, x, y+gp.tileSize, gp.tileSize * 3, gp.tileSize * 3, null);
+					g2.drawImage(map, x+gp.tileSize*5, y-gp.tileSize, gp.tileSize * 5, gp.tileSize * 5, null);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			g2.setFont(maruMonica.deriveFont(Font.PLAIN, 30F));
+			text = "Small";
+			g2.setColor(Color.white);
+			g2.drawString(text, x-gp.tileSize*3-5, y + gp.tileSize * 5);
+			
+			g2.setFont(maruMonica.deriveFont(Font.PLAIN, 30F));
+			text = "Medium";
+			g2.setColor(Color.white);
+			g2.drawString(text, x+gp.tileSize-15, y + gp.tileSize * 5);
+			
+			g2.setFont(maruMonica.deriveFont(Font.PLAIN, 30F));
+			text = "Big";
+			g2.setColor(Color.white);
+			g2.drawString(text, x+gp.tileSize*7+10, y + gp.tileSize * 5);
+			
+				try {
+					map = ImageIO.read(getClass().getResourceAsStream("/tiles/mapselect.png"));
+					if(mapNum == 0) {
+						g2.drawImage(map, x-gp.tileSize*3, y+gp.tileSize*3, gp.tileSize, gp.tileSize, null);
+					}
+					if(mapNum == 1) {
+						g2.drawImage(map, x, y+gp.tileSize, gp.tileSize * 3, gp.tileSize * 3, null);
+					}
+					if(mapNum == 2) {
+						g2.drawImage(map, x+gp.tileSize*5, y-gp.tileSize, gp.tileSize * 5, gp.tileSize * 5, null);
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			
+			
+			// confirm button
+			g2.setFont(OEM8514.deriveFont(Font.PLAIN, 30F));
+			text = "CONFIRM";
+			x = getXforCenteredText(text);
+			y += gp.tileSize * 7;
+			int boxX = x - 34;
+			int boxY = y - 40;
+			g2.setColor(Color.BLACK);
+			g2.fillRoundRect(boxX-3, boxY-3, 207, 56, 25, 25);
+			g2.setColor(new Color(123, 75, 6));
+			g2.fillRoundRect(boxX, boxY, 201, 50, 20, 20);
+			g2.setColor(Color.white);
+			g2.drawString(text, x, y-5);
+			if(commandNum == 1) {
+				g2.setColor(new Color(166, 101, 6));
+				g2.fillRoundRect(boxX, boxY, 201, 50, 20, 20);
+				g2.setColor(Color.white);
+				g2.drawString(text, x, y-5);
+			}
 			
 		}
 

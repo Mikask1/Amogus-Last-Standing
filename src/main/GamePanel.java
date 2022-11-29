@@ -24,13 +24,11 @@ public class GamePanel extends JPanel implements Runnable {
 	public int screenHeight = tileSize * maxScreenRow; // 576 pixels
 
 	// WORLD SETTINGS
-	public int sizeMultiplier = 2; // minimal 2
+	public int sizeMultiplier = 1;
 	public int maxWorldCol = sizeMultiplier * maxScreenCol;
 	public int maxWorldRow = sizeMultiplier * maxScreenRow;
 	public int worldWidth = tileSize * maxWorldCol;
 	public int worldHeight = tileSize * maxWorldRow;
-	public int oriWorldWidth = worldWidth;
-	public int oriWorldHeight = worldHeight;
 
 	public int screenX = 0;
 	public int screenY = 0;
@@ -135,13 +133,15 @@ public class GamePanel extends JPanel implements Runnable {
 				
 			// Player
 			player.draw(g2);
-					
+			
+			// Bounding Box
+//			g2.setColor(Color.blue);
+//			g2.drawRect(player.screenX + player.solidArea.x, player.screenY + player.solidArea.y, player.solidArea.width, player.solidArea.height);					
+			
 			// UI
 			ui.draw(g2);
 		}		
-		
-//		g2.setColor(Color.blue);
-//		g2.drawRect(player.screenX + player.solidArea.x, player.screenY + player.solidArea.y, player.solidArea.width, player.solidArea.height);
+	
 
 		g2.dispose();
 	}

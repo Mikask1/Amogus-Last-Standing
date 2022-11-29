@@ -15,21 +15,21 @@ public class Player extends Character {
 	GamePanel gp;
 	KeyHandler keyH;
 
-	public final int screenX;
-	public final int screenY;
+	public int screenX;
+	public int screenY;
 
 	public Player(GamePanel gp, KeyHandler keyH) {
 		this.gp = gp;
 		this.keyH = keyH;
 
-		screenX = gp.screenWidth / 2 - gp.tileSize / 2;
-		screenY = gp.screenHeight / 2 - gp.tileSize / 2;
+		screenX = gp.worldWidth / 2 - gp.tileSize / 2;
+		screenY = gp.worldHeight / 2 - gp.tileSize / 2;
 
 		// collision
 		solidArea = new Rectangle();
-		solidArea.x = 5;
+		solidArea.x = 13;
 		solidArea.y = 30;
-		solidArea.width = 36;
+		solidArea.width = 20;
 		solidArea.height = 15;
 
 		setDefaultValues();
@@ -37,10 +37,6 @@ public class Player extends Character {
 	}
 
 	public void setDefaultValues() {
-
-		worldX = gp.tileSize * gp.maxWorldCol / 3;
-		worldY = gp.tileSize * gp.maxWorldRow / 3;
-
 		speed = 4;
 		direction = "down";
 	}

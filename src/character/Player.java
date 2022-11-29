@@ -37,8 +37,10 @@ public class Player extends Character {
 	}
 
 	public void setDefaultValues() {
+
 		worldX = gp.tileSize * gp.maxWorldCol / 3;
 		worldY = gp.tileSize * gp.maxWorldRow / 3;
+
 		speed = 4;
 		direction = "down";
 	}

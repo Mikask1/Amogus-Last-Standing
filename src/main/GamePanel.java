@@ -31,6 +31,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public int worldHeight = tileSize * maxWorldRow;
 	public int oriWorldWidth = worldWidth;
 	public int oriWorldHeight = worldHeight;
+
 	public int screenX = 0;
 	public int screenY = 0;
 
@@ -115,11 +116,6 @@ public class GamePanel extends JPanel implements Runnable {
 		if(gameState == pauseState) {
 			
 		}
-		
-//		screenX = player.screenX - player.worldX;
-//		screenY = player.screenY - player.worldY;
-//		
-//		player.update();
 
 	}
 
@@ -127,7 +123,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D)g;
-		
+
 		// Title Screen
 		if(gameState == titleState) {
 			ui.draw(g2);

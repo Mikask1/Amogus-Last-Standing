@@ -27,7 +27,7 @@ public class KeyHandler implements KeyListener {
 
 		int code = e.getKeyCode();
 		System.out.println(code);
-		
+
 		// TITLE STATE
 		if(gp.gameState == gp.titleState) {
 			
@@ -169,7 +169,6 @@ public class KeyHandler implements KeyListener {
 				gp.gameState = gp.pauseState;
 			}
 		}
-
 
 	}
 

@@ -26,7 +26,7 @@ public class Voronoi {
 	final double JITTER = 0.5;
 	final double WAVELENGTH = 0.5;
 	final double THRESHOLD = 0.4;
-	final int PADDING = 60;
+	final int PADDING = 100;
 
 	public Map map = new Map();
 	GamePanel gp;
@@ -176,8 +176,8 @@ public class Voronoi {
 				if (map.elevation.get(r) > THRESHOLD) {
 					land.add(bounds);
 
-					int scaleX = bounds.width + (2 * gp.player.solidArea.width) + 2 * PADDING;
-					int scaleY = bounds.height + (2 * gp.player.solidArea.height) + 2 * PADDING;
+					int scaleX = bounds.width + (2 * gp.player.footArea.width) + 2 * PADDING;
+					int scaleY = bounds.height + (2 * gp.player.footArea.height) + 2 * PADDING;
 
 					if (toggle) {
 						landImage.add(image.getScaledInstance(scaleX, scaleY, Image.SCALE_DEFAULT));
@@ -202,8 +202,8 @@ public class Voronoi {
 		int screenX = gp.player.screenX - gp.player.worldX;
 		int screenY = gp.player.screenY - gp.player.worldY;
 
-		int solidX = gp.player.solidArea.width + PADDING;
-		int solidY = gp.player.solidArea.height + PADDING;
+		int solidX = gp.player.footArea.width + PADDING;
+		int solidY = gp.player.footArea.height + PADDING;
 
 		for (int i = 0; i < land.size(); i++) {
 			g2.drawImage(landImage.get(i), land.get(i).x + screenX - solidX, land.get(i).y + screenY - solidY, null);
@@ -218,8 +218,8 @@ public class Voronoi {
 		for (int i = 0; i < land.size(); i++) {
 			Rectangle mapRect = land.get(i);
 
-			int width = gp.player.solidArea.width + PADDING;
-			int height = gp.player.solidArea.height + PADDING;
+			int width = gp.player.footArea.width + PADDING;
+			int height = gp.player.footArea.height + PADDING;
 
 			if (right <= (mapRect.x + mapRect.width + width) && left >= mapRect.x - width && top >= mapRect.y - height
 					&& bottom <= (mapRect.y + mapRect.height + height)) {

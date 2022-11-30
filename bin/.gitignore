@@ -1,8 +1,19 @@
 /MapGenerator/
 /character/
+<<<<<<< HEAD
+/font/
+/main/
+/maps/
+=======
 /main/
 /font/
+>>>>>>> 06ed9baa89b73bb5951b172bae0d5ced755f1a91
 /objects/
 /player/
 /sound/
 /tiles/
+<<<<<<< HEAD
+/bullet/
+/bullets/
+=======
+>>>>>>> 06ed9baa89b73bb5951b172bae0d5ced755f1a91

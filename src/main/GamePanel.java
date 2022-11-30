@@ -4,10 +4,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import MapGenerator.Voronoi;
+import bullet.Bullet;
 import character.Player;;
 
 @SuppressWarnings("serial")
@@ -32,9 +36,12 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public int screenX = 0;
 	public int screenY = 0;
+	
+	Image backgroundImage;
 
 	// FPS
 	int FPS = 120;
+	public long stopwatch = 0;
 
 	// SYSTEM
 	public CollisionChecker cChecker = new CollisionChecker(this);
@@ -54,6 +61,12 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int pauseState = 2;
 	
 	public GamePanel() {
+		try {
+			backgroundImage = ImageIO.read(getClass().getResourceAsStream("/tiles/bigLava.jpg"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
 		this.setBackground(Color.white);
 		this.setDoubleBuffered(true);
@@ -83,6 +96,7 @@ public class GamePanel extends JPanel implements Runnable {
 		while (gameThread != null) {
 
 			currentTime = System.nanoTime();
+			stopwatch = currentTime;
 			delta += (currentTime - lastTime) / drawInterval;
 			timer += (currentTime - lastTime);
 			lastTime = currentTime;
@@ -93,7 +107,7 @@ public class GamePanel extends JPanel implements Runnable {
 				delta--;
 				drawCount++;
 			}
-
+			
 			if (timer >= 1000000000) {
 				System.out.println("FPS: " + drawCount);
 				drawCount = 0;
@@ -109,6 +123,9 @@ public class GamePanel extends JPanel implements Runnable {
 			screenX = player.screenX - player.worldX;
 			screenY = player.screenY - player.worldY;
 			player.update();
+			for (Bullet bt : player.bullets) {
+				bt.update();
+			}
 		}
 		
 		if(gameState == pauseState) {
@@ -128,15 +145,17 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 				
 		else {
+			g2.drawImage(backgroundImage, screenX/4 - screenWidth/2, screenY/4 - 100 - screenHeight/2, worldWidth, worldHeight, null);
+
 			// Map
 			map.drawCellColors(g2);
 				
 			// Player
 			player.draw(g2);
-			
 			// Bounding Box
-//			g2.setColor(Color.blue);
-//			g2.drawRect(player.screenX + player.solidArea.x, player.screenY + player.solidArea.y, player.solidArea.width, player.solidArea.height);					
+			g2.setColor(Color.blue);
+			g2.drawRect(player.screenX + player.solidArea.x, player.screenY + player.solidArea.y, player.solidArea.width, player.solidArea.height);					
+			player.drawBullets(g2);
 			
 			// UI
 			ui.draw(g2);

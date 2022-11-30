@@ -1,5 +1,5 @@
 # Amogus-Last-Standing
-<p align="right"><b>Courtesy of Alsus Games</b></p>
+<p align="right"><b>Alsus Games</b></p>
 
 ___
 

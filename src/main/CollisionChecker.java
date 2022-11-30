@@ -10,10 +10,10 @@ public class CollisionChecker {
 	}
 
 	public void checkTile(Character character) {
-		int leftWorldX = character.worldX + character.solidArea.x;
-		int rightWorldX = character.worldX + character.solidArea.x + character.solidArea.width;
-		int topWorldY = character.worldY + character.solidArea.y;
-		int bottomWorldY = character.worldY + character.solidArea.y + character.solidArea.height;
+		int leftWorldX = character.worldX + character.footArea.x;
+		int rightWorldX = character.worldX + character.footArea.x + character.footArea.width;
+		int topWorldY = character.worldY + character.footArea.y;
+		int bottomWorldY = character.worldY + character.footArea.y + character.footArea.height;
 
 		int leftNextX = leftWorldX;
 		int rightNextX = rightWorldX;

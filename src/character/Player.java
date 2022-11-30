@@ -48,6 +48,7 @@ public class Player extends Character {
 		solidArea.width = 28;
 		solidArea.height = 30;
 
+
 		setDefaultValues();
 		getPlayerImage();
 	}

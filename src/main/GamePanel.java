@@ -5,9 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.math.BigInteger;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -61,7 +59,6 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int titleState = 0;
 	public final int playState = 1;
 	public final int pauseState = 2;
-	
 	
 	public GamePanel() {
 		try {
@@ -148,8 +145,8 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 				
 		else {
-
 			g2.drawImage(backgroundImage, screenX/4 - screenWidth/2, screenY/4 - 100 - screenHeight/2, worldWidth, worldHeight, null);
+
 			// Map
 			map.drawCellColors(g2);
 				

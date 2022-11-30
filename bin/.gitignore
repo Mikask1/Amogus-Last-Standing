@@ -1,8 +1,11 @@
 /MapGenerator/
 /character/
-/main/
 /font/
+/main/
+/maps/
 /objects/
 /player/
 /sound/
 /tiles/
+/bullet/
+/bullets/

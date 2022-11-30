@@ -26,7 +26,7 @@ public class Voronoi {
 	final double JITTER = 0.5;
 	final double WAVELENGTH = 0.5;
 	final double THRESHOLD = 0.4;
-	final int PADDING = 60;
+	final int PADDING = 100;
 
 	public Map map = new Map();
 	GamePanel gp;
@@ -44,8 +44,8 @@ public class Voronoi {
 	public Voronoi(int screenWidth, int screenHeight, GamePanel gp) {
 		try {
 //			TODO: get better textured dirt
-			imageSecondary = ImageIO.read(getClass().getResourceAsStream("/tiles/dirtSecondary.png"));
-			image = ImageIO.read(getClass().getResourceAsStream("/tiles/dirt.png"));
+			imageSecondary = ImageIO.read(getClass().getResourceAsStream("/tiles/dirtSecondary.jpg"));
+			image = ImageIO.read(getClass().getResourceAsStream("/tiles/dirt.jpg"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

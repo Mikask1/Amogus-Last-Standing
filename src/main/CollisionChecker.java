@@ -26,28 +26,24 @@ public class CollisionChecker {
 			topNextY = topWorldY - character.speed;
 			if (!gp.map.inside(topNextY, bottomNextY, leftNextX, rightNextX)) {
 				character.collisionOn = true;
-				System.out.println("top");
 			}
 			break;
 		case "down":
 			bottomNextY = bottomWorldY + character.speed;
 			if (!gp.map.inside(topNextY, bottomNextY, leftNextX, rightNextX)) {
 				character.collisionOn = true;
-				System.out.println("bottom");
 			}
 			break;
 		case "left":
 			leftNextX = leftWorldX - character.speed;
 			if (!gp.map.inside(topNextY, bottomNextY, leftNextX, rightNextX)) {
 				character.collisionOn = true;
-				System.out.println("left");
 			}
 			break;
 		case "right":
 			rightNextX = rightWorldX + character.speed;
 			if (!gp.map.inside(topNextY, bottomNextY, leftNextX, rightNextX)) {
 				character.collisionOn = true;
-				System.out.println("right");
 			}
 			break;
 		}

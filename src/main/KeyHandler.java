@@ -166,22 +166,18 @@ public class KeyHandler implements KeyListener {
 		if (gp.gameState == gp.playState) {
 			if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
 				upPressed = true;
-				gp.mon.direction = "up";
 			}
 
 			if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
 				leftPressed = true;
-				gp.mon.direction = "left";
 			}
 
 			if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
 				downPressed = true;
-				gp.mon.direction = "down";
 			}
 
 			if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
 				rightPressed = true;
-				gp.mon.direction = "right";
 			}
 
 			if (code == KeyEvent.VK_SPACE) {

@@ -44,8 +44,8 @@ public class Voronoi {
 	public Voronoi(int mapWidth, int mapHeight, GamePanel gp) {
 		try {
 //			TODO: get better textured dirt
-			imageSecondary = ImageIO.read(getClass().getResourceAsStream("/tiles/dirtSecondary.png"));
-			image = ImageIO.read(getClass().getResourceAsStream("/tiles/dirt.png"));
+			imageSecondary = ImageIO.read(getClass().getResourceAsStream("/tiles/dirtSecondary.jpg"));
+			image = ImageIO.read(getClass().getResourceAsStream("/tiles/dirt.jpg"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -6,15 +6,16 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.io.IOException;
-import java.util.Random;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import MapGenerator.Voronoi;
 import bullet.Bullet;
+import character.Character;
 import character.Player;
-import monster.MonMushroom;;
+import character.monster.MonMushroom;;
 
 @SuppressWarnings("serial")
 public class GamePanel extends JPanel implements Runnable {
@@ -38,7 +39,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public int screenX = 0;
 	public int screenY = 0;
-	
+
 	Image backgroundImage;
 
 	// FPS
@@ -47,14 +48,14 @@ public class GamePanel extends JPanel implements Runnable {
 
 	// SYSTEM
 	public CollisionChecker cChecker = new CollisionChecker(this);
-	KeyHandler keyH = new KeyHandler(this);	
+	KeyHandler keyH = new KeyHandler(this);
 	public UI ui = new UI(this);
 	Thread gameThread;
 
 	// ENTITY & OBJECT
 	public Player player = new Player(this, keyH);
-	public MonMushroom mon = new MonMushroom(this);
-	
+	public Vector<Character> monsters = new Vector<Character>();
+
 	public Voronoi map = new Voronoi(worldWidth, worldHeight, this);
 
 	// GAME STATE
@@ -62,23 +63,25 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int titleState = 0;
 	public final int playState = 1;
 	public final int pauseState = 2;
-	
+
 	public GamePanel() {
 		try {
 			backgroundImage = ImageIO.read(getClass().getResourceAsStream("/tiles/bigLava.jpg"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
 		this.setBackground(Color.white);
 		this.setDoubleBuffered(true);
 		this.setFocusable(true);
 		this.addKeyListener(keyH);
 	}
-	
+
 	public void setupGame() {
 		gameState = titleState;
+		
+		monsters.add(new MonMushroom(this));
 	}
 
 	public void startGameThread() {
@@ -110,7 +113,7 @@ public class GamePanel extends JPanel implements Runnable {
 				delta--;
 				drawCount++;
 			}
-			
+
 			if (timer >= 1000000000) {
 				System.out.println("FPS: " + drawCount);
 				drawCount = 0;
@@ -122,19 +125,45 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 
 	public void update() {
-		if(gameState == playState) {
+		if (gameState == playState) {
 			screenX = player.screenX - player.worldX;
 			screenY = player.screenY - player.worldY;
 			player.update();
-			mon.setAction();
-			mon.update();
-			for (Bullet bt : player.bullets) {
-				bt.update();
-			}
-		}
-		
-		if(gameState == pauseState) {
 			
+			int idx = 0;
+			
+			for (int i = 0; i < monsters.size(); i++) {
+				Character monster = monsters.get(i);
+				monster.setAction();
+				monster.update();
+				
+				if (!monster.alive) {
+					monsters.remove(idx);
+				}
+				idx++;
+			}
+
+			for (Bullet playerBt : player.bullets) {
+				playerBt.update();
+			}
+			
+			for (int i = 0; i < player.bullets.size(); i++) {
+				Bullet bullet = player.bullets.get(i);
+//				System.out.println(bullet.worldX);
+//				System.out.println(this.gp.worldWidth);
+//				System.out.println(bullet.worldY);
+//				System.out.println(this.gp.worldHeight);
+				if (bullet.worldX < -worldWidth/2  || bullet.worldX > worldWidth || bullet.worldY < -worldHeight/2
+						|| bullet.worldY > worldHeight) {
+					player.bullets.remove(i);
+				}
+			}
+			
+			
+		}
+
+		if (gameState == pauseState) {
+
 		}
 
 	}
@@ -142,34 +171,46 @@ public class GamePanel extends JPanel implements Runnable {
 	public void paintComponent(Graphics g) {
 
 		super.paintComponent(g);
-		Graphics2D g2 = (Graphics2D)g;
+		Graphics2D g2 = (Graphics2D) g;
 
 		// Title Screen
-		if(gameState == titleState) {
+		if (gameState == titleState) {
 			ui.draw(g2);
 		}
-				
+
 		else {
-			g2.drawImage(backgroundImage, screenX/4 - screenWidth/2, screenY/4 - 100 - screenHeight/2, map.mapWidth, map.mapHeight, null);
+			g2.drawImage(backgroundImage, screenX / 4 - screenWidth / 2, screenY / 4 - 100 - screenHeight / 2,
+					map.mapWidth, map.mapHeight, null);
 
 			// Map
 			map.drawCellColors(g2);
-				
+
 			// Player
 			player.draw(g2);
-			// Monster
-			mon.draw(g2);
-			// Bounding Box
 			g2.setColor(Color.blue);
-			g2.drawRect(player.screenX + player.solidArea.x, player.screenY + player.solidArea.y, player.solidArea.width, player.solidArea.height);					
+			g2.drawRect(player.screenX + player.solidArea.x, player.screenY + player.solidArea.y,
+					player.solidArea.width, player.solidArea.height);
+			
+			// Monsters
+			
+			for (Character monster : monsters) {
+				monster.draw(g2);
+				g2.setColor(Color.red);
+				g2.drawRect(screenX + monster.worldX + monster.footArea.x, screenY + monster.worldY + monster.footArea.y,
+						monster.footArea.width, monster.footArea.height);
+				g2.setColor(Color.BLUE);
+				g2.drawRect(screenX + monster.worldX + monster.solidArea.x, screenY + monster.worldY + monster.solidArea.y,
+						monster.solidArea.width, monster.solidArea.height);		
+			}
+			
+			
+			// Bullets
 			player.drawBullets(g2);
-			g2.setColor(Color.BLUE);
-			g2.drawRect(screenX + mon.worldX + mon.footArea.x, screenY + mon.worldY + mon.footArea.y, mon.footArea.width, mon.footArea.height);
-			g2.drawRect(screenX + mon.worldX + mon.solidArea.x, screenY + mon.worldY + mon.solidArea.y, mon.solidArea.width, mon.solidArea.height);
+			
+			
 			// UI
 			ui.draw(g2);
-		}		
-	
+		}
 
 		g2.dispose();
 	}

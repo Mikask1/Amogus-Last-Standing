@@ -82,10 +82,11 @@ public class KeyHandler implements KeyListener {
 
 				if (code == KeyEvent.VK_SPACE || code == KeyEvent.VK_ENTER) {
 					if (gp.ui.commandNum == 1) {
+						gp.worldWidth = gp.worldWidth / gp.sizeMultiplier;
+						gp.worldHeight = gp.worldHeight / gp.sizeMultiplier;
+						
 						if (gp.ui.mapNum == 0) {
 							gp.sizeMultiplier = 2;
-							int tempWidth = gp.worldWidth;
-							int tempHeight = gp.worldHeight;
 							gp.worldWidth = gp.worldWidth * gp.sizeMultiplier;
 							gp.worldHeight = gp.worldHeight * gp.sizeMultiplier;
 							gp.player.worldX = gp.worldWidth / 3;
@@ -93,13 +94,9 @@ public class KeyHandler implements KeyListener {
 
 							gp.map = new Voronoi(gp.worldWidth, gp.worldHeight, gp);
 							gp.gameState = gp.playState;
-							gp.worldHeight = tempHeight;
-							gp.worldWidth = tempWidth;
 						}
 						if (gp.ui.mapNum == 1) {
 							gp.sizeMultiplier = 3;
-							int tempWidth = gp.worldWidth;
-							int tempHeight = gp.worldHeight;
 							gp.worldWidth = gp.worldWidth * gp.sizeMultiplier;
 							gp.worldHeight = gp.worldHeight * gp.sizeMultiplier;
 							gp.player.worldX = gp.worldWidth / 3;
@@ -107,13 +104,9 @@ public class KeyHandler implements KeyListener {
 
 							gp.map = new Voronoi(gp.worldWidth, gp.worldHeight, gp);
 							gp.gameState = gp.playState;
-							gp.worldHeight = tempHeight;
-							gp.worldWidth = tempWidth;
 						}
 						if (gp.ui.mapNum == 2) {
 							gp.sizeMultiplier = 4;
-							int tempWidth = gp.worldWidth;
-							int tempHeight = gp.worldHeight;
 							gp.worldWidth = gp.worldWidth * gp.sizeMultiplier;
 							gp.worldHeight = gp.worldHeight * gp.sizeMultiplier;
 							gp.player.worldX = gp.worldWidth / 3;
@@ -121,8 +114,9 @@ public class KeyHandler implements KeyListener {
 
 							gp.map = new Voronoi(gp.worldWidth, gp.worldHeight, gp);
 							gp.gameState = gp.playState;
-							gp.worldHeight = tempHeight;
-							gp.worldWidth = tempWidth;
+							
+							
+							
 						}
 						gp.ui.titleSubState = 0;
 					}

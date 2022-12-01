@@ -1,5 +1,9 @@
 package main;
 
+import java.awt.Rectangle;
+import java.util.Vector;
+
+import bullet.Bullet;
 import character.Character;
 
 public class CollisionChecker {
@@ -23,30 +27,53 @@ public class CollisionChecker {
 
 		switch (character.direction) {
 		case "up":
-			topNextY = topWorldY - character.speed;
+			topNextY = topWorldY - character.getSpeed();
 			if (!gp.map.inside(topNextY, bottomNextY, leftNextX, rightNextX)) {
 				character.collisionOn = true;
 			}
 			break;
 		case "down":
-			bottomNextY = bottomWorldY + character.speed;
+			bottomNextY = bottomWorldY + character.getSpeed();
 			if (!gp.map.inside(topNextY, bottomNextY, leftNextX, rightNextX)) {
 				character.collisionOn = true;
 			}
 			break;
 		case "left":
-			leftNextX = leftWorldX - character.speed;
+			leftNextX = leftWorldX - character.getSpeed();
 			if (!gp.map.inside(topNextY, bottomNextY, leftNextX, rightNextX)) {
 				character.collisionOn = true;
 			}
 			break;
 		case "right":
-			rightNextX = rightWorldX + character.speed;
+			rightNextX = rightWorldX + character.getSpeed();
 			if (!gp.map.inside(topNextY, bottomNextY, leftNextX, rightNextX)) {
 				character.collisionOn = true;
 			}
 			break;
 		}
 	}
-}
 
+	public void checkBulletHitsEnemy(Character enemy) {
+
+		Rectangle enemySolidArea = new Rectangle(gp.screenX + enemy.worldX + enemy.solidArea.x,
+				gp.screenY + enemy.worldY + enemy.solidArea.y, enemy.solidArea.width, enemy.solidArea.height);
+
+		for (int i = 0; i < this.gp.player.bullets.size(); i++) {
+			Bullet bullet = this.gp.player.bullets.get(i);
+			Rectangle bulletSolidArea = new Rectangle(gp.screenX + bullet.worldX + bullet.solidArea.x,
+					gp.screenY + bullet.worldY + bullet.solidArea.y, bullet.solidArea.width, bullet.solidArea.height);
+			boolean hits = bulletSolidArea.intersects(enemySolidArea);
+			
+			if (hits) {
+				this.gp.player.bullets.remove(i);
+				enemy.damageHealth(bullet.damage);
+				System.out.print("Enemy health: ");
+				System.out.println(enemy.getHealth());
+			}
+			
+			bullet = null;
+		}
+		
+		enemySolidArea = null;
+	}
+}

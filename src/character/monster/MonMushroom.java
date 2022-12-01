@@ -1,4 +1,4 @@
-package monster;
+package character.monster;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -14,10 +14,9 @@ import main.GamePanel;
 
 public class MonMushroom extends Character {
 	Player player;
-	public int screenX;
-	public int screenY;
 	Random rand = new Random();
 	String tempDir = "left";
+	
 
 //	int moveToX = gp.player.screenX;
 //	int moveToY = gp.player.screenY;
@@ -27,15 +26,19 @@ public class MonMushroom extends Character {
 
 	public MonMushroom(GamePanel gp) {
 		super(gp);
-
-		speed = 1;
+		
+		setDefaultValues();
+		getImage();
+		setAction();
+	}
+	
+	private void setDefaultValues() {
+		setSpeed(1);
+		setHealth(30);
 		direction = "left";
 
 		worldX = 500;
 		worldY = 488;
-
-		worldX = gp.player.screenX;
-		worldY = gp.player.screenY;
 		
 		solidArea = new Rectangle();
 		solidArea.x = 25;
@@ -44,21 +47,15 @@ public class MonMushroom extends Character {
 		solidArea.height = 70;
 
 		footArea = new Rectangle();
-		footArea.x = 17;
+		footArea.x = 30;
 		footArea.y = 80;
-		footArea.width = 65;
-		footArea.height = 18;
-
-//		System.out.println(moveToX);
-
-		getImage();
-		setAction();
+		footArea.width = 40;
+		footArea.height = 13;
 	}
 
 	public void getImage() {
 
 		try {
-
 			monLeft = ImageIO.read(getClass().getResourceAsStream("/monster/left.png"));
 			monLeft1 = ImageIO.read(getClass().getResourceAsStream("/monster/left1.png"));
 			monLeft2 = ImageIO.read(getClass().getResourceAsStream("/monster/left2.png"));
@@ -77,10 +74,6 @@ public class MonMushroom extends Character {
 	}
 
 	public void setAction() {
-
-		int moveToX = gp.player.screenX;
-		System.out.println(moveToX);
-
 		actionLockCounter++;
 
 		if (actionLockCounter == 120) {
@@ -103,35 +96,36 @@ public class MonMushroom extends Character {
 
 			actionLockCounter = 0;
 		}
-
 	}
 
 	public void update() {
 
 		collisionOn = false;
-		gp.cChecker.checkTile(gp.mon);
+		gp.cChecker.checkTile(this);
+		gp.cChecker.checkBulletHitsEnemy(this);
+		
 		if (collisionOn == false) {
 		switch (direction) {
 		case "up":
-			worldY -= speed;
+			worldY -= getSpeed();
 //				worldX += speed * Math.cos(angle);
 //				worldY += speed * Math.sin(angle);
 			break;
 
 		case "down":
-			worldY += speed;
+			worldY += getSpeed();
 //				worldX += speed * Math.cos(angle);
 //				worldY += speed * Math.sin(angle);
 			break;
 
 		case "left":
-			worldX -= speed;
+			worldX -= getSpeed();
 //				worldX += speed * Math.cos(angle);
 //				worldY += speed * Math.sin(angle);
 			break;
 
 		case "right":
-			worldX += speed;
+			worldX += getSpeed();
 //				worldX += speed * Math.cos(angle);
 //				worldY += speed * Math.sin(angle);
 			break;
@@ -154,6 +148,9 @@ public class MonMushroom extends Character {
 			spriteCounter = 0;
 		}
 		
+		if (getHealth() <= 0) {
+			alive = false;
+		}
 	}
 		
 
@@ -284,8 +281,7 @@ public class MonMushroom extends Character {
 			break;
 
 		}
-
-		System.out.println();
+		
 		g2.drawImage(image, this.gp.screenX + worldX, this.gp.screenY + worldY, 100, 100, null);
 //		}
 	}

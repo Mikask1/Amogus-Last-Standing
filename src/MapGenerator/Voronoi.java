@@ -8,10 +8,11 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Vector;
-import javax.imageio.ImageIO;
 import java.util.List;
 import java.util.Random;
+import java.util.Vector;
+
+import javax.imageio.ImageIO;
 
 import MapGenerator.delaunator.DPoint;
 import MapGenerator.delaunator.Delaunator;

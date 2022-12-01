@@ -61,7 +61,6 @@ public class Player extends Character {
 
 	public void getPlayerImage() {
 		try {
-
 			up = ImageIO.read(getClass().getResourceAsStream("/player/amog-back.png"));
 			up1 = ImageIO.read(getClass().getResourceAsStream("/player/amog-back1.png"));
 			up2 = ImageIO.read(getClass().getResourceAsStream("/player/amog-back2.png"));

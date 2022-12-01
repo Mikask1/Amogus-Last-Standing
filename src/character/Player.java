@@ -29,6 +29,7 @@ public class Player extends Character {
 	int playerBulletDimension2 = 13;
 
 	public Player(GamePanel gp, KeyHandler keyH) {
+		super(gp);
 		this.gp = gp;
 		this.keyH = keyH;
 
@@ -55,7 +56,7 @@ public class Player extends Character {
 
 	public void setDefaultValues() {
 		shoot_speed = 4;
-		speed = 4;
+		speed = 10;
 		direction = "down";
 	}
 

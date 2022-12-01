@@ -6,13 +6,15 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.io.IOException;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import MapGenerator.Voronoi;
 import bullet.Bullet;
-import character.Player;;
+import character.Player;
+import monster.MonMushroom;;
 
 @SuppressWarnings("serial")
 public class GamePanel extends JPanel implements Runnable {
@@ -45,12 +47,13 @@ public class GamePanel extends JPanel implements Runnable {
 
 	// SYSTEM
 	public CollisionChecker cChecker = new CollisionChecker(this);
-	KeyHandler keyH = new KeyHandler(this);
+	KeyHandler keyH = new KeyHandler(this);	
 	public UI ui = new UI(this);
 	Thread gameThread;
 
 	// ENTITY & OBJECT
 	public Player player = new Player(this, keyH);
+	public MonMushroom mon = new MonMushroom(this);
 	
 	public Voronoi map = new Voronoi(worldWidth, worldHeight, this);
 
@@ -123,6 +126,8 @@ public class GamePanel extends JPanel implements Runnable {
 			screenX = player.screenX - player.worldX;
 			screenY = player.screenY - player.worldY;
 			player.update();
+			mon.setAction();
+			mon.update();
 			for (Bullet bt : player.bullets) {
 				bt.update();
 			}
@@ -145,18 +150,22 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 				
 		else {
-			g2.drawImage(backgroundImage, screenX/4 - screenWidth/2, screenY/4 - 100 - screenHeight/2, worldWidth, worldHeight, null);
+			g2.drawImage(backgroundImage, screenX/4 - screenWidth/2, screenY/4 - 100 - screenHeight/2, map.mapWidth, map.mapHeight, null);
 
 			// Map
 			map.drawCellColors(g2);
 				
 			// Player
 			player.draw(g2);
+			// Monster
+			mon.draw(g2);
 			// Bounding Box
 			g2.setColor(Color.blue);
 			g2.drawRect(player.screenX + player.solidArea.x, player.screenY + player.solidArea.y, player.solidArea.width, player.solidArea.height);					
 			player.drawBullets(g2);
-			
+			g2.setColor(Color.BLUE);
+			g2.drawRect(screenX + mon.worldX + mon.footArea.x, screenY + mon.worldY + mon.footArea.y, mon.footArea.width, mon.footArea.height);
+			g2.drawRect(screenX + mon.worldX + mon.solidArea.x, screenY + mon.worldY + mon.solidArea.y, mon.solidArea.width, mon.solidArea.height);
 			// UI
 			ui.draw(g2);
 		}		

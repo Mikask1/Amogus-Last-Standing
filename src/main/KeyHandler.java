@@ -84,6 +84,8 @@ public class KeyHandler implements KeyListener {
 					if (gp.ui.commandNum == 1) {
 						if (gp.ui.mapNum == 0) {
 							gp.sizeMultiplier = 2;
+							int tempWidth = gp.worldWidth;
+							int tempHeight = gp.worldHeight;
 							gp.worldWidth = gp.worldWidth * gp.sizeMultiplier;
 							gp.worldHeight = gp.worldHeight * gp.sizeMultiplier;
 							gp.player.worldX = gp.worldWidth / 3;
@@ -91,9 +93,13 @@ public class KeyHandler implements KeyListener {
 
 							gp.map = new Voronoi(gp.worldWidth, gp.worldHeight, gp);
 							gp.gameState = gp.playState;
+							gp.worldHeight = tempHeight;
+							gp.worldWidth = tempWidth;
 						}
 						if (gp.ui.mapNum == 1) {
 							gp.sizeMultiplier = 3;
+							int tempWidth = gp.worldWidth;
+							int tempHeight = gp.worldHeight;
 							gp.worldWidth = gp.worldWidth * gp.sizeMultiplier;
 							gp.worldHeight = gp.worldHeight * gp.sizeMultiplier;
 							gp.player.worldX = gp.worldWidth / 3;
@@ -101,17 +107,22 @@ public class KeyHandler implements KeyListener {
 
 							gp.map = new Voronoi(gp.worldWidth, gp.worldHeight, gp);
 							gp.gameState = gp.playState;
+							gp.worldHeight = tempHeight;
+							gp.worldWidth = tempWidth;
 						}
 						if (gp.ui.mapNum == 2) {
 							gp.sizeMultiplier = 4;
+							int tempWidth = gp.worldWidth;
+							int tempHeight = gp.worldHeight;
 							gp.worldWidth = gp.worldWidth * gp.sizeMultiplier;
 							gp.worldHeight = gp.worldHeight * gp.sizeMultiplier;
 							gp.player.worldX = gp.worldWidth / 3;
 							gp.player.worldY = gp.worldHeight / 3;
 
 							gp.map = new Voronoi(gp.worldWidth, gp.worldHeight, gp);
-
 							gp.gameState = gp.playState;
+							gp.worldHeight = tempHeight;
+							gp.worldWidth = tempWidth;
 						}
 						gp.ui.titleSubState = 0;
 					}
@@ -155,18 +166,22 @@ public class KeyHandler implements KeyListener {
 		if (gp.gameState == gp.playState) {
 			if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
 				upPressed = true;
+				gp.mon.direction = "up";
 			}
 
 			if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
 				leftPressed = true;
+				gp.mon.direction = "left";
 			}
 
 			if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
 				downPressed = true;
+				gp.mon.direction = "down";
 			}
 
 			if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
 				rightPressed = true;
+				gp.mon.direction = "right";
 			}
 
 			if (code == KeyEvent.VK_SPACE) {

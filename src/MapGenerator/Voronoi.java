@@ -18,8 +18,8 @@ import MapGenerator.delaunator.Delaunator;
 import main.GamePanel;
 
 public class Voronoi {
-	int screenWidth;
-	int screenHeight;
+	public int mapWidth;
+	public int mapHeight;
 
 	// CONSTANTS
 	final int GRIDSIZE = 15;
@@ -41,7 +41,7 @@ public class Voronoi {
 	public Vector<Image> landImage;
 	public Vector<Rectangle> land;
 
-	public Voronoi(int screenWidth, int screenHeight, GamePanel gp) {
+	public Voronoi(int mapWidth, int mapHeight, GamePanel gp) {
 		try {
 //			TODO: get better textured dirt
 			imageSecondary = ImageIO.read(getClass().getResourceAsStream("/tiles/dirtSecondary.png"));
@@ -50,13 +50,13 @@ public class Voronoi {
 			e.printStackTrace();
 		}
 		this.gp = gp;
-		this.screenHeight = screenHeight;
-		this.screenWidth = screenWidth;
+		this.mapHeight = mapHeight;
+		this.mapWidth = mapWidth;
 
 		for (int x = 0; x <= GRIDSIZE; x++) {
 			for (int y = 0; y <= GRIDSIZE; y++) {
-				double randX = (x + JITTER * (Math.random() - Math.random())) * (screenWidth / GRIDSIZE);
-				double randY = (y + JITTER * (Math.random() - Math.random())) * (screenHeight / GRIDSIZE);
+				double randX = (x + JITTER * (Math.random() - Math.random())) * (mapWidth / GRIDSIZE);
+				double randY = (y + JITTER * (Math.random() - Math.random())) * (mapHeight / GRIDSIZE);
 				DPoint point = new DPoint(randX, randY);
 				points.add(point);
 			}
@@ -100,8 +100,8 @@ public class Voronoi {
 		Vector<Double> elevation = new Vector<Double>();
 
 		for (int r = 0; r < map.numRegions; r++) {
-			double nx = ((points.get(r).x / (screenWidth / GRIDSIZE)) / GRIDSIZE - 0.5);
-			double ny = ((points.get(r).y / (screenHeight / GRIDSIZE)) / GRIDSIZE - 0.5);
+			double nx = ((points.get(r).x / (mapWidth / GRIDSIZE)) / GRIDSIZE - 0.5);
+			double ny = ((points.get(r).y / (mapHeight / GRIDSIZE)) / GRIDSIZE - 0.5);
 
 			elevation.insertElementAt((1 + noise.noise(nx / WAVELENGTH, ny / WAVELENGTH)) / 2, r);
 

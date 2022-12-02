@@ -15,8 +15,7 @@ import main.GamePanel;
 public class MonMushroom extends Character {
 	Player player;
 	Random rand = new Random();
-	String tempDir = "left";
-	
+	String tempDir = "left";	
 
 //	int moveToX = gp.player.screenX;
 //	int moveToY = gp.player.screenY;
@@ -34,11 +33,21 @@ public class MonMushroom extends Character {
 	
 	private void setDefaultValues() {
 		setSpeed(1);
-		setHealth(30);
+		setHealth(300);
 		direction = "left";
 
-		worldX = 500;
-		worldY = 488;
+//		worldX = 500;
+//		worldY = 488;
+		
+		worldX = rand.nextInt(-200, 200) + gp.player.screenX;
+		worldY = rand.nextInt(-200, 200) + gp.player.screenY;
+		System.out.println("WorldX: "+ worldX);
+		System.out.println("WorldY: "+ worldY);
+		System.out.println("ScreenX: "+ gp.player.screenX);
+		System.out.println("ScreenY: "+ gp.player.screenY);
+		System.out.println("Player WorldX: "+ gp.player.worldX);
+		System.out.println("Player WorldY: "+ gp.player.worldY);
+		
 		
 		solidArea = new Rectangle();
 		solidArea.x = 25;
@@ -66,6 +75,16 @@ public class MonMushroom extends Character {
 			monRight2 = ImageIO.read(getClass().getResourceAsStream("/monster/right2.png"));
 			monRight3 = ImageIO.read(getClass().getResourceAsStream("/monster/right3.png"));
 			monRight4 = ImageIO.read(getClass().getResourceAsStream("/monster/right4.png"));
+			hurtLeft = ImageIO.read(getClass().getResourceAsStream("/monster/hurt-left.png"));
+			hurtLeft1 = ImageIO.read(getClass().getResourceAsStream("/monster/hurt-left1.png"));
+			hurtLeft2 = ImageIO.read(getClass().getResourceAsStream("/monster/hurt-left2.png"));
+			hurtLeft3 = ImageIO.read(getClass().getResourceAsStream("/monster/hurt-left3.png"));
+			hurtLeft4 = ImageIO.read(getClass().getResourceAsStream("/monster/hurt-left4.png"));
+			hurtRight = ImageIO.read(getClass().getResourceAsStream("/monster/hurt-right.png"));
+			hurtRight1 = ImageIO.read(getClass().getResourceAsStream("/monster/hurt-right1.png"));
+			hurtRight2 = ImageIO.read(getClass().getResourceAsStream("/monster/hurt-right2.png"));
+			hurtRight3 = ImageIO.read(getClass().getResourceAsStream("/monster/hurt-right3.png"));
+			hurtRight4 = ImageIO.read(getClass().getResourceAsStream("/monster/hurt-right4.png"));
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -74,28 +93,35 @@ public class MonMushroom extends Character {
 	}
 
 	public void setAction() {
-		actionLockCounter++;
-
-		if (actionLockCounter == 120) {
-
-			Random random = new Random();
-			int i = random.nextInt(100) + 1;
-
-			if (i <= 25) {
-				direction = "up";
-			}
-			if (i > 25 && i <= 50) {
-				direction = "up";
-			}
-			if (i > 50 && i <= 75) {
-				direction = "down";
-			}
-			if (i > 75 && i <= 100) {
-				direction = "right";
-			}
-
-			actionLockCounter = 0;
-		}
+//		actionLockCounter++;
+//
+//		if (actionLockCounter == 120) {
+//
+//			Random random = new Random();
+//			int i = random.nextInt(100) + 1;
+//
+//			if (i <= 25) {
+//				direction = "up";
+//			}
+//			if (i > 25 && i <= 50) {
+//				direction = "up";
+//			}
+//			if (i > 50 && i <= 75) {
+//				direction = "down";
+//			}
+//			if (i > 75 && i <= 100) {
+//				direction = "right";
+//			}
+//
+//			actionLockCounter = 0;
+//		}
+		System.out.println("Px: "+gp.player.worldX);
+		System.out.println("Mx: "+worldX);
+		if(worldX < gp.player.worldX - gp.tileSize)
+			direction = "right";
+		if(worldX > gp.player.worldX)
+			direction = "left";
+		
 	}
 
 	public void update() {
@@ -106,28 +132,39 @@ public class MonMushroom extends Character {
 		
 		if (collisionOn == false) {
 		switch (direction) {
-		case "up":
-			worldY -= getSpeed();
-//				worldX += speed * Math.cos(angle);
-//				worldY += speed * Math.sin(angle);
-			break;
-
-		case "down":
-			worldY += getSpeed();
-//				worldX += speed * Math.cos(angle);
-//				worldY += speed * Math.sin(angle);
-			break;
+//		case "up":
+//			worldY -= getSpeed();
+////				worldX += speed * Math.cos(angle);
+////				worldY += speed * Math.sin(angle);
+//			break;
+//
+//		case "down":
+//			worldY += getSpeed();
+////				worldX += speed * Math.cos(angle);
+////				worldY += speed * Math.sin(angle);
+//			break;
 
 		case "left":
-			worldX -= getSpeed();
-//				worldX += speed * Math.cos(angle);
-//				worldY += speed * Math.sin(angle);
+			if(worldX != gp.player.worldX) {
+				worldX -= getSpeed();
+			}
+			if(worldY < gp.player.worldY - gp.tileSize) {
+				worldY += getSpeed();
+			}
+			else {
+				worldY -= getSpeed();
+			}
 			break;
 
 		case "right":
-			worldX += getSpeed();
-//				worldX += speed * Math.cos(angle);
-//				worldY += speed * Math.sin(angle);
+			if(worldX != gp.player.worldX - gp.tileSize)
+				worldX += getSpeed();
+			if(worldY <= gp.player.worldY - gp.tileSize) {
+				worldY += getSpeed();
+			}
+			else {
+				worldY -= getSpeed();
+			}
 			break;
 		}
 	}
@@ -151,96 +188,97 @@ public class MonMushroom extends Character {
 		if (getHealth() <= 0) {
 			alive = false;
 		}
+		
+		if(hurt == true) {
+			hurtCounter++;
+			direction = "hurt";
+			if(hurtCounter > 50){
+				hurt = false;
+				hurtCounter = 0;
+			}
+		}
 	}
 		
 
 	public void draw(Graphics2D g2) {
 		BufferedImage image = null;
-//		int screenX = worldX - gp.player.worldX + gp.player.screenX;
-//		int screenY = worldY - gp.player.worldY + gp.player.screenY;
 
-//		if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
-//			worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
-//			worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
-//			worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
-
-		
 		switch (direction) {
-		case "up":
-			if (tempDir == "left") {
-				if (spriteNum == 1) {
-					image = monLeft;
-				}
-				if (spriteNum == 2) {
-					image = monLeft1;
-				}
-				if (spriteNum == 3) {
-					image = monLeft2;
-				}
-				if (spriteNum == 4) {
-					image = monLeft3;
-				}
-				if (spriteNum == 5) {
-					image = monLeft4;
-				}
-				break;
-			}
-			if (tempDir == "right") {
-				if (spriteNum == 1) {
-					image = monRight;
-				}
-				if (spriteNum == 2) {
-					image = monRight1;
-				}
-				if (spriteNum == 3) {
-					image = monRight2;
-				}
-				if (spriteNum == 4) {
-					image = monRight3;
-				}
-				if (spriteNum == 5) {
-					image = monRight4;
-				}
-				break;
-			}
-
-		case "down":
-			if (tempDir == "left") {
-				if (spriteNum == 1) {
-					image = monLeft;
-				}
-				if (spriteNum == 2) {
-					image = monLeft1;
-				}
-				if (spriteNum == 3) {
-					image = monLeft2;
-				}
-				if (spriteNum == 4) {
-					image = monLeft3;
-				}
-				if (spriteNum == 5) {
-					image = monLeft4;
-				}
-				break;
-			}
-			if (tempDir == "right") {
-				if (spriteNum == 1) {
-					image = monRight;
-				}
-				if (spriteNum == 2) {
-					image = monRight1;
-				}
-				if (spriteNum == 3) {
-					image = monRight2;
-				}
-				if (spriteNum == 4) {
-					image = monRight3;
-				}
-				if (spriteNum == 5) {
-					image = monRight4;
-				}
-				break;
-			}
+//		case "up":
+//			if (tempDir == "left") {
+//				if (spriteNum == 1) {
+//					image = monLeft;
+//				}
+//				if (spriteNum == 2) {
+//					image = monLeft1;
+//				}
+//				if (spriteNum == 3) {
+//					image = monLeft2;
+//				}
+//				if (spriteNum == 4) {
+//					image = monLeft3;
+//				}
+//				if (spriteNum == 5) {
+//					image = monLeft4;
+//				}
+//				break;
+//			}
+//			if (tempDir == "right") {
+//				if (spriteNum == 1) {
+//					image = monRight;
+//				}
+//				if (spriteNum == 2) {
+//					image = monRight1;
+//				}
+//				if (spriteNum == 3) {
+//					image = monRight2;
+//				}
+//				if (spriteNum == 4) {
+//					image = monRight3;
+//				}
+//				if (spriteNum == 5) {
+//					image = monRight4;
+//				}
+//				break;
+//			}
+//
+//		case "down":
+//			if (tempDir == "left") {
+//				if (spriteNum == 1) {
+//					image = monLeft;
+//				}
+//				if (spriteNum == 2) {
+//					image = monLeft1;
+//				}
+//				if (spriteNum == 3) {
+//					image = monLeft2;
+//				}
+//				if (spriteNum == 4) {
+//					image = monLeft3;
+//				}
+//				if (spriteNum == 5) {
+//					image = monLeft4;
+//				}
+//				break;
+//			}
+//			if (tempDir == "right") {
+//				if (spriteNum == 1) {
+//					image = monRight;
+//				}
+//				if (spriteNum == 2) {
+//					image = monRight1;
+//				}
+//				if (spriteNum == 3) {
+//					image = monRight2;
+//				}
+//				if (spriteNum == 4) {
+//					image = monRight3;
+//				}
+//				if (spriteNum == 5) {
+//					image = monRight4;
+//				}
+//				break;
+//			}
 
 		case "left":
 			tempDir = "left";
@@ -279,11 +317,49 @@ public class MonMushroom extends Character {
 				image = monRight4;
 			}
 			break;
+			
+		case "hurt":
+			if(tempDir == "left") {
+				if (spriteNum == 1) {
+					image = hurtLeft;
+				}
+				if (spriteNum == 2) {
+					image = hurtLeft1;
+				}
+				if (spriteNum == 3) {
+					image = hurtLeft2;
+				}
+				if (spriteNum == 4) {
+					image = hurtLeft3;
+				}
+				if (spriteNum == 5) {
+					image = hurtLeft4;
+				}
+				direction = "left";
+			}
+			if(tempDir == "right") {
+				if (spriteNum == 1) {
+					image = hurtRight;
+				}
+				if (spriteNum == 2) {
+					image = hurtRight1;
+				}
+				if (spriteNum == 3) {
+					image = hurtRight2;
+				}
+				if (spriteNum == 4) {
+					image = hurtRight3;
+				}
+				if (spriteNum == 5) {
+					image = hurtRight4;
+				}
+				direction = "right";
+			}
+			break;
 
 		}
 		
 		g2.drawImage(image, this.gp.screenX + worldX, this.gp.screenY + worldY, 100, 100, null);
-//		}
 	}
 
 }

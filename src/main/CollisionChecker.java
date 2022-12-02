@@ -65,6 +65,7 @@ public class CollisionChecker {
 			boolean hits = bulletSolidArea.intersects(enemySolidArea);
 			
 			if (hits) {
+				enemy.hurt = true;
 				this.gp.player.bullets.remove(i);
 				enemy.damageHealth(bullet.damage);
 				System.out.print("Enemy health: ");

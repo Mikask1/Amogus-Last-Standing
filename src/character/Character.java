@@ -24,6 +24,8 @@ public abstract class Character {
 	private int shoot_speed;
 	private int health;
 	public boolean alive = true;
+	public boolean hurt = false;
+	public int hurtCounter = 0;
 	public Vector<Bullet> bullets = new Vector<Bullet>();
 
 	public long shoot_timer;
@@ -33,6 +35,8 @@ public abstract class Character {
 	public Image bullet_up, bullet_down, bullet_left, bullet_right;
 	public BufferedImage monLeft, monLeft1, monLeft2, monLeft3, monLeft4, monRight, monRight1, monRight2, monRight3,
 			monRight4;
+	public BufferedImage hurtLeft, hurtLeft1, hurtLeft2, hurtLeft3, hurtLeft4, hurtRight, hurtRight1, hurtRight2, hurtRight3,
+			hurtRight4;
 
 	public int spriteCounter = 0;
 	public int spriteNum = 1;

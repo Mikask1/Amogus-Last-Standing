@@ -13,7 +13,7 @@ import main.GamePanel;
 
 public abstract class Character {
 	protected GamePanel gp;
-
+	
 	public int worldX;
 	public int worldY;
 	public int x, y;
@@ -23,9 +23,11 @@ public abstract class Character {
 	private int speed;
 	private int shoot_speed;
 	private int health;
+	
 	public boolean alive = true;
 	public boolean hurt = false;
 	public int hurtCounter = 0;
+	
 	public Vector<Bullet> bullets = new Vector<Bullet>();
 
 	public long shoot_timer;

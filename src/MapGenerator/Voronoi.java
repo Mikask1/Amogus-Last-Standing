@@ -34,18 +34,15 @@ public class Voronoi {
 	private Delaunator delaunator;
 
 	private BufferedImage image;
-	private BufferedImage imageSecondary;
 	private boolean toggle = true;
 
-	public Vector<Rectangle> lava;
-	public Vector<Image> landImage;
-	public Vector<Rectangle> land;
+	private Vector<Rectangle> lava;
+	private Vector<Image> landImage;
+	private Vector<Rectangle> land;
 
 	public Voronoi(int mapWidth, int mapHeight, GamePanel gp) {
 		try {
-//			TODO: get better textured dirt
-			imageSecondary = ImageIO.read(getClass().getResourceAsStream("/tiles/dirtSecondary.jpg"));
-			image = ImageIO.read(getClass().getResourceAsStream("/tiles/dirt.jpg"));
+			image = ImageIO.read(getClass().getResourceAsStream("/tiles/dirt.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -178,12 +175,9 @@ public class Voronoi {
 
 					int scaleX = bounds.width + (2 * gp.player.footArea.width) + 2 * PADDING;
 					int scaleY = bounds.height + (2 * gp.player.footArea.height) + 2 * PADDING;
-
-					if (toggle) {
-						landImage.add(image.getScaledInstance(scaleX, scaleY, Image.SCALE_DEFAULT));
-					} else {
-						landImage.add(imageSecondary.getScaledInstance(scaleX, scaleY, Image.SCALE_DEFAULT));
-					}
+					
+					landImage.add(image.getScaledInstance(scaleX, scaleY, Image.SCALE_FAST));
+					
 				} else {
 					lava.add(bounds);
 				}
@@ -204,13 +198,23 @@ public class Voronoi {
 
 		int solidX = gp.player.footArea.width + PADDING;
 		int solidY = gp.player.footArea.height + PADDING;
-
+		
+		
+		g2.setColor(Color.black);
+		for (int i = 0; i < land.size(); i++) {
+			g2.fillRect(land.get(i).x + screenX - solidX - 4, land.get(i).y + screenY - solidY - 6, landImage.get(i).getWidth(null) + 4, landImage.get(i).getHeight(null) + 6);
+		}
+		
 		for (int i = 0; i < land.size(); i++) {
 			g2.drawImage(landImage.get(i), land.get(i).x + screenX - solidX, land.get(i).y + screenY - solidY, null);
 			// Bounding Box
 //			g2.drawRect(land.get(i).x + screenX - solidX, land.get(i).y + screenY - solidY,
 //					land.get(i).width + 2 * solidX, land.get(i).height + 2 * solidY);
 		}
+			
+		
+		
+		
 
 	}
 

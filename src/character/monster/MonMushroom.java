@@ -33,20 +33,11 @@ public class MonMushroom extends Character {
 	
 	private void setDefaultValues() {
 		setSpeed(1);
-		setHealth(300);
+		setHealth(50);
 		direction = "left";
-
-//		worldX = 500;
-//		worldY = 488;
 		
 		worldX = rand.nextInt(-200, 200) + gp.player.screenX;
 		worldY = rand.nextInt(-200, 200) + gp.player.screenY;
-		System.out.println("WorldX: "+ worldX);
-		System.out.println("WorldY: "+ worldY);
-		System.out.println("ScreenX: "+ gp.player.screenX);
-		System.out.println("ScreenY: "+ gp.player.screenY);
-		System.out.println("Player WorldX: "+ gp.player.worldX);
-		System.out.println("Player WorldY: "+ gp.player.worldY);
 		
 		
 		solidArea = new Rectangle();
@@ -115,8 +106,7 @@ public class MonMushroom extends Character {
 //
 //			actionLockCounter = 0;
 //		}
-		System.out.println("Px: "+gp.player.worldX);
-		System.out.println("Mx: "+worldX);
+		
 		if(worldX < gp.player.worldX - gp.tileSize)
 			direction = "right";
 		if(worldX > gp.player.worldX)
@@ -132,17 +122,6 @@ public class MonMushroom extends Character {
 		
 		if (collisionOn == false) {
 		switch (direction) {
-//		case "up":
-//			worldY -= getSpeed();
-////				worldX += speed * Math.cos(angle);
-////				worldY += speed * Math.sin(angle);
-//			break;
-//
-//		case "down":
-//			worldY += getSpeed();
-////				worldX += speed * Math.cos(angle);
-////				worldY += speed * Math.sin(angle);
-//			break;
 
 		case "left":
 			if(worldX != gp.player.worldX) {
@@ -204,82 +183,6 @@ public class MonMushroom extends Character {
 		BufferedImage image = null;
 
 		switch (direction) {
-//		case "up":
-//			if (tempDir == "left") {
-//				if (spriteNum == 1) {
-//					image = monLeft;
-//				}
-//				if (spriteNum == 2) {
-//					image = monLeft1;
-//				}
-//				if (spriteNum == 3) {
-//					image = monLeft2;
-//				}
-//				if (spriteNum == 4) {
-//					image = monLeft3;
-//				}
-//				if (spriteNum == 5) {
-//					image = monLeft4;
-//				}
-//				break;
-//			}
-//			if (tempDir == "right") {
-//				if (spriteNum == 1) {
-//					image = monRight;
-//				}
-//				if (spriteNum == 2) {
-//					image = monRight1;
-//				}
-//				if (spriteNum == 3) {
-//					image = monRight2;
-//				}
-//				if (spriteNum == 4) {
-//					image = monRight3;
-//				}
-//				if (spriteNum == 5) {
-//					image = monRight4;
-//				}
-//				break;
-//			}
-//
-//		case "down":
-//			if (tempDir == "left") {
-//				if (spriteNum == 1) {
-//					image = monLeft;
-//				}
-//				if (spriteNum == 2) {
-//					image = monLeft1;
-//				}
-//				if (spriteNum == 3) {
-//					image = monLeft2;
-//				}
-//				if (spriteNum == 4) {
-//					image = monLeft3;
-//				}
-//				if (spriteNum == 5) {
-//					image = monLeft4;
-//				}
-//				break;
-//			}
-//			if (tempDir == "right") {
-//				if (spriteNum == 1) {
-//					image = monRight;
-//				}
-//				if (spriteNum == 2) {
-//					image = monRight1;
-//				}
-//				if (spriteNum == 3) {
-//					image = monRight2;
-//				}
-//				if (spriteNum == 4) {
-//					image = monRight3;
-//				}
-//				if (spriteNum == 5) {
-//					image = monRight4;
-//				}
-//				break;
-//			}
-
 		case "left":
 			tempDir = "left";
 			if (spriteNum == 1) {

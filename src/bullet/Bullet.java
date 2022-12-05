@@ -7,19 +7,22 @@ import main.GamePanel;
 
 public class Bullet {
 	Character character;
+	
 	public int damage = 5;
 	private int bulletSpeed = 6;
+	
 	public int width;
 	public int height;
 	public int worldX;
 	public int worldY;
+	
 	private String direction;
 	public Rectangle solidArea;
 	protected GamePanel gp;
 
 	public Bullet(GamePanel gp, Character character, String direction, int width, int height, int worldX, int worldY) {
 		this.gp = gp;
-
+		
 		this.worldX = worldX;
 		this.worldY = worldY;
 		this.direction = direction;
@@ -49,7 +52,6 @@ public class Bullet {
 			worldX += bulletSpeed;
 			break;
 		}
-
 	}
 
 	public String getDirection() {

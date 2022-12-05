@@ -66,7 +66,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public GamePanel() {
 		try {
-			backgroundImage = ImageIO.read(getClass().getResourceAsStream("/tiles/bigLava.jpg"));
+			backgroundImage = ImageIO.read(getClass().getResourceAsStream("/tiles/bigGrass.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -177,10 +177,9 @@ public class GamePanel extends JPanel implements Runnable {
 		if (gameState == titleState) {
 			ui.draw(g2);
 		}
-
 		else {
-			g2.drawImage(backgroundImage, screenX / 4 - screenWidth / 2, screenY / 4 - 100 - screenHeight / 2,
-					map.mapWidth, map.mapHeight, null);
+			g2.drawImage(backgroundImage, screenX - screenWidth, screenY - screenHeight,
+					map.mapWidth + screenWidth, map.mapHeight + screenHeight, null);
 
 			// Map
 			map.drawCellColors(g2);

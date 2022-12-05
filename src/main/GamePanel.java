@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.io.IOException;
+import java.util.Random;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
@@ -80,7 +81,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public void setupGame() {
 		gameState = titleState;
-		
+
 		monsters.add(new MonMushroom(this));
 	}
 
@@ -129,14 +130,14 @@ public class GamePanel extends JPanel implements Runnable {
 			screenX = player.screenX - player.worldX;
 			screenY = player.screenY - player.worldY;
 			player.update();
-			
+
 			int idx = 0;
-			
+
 			for (int i = 0; i < monsters.size(); i++) {
 				Character monster = monsters.get(i);
 				monster.setAction();
 				monster.update();
-				
+
 				if (!monster.alive) {
 					monsters.remove(idx);
 				}
@@ -146,23 +147,19 @@ public class GamePanel extends JPanel implements Runnable {
 			for (Bullet playerBt : player.bullets) {
 				playerBt.update();
 			}
-			
+
 			for (int i = 0; i < player.bullets.size(); i++) {
 				Bullet bullet = player.bullets.get(i);
-//				System.out.println(bullet.worldX);
-//				System.out.println(this.gp.worldWidth);
-//				System.out.println(bullet.worldY);
-//				System.out.println(this.gp.worldHeight);
-				if (bullet.worldX < -worldWidth/2  || bullet.worldX > worldWidth || bullet.worldY < -worldHeight/2
-						|| bullet.worldY > worldHeight) {
+				if (!map.inside(screenX + bullet.worldX + bullet.solidArea.x, screenY + bullet.worldY + bullet.solidArea.y, bullet.solidArea.width, bullet.solidArea.height)) {
 					player.bullets.remove(i);
+
 				}
 			}
-			
-			
 		}
 
-		if (gameState == pauseState) {
+		if (gameState == pauseState)
+
+		{
 
 		}
 
@@ -176,10 +173,9 @@ public class GamePanel extends JPanel implements Runnable {
 		// Title Screen
 		if (gameState == titleState) {
 			ui.draw(g2);
-		}
-		else {
-			g2.drawImage(backgroundImage, screenX - screenWidth, screenY - screenHeight,
-					map.mapWidth + screenWidth, map.mapHeight + screenHeight, null);
+		} else {
+			g2.drawImage(backgroundImage, screenX - (int) (1.5 * screenWidth), screenY - (int) (1.5 * screenHeight),
+					map.mapWidth + (int) (2 * screenWidth), map.mapHeight + (int) (2 * screenHeight), null);
 
 			// Map
 			map.drawCellColors(g2);
@@ -189,24 +185,23 @@ public class GamePanel extends JPanel implements Runnable {
 			g2.setColor(Color.blue);
 			g2.drawRect(player.screenX + player.solidArea.x, player.screenY + player.solidArea.y,
 					player.solidArea.width, player.solidArea.height);
-			
+
 			// Monsters
-			
+
 			for (Character monster : monsters) {
 				monster.draw(g2);
 				g2.setColor(Color.red);
-				g2.drawRect(screenX + monster.worldX + monster.footArea.x, screenY + monster.worldY + monster.footArea.y,
-						monster.footArea.width, monster.footArea.height);
+				g2.drawRect(screenX + monster.worldX + monster.footArea.x,
+						screenY + monster.worldY + monster.footArea.y, monster.footArea.width, monster.footArea.height);
 				g2.setColor(Color.BLUE);
-				g2.drawRect(screenX + monster.worldX + monster.solidArea.x, screenY + monster.worldY + monster.solidArea.y,
-						monster.solidArea.width, monster.solidArea.height);		
+				g2.drawRect(screenX + monster.worldX + monster.solidArea.x,
+						screenY + monster.worldY + monster.solidArea.y, monster.solidArea.width,
+						monster.solidArea.height);
 			}
-			
-			
+
 			// Bullets
 			player.drawBullets(g2);
-			
-			
+
 			// UI
 			ui.draw(g2);
 		}

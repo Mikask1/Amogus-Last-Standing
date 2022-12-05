@@ -12,7 +12,7 @@ import bullet.Bullet;
 import main.GamePanel;
 
 public abstract class Character {
-	protected GamePanel gp;
+	public GamePanel gp;
 	
 	public int worldX;
 	public int worldY;

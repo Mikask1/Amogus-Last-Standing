@@ -15,7 +15,7 @@ import main.GamePanel;
 public class MonMushroom extends Character {
 	Player player;
 	Random rand = new Random();
-	String tempDir = "left";	
+	String tempDir = "left";
 
 //	int moveToX = gp.player.screenX;
 //	int moveToY = gp.player.screenY;
@@ -25,21 +25,20 @@ public class MonMushroom extends Character {
 
 	public MonMushroom(GamePanel gp) {
 		super(gp);
-		
+
 		setDefaultValues();
 		getImage();
 		setAction();
 	}
-	
+
 	private void setDefaultValues() {
 		setSpeed(1);
 		setHealth(50);
 		direction = "left";
-		
+
 		worldX = rand.nextInt(-200, 200) + gp.player.screenX;
 		worldY = rand.nextInt(-200, 200) + gp.player.screenY;
-		
-		
+
 		solidArea = new Rectangle();
 		solidArea.x = 25;
 		solidArea.y = 20;
@@ -106,48 +105,45 @@ public class MonMushroom extends Character {
 //
 //			actionLockCounter = 0;
 //		}
-		
-		if(worldX < gp.player.worldX - gp.tileSize)
+
+		if (worldX < gp.player.worldX - gp.tileSize)
 			direction = "right";
-		if(worldX > gp.player.worldX)
+		if (worldX > gp.player.worldX)
 			direction = "left";
-		
+
 	}
 
 	public void update() {
-
 		collisionOn = false;
-		gp.cChecker.checkTile(this);
+		gp.cChecker.insideMap(this);
 		gp.cChecker.checkBulletHitsEnemy(this);
-		
+
 		if (collisionOn == false) {
-		switch (direction) {
+			switch (direction) {
 
-		case "left":
-			if(worldX != gp.player.worldX) {
-				worldX -= getSpeed();
-			}
-			if(worldY < gp.player.worldY - gp.tileSize) {
-				worldY += getSpeed();
-			}
-			else {
-				worldY -= getSpeed();
-			}
-			break;
+			case "left":
+				if (worldX != gp.player.worldX) {
+					worldX -= getSpeed();
+				}
+				if (worldY < gp.player.worldY - gp.tileSize) {
+					worldY += getSpeed();
+				} else {
+					worldY -= getSpeed();
+				}
+				break;
 
-		case "right":
-			if(worldX != gp.player.worldX - gp.tileSize)
-				worldX += getSpeed();
-			if(worldY <= gp.player.worldY - gp.tileSize) {
-				worldY += getSpeed();
+			case "right":
+				if (worldX != gp.player.worldX - gp.tileSize)
+					worldX += getSpeed();
+				if (worldY <= gp.player.worldY - gp.tileSize) {
+					worldY += getSpeed();
+				} else {
+					worldY -= getSpeed();
+				}
+				break;
 			}
-			else {
-				worldY -= getSpeed();
-			}
-			break;
 		}
-	}
-		
+
 		spriteCounter++;
 		if (spriteCounter > 12) {
 			if (spriteNum == 1) {
@@ -163,23 +159,23 @@ public class MonMushroom extends Character {
 			}
 			spriteCounter = 0;
 		}
-		
+
 		if (getHealth() <= 0) {
 			alive = false;
 		}
-		
-		if(hurt == true) {
+
+		if (hurt == true) {
 			hurtCounter++;
 			direction = "hurt";
-			if(hurtCounter > 50){
+			if (hurtCounter > 50) {
 				hurt = false;
 				hurtCounter = 0;
 			}
 		}
 	}
-		
 
 	public void draw(Graphics2D g2) {
+
 		BufferedImage image = null;
 
 		switch (direction) {
@@ -220,9 +216,9 @@ public class MonMushroom extends Character {
 				image = monRight4;
 			}
 			break;
-			
+
 		case "hurt":
-			if(tempDir == "left") {
+			if (tempDir == "left") {
 				if (spriteNum == 1) {
 					image = hurtLeft;
 				}
@@ -240,7 +236,7 @@ public class MonMushroom extends Character {
 				}
 				direction = "left";
 			}
-			if(tempDir == "right") {
+			if (tempDir == "right") {
 				if (spriteNum == 1) {
 					image = hurtRight;
 				}
@@ -261,7 +257,7 @@ public class MonMushroom extends Character {
 			break;
 
 		}
-		
+
 		g2.drawImage(image, this.gp.screenX + worldX, this.gp.screenY + worldY, 100, 100, null);
 	}
 

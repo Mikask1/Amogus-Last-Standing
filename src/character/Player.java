@@ -158,7 +158,8 @@ public class Player extends Character {
 
 			// Collision Check
 			collisionOn = false;
-			gp.cChecker.checkTile(this);
+
+			gp.cChecker.insideMap(this);
 
 			// if collision = false, player can move
 			if (collisionOn == false) {

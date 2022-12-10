@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.io.IOException;
+import java.security.PublicKey;
 import java.util.Random;
 import java.util.Vector;
 
@@ -21,7 +22,13 @@ import character.monster.MonMushroom;;
 @SuppressWarnings("serial")
 public class GamePanel extends JPanel implements Runnable {
 
-	// SCREEN SETTINGS
+	// SYSTEM
+	public CollisionChecker cChecker = new CollisionChecker(this);
+	KeyHandler keyH = new KeyHandler(this);
+	public UI ui = new UI(this);
+	Thread gameThread;
+
+	// SCREEN % WORLD SETTINGS
 	final int originalTileSize = 16; // 16 x 16 tile
 	final int scale = 3;
 
@@ -31,7 +38,6 @@ public class GamePanel extends JPanel implements Runnable {
 	public int screenWidth = tileSize * maxScreenCol; // 768 pixels
 	public int screenHeight = tileSize * maxScreenRow; // 576 pixels
 
-	// WORLD SETTINGS
 	public int sizeMultiplier = 1;
 	public int maxWorldCol = sizeMultiplier * maxScreenCol;
 	public int maxWorldRow = sizeMultiplier * maxScreenRow;
@@ -47,12 +53,6 @@ public class GamePanel extends JPanel implements Runnable {
 	int FPS = 120;
 	public long stopwatch = 0;
 
-	// SYSTEM
-	public CollisionChecker cChecker = new CollisionChecker(this);
-	KeyHandler keyH = new KeyHandler(this);
-	public UI ui = new UI(this);
-	Thread gameThread;
-
 	// ENTITY & OBJECT
 	public Player player = new Player(this, keyH);
 	public Vector<Character> monsters = new Vector<Character>();
@@ -64,6 +64,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int titleState = 0;
 	public final int playState = 1;
 	public final int pauseState = 2;
+	public int wave = 1;
 
 	public GamePanel() {
 		try {
@@ -79,9 +80,29 @@ public class GamePanel extends JPanel implements Runnable {
 		this.addKeyListener(keyH);
 	}
 
-	public void setupGame() {
+	public void startGame() {
 		gameState = titleState;
+	}
 
+	public void setupGame(int multiplier) {
+		// Reset
+		worldWidth = worldWidth / sizeMultiplier;
+		worldHeight = worldHeight / sizeMultiplier;
+		monsters.clear();
+
+		// Setup
+		sizeMultiplier = multiplier;
+
+		worldWidth = worldWidth * sizeMultiplier;
+		worldHeight = worldHeight * sizeMultiplier;
+		player.worldX = worldWidth / 3;
+		player.worldY = worldHeight / 3;
+
+		map = new Voronoi(worldWidth, worldHeight, this);
+		gameState = playState;
+
+		monsters.add(new MonMushroom(this));
+		monsters.add(new MonMushroom(this));
 		monsters.add(new MonMushroom(this));
 	}
 
@@ -150,7 +171,9 @@ public class GamePanel extends JPanel implements Runnable {
 
 			for (int i = 0; i < player.bullets.size(); i++) {
 				Bullet bullet = player.bullets.get(i);
-				if (!map.inside(screenX + bullet.worldX + bullet.solidArea.x, screenY + bullet.worldY + bullet.solidArea.y, bullet.solidArea.width, bullet.solidArea.height)) {
+				if (!map.inside(screenX + bullet.worldX + bullet.solidArea.x,
+						screenY + bullet.worldY + bullet.solidArea.y, bullet.solidArea.width,
+						bullet.solidArea.height)) {
 					player.bullets.remove(i);
 
 				}

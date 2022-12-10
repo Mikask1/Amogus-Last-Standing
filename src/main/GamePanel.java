@@ -16,6 +16,7 @@ import MapGenerator.Voronoi;
 import bullet.Bullet;
 import character.Character;
 import character.Player;
+import character.monster.MonBat;
 import character.monster.MonMushroom;;
 
 @SuppressWarnings("serial")
@@ -83,6 +84,7 @@ public class GamePanel extends JPanel implements Runnable {
 		gameState = titleState;
 
 		monsters.add(new MonMushroom(this));
+		monsters.add(new MonBat(this));
 	}
 
 	public void startGameThread() {

@@ -13,7 +13,7 @@ import character.Player;
 import main.GamePanel;
 
 public class MonMushroom extends Character {
-	Player player;
+
 	Random rand = new Random();
 	String tempDir = "left";
 

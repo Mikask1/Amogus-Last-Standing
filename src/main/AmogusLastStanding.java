@@ -19,10 +19,7 @@ public class AmogusLastStanding {
 		
 		window.setLocationRelativeTo(null);
 		window.setVisible(true);
-		
-		gamePanel.startGame();
-		gamePanel.startGameThread();
-		
-	}
 
+		gamePanel.startGameThread();
+	}
 }

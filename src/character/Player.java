@@ -19,20 +19,22 @@ public class Player extends Character {
 	GamePanel gp;
 	KeyHandler keyH;
 
-	public int height = 64;
-	public int width = 64;
-
 	public int screenX;
 	public int screenY;
 
 	int playerBulletDimension1 = 4;
 	int playerBulletDimension2 = 13;
-
+	
+	public Image up, up1, up2, down, down1, down2, left, left1, left2, right, right1, right2;
+	public Image up_shoot, up1_shoot, up2_shoot, down_shoot, down1_shoot, down2_shoot, left_shoot, left1_shoot,
+			left2_shoot, right_shoot, right1_shoot, right2_shoot;
+	
 	public Player(GamePanel gp, KeyHandler keyH) {
 		super(gp);
 		this.gp = gp;
 		this.keyH = keyH;
-
+		
+		size = 48;
 		screenX = gp.worldWidth / 2 - gp.tileSize / 2;
 		screenY = gp.worldHeight / 2 - gp.tileSize / 2;
 
@@ -229,10 +231,7 @@ public class Player extends Character {
 
 	public void draw(Graphics2D g2) {
 
-//		g2.setColor(Color.white);	
-//		g2.fillRect(x, y, gp.tileSize, gp.tileSize);
-
-		BufferedImage image = null;
+		Image image = null;
 
 		switch (direction) {
 		case "up":
@@ -369,7 +368,7 @@ public class Player extends Character {
 
 		}
 
-		g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+		g2.drawImage(image, screenX, screenY, size, size, null);
 	}
 
 	public void drawBullets(Graphics2D g2) {

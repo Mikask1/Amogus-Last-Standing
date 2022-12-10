@@ -1,13 +1,10 @@
 package main;
 
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.desktop.ScreenSleepEvent;
-import java.util.Vector;
 
 import bullet.Bullet;
 import character.Character;
-import character.Player;
+import main.GamePanel;
 
 public class CollisionChecker {
 	GamePanel gp;

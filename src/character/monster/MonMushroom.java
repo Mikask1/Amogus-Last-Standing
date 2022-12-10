@@ -1,31 +1,22 @@
 package character.monster;
 
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
 
-import character.Character;
-import character.Player;
 import main.GamePanel;
 
-public class MonMushroom extends Character {
-	Player player;
+public class MonMushroom extends Monster {
 	Random rand = new Random();
 	String tempDir = "left";
 
-//	int moveToX = gp.player.screenX;
-//	int moveToY = gp.player.screenY;
-//	int distX = moveToX - worldX;
-//	int distY = moveToX - worldY;
-//	float angle = (float) Math.atan2(distY, distX);
-
 	public MonMushroom(GamePanel gp) {
 		super(gp);
-
+		size = 112;
 		setDefaultValues();
 		getImage();
 		setAction();
@@ -42,14 +33,14 @@ public class MonMushroom extends Character {
 		solidArea = new Rectangle();
 		solidArea.x = 25;
 		solidArea.y = 20;
-		solidArea.width = 45;
-		solidArea.height = 70;
+		solidArea.width = 61;
+		solidArea.height = 86;
 
 		footArea = new Rectangle();
 		footArea.x = 30;
-		footArea.y = 80;
-		footArea.width = 40;
-		footArea.height = 13;
+		footArea.y = 96;
+		footArea.width = 52;
+		footArea.height = 15;
 	}
 
 	public void getImage() {
@@ -77,35 +68,11 @@ public class MonMushroom extends Character {
 			hurtRight4 = ImageIO.read(getClass().getResourceAsStream("/monster/hurt-right4.png"));
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	public void setAction() {
-//		actionLockCounter++;
-//
-//		if (actionLockCounter == 120) {
-//
-//			Random random = new Random();
-//			int i = random.nextInt(100) + 1;
-//
-//			if (i <= 25) {
-//				direction = "up";
-//			}
-//			if (i > 25 && i <= 50) {
-//				direction = "up";
-//			}
-//			if (i > 50 && i <= 75) {
-//				direction = "down";
-//			}
-//			if (i > 75 && i <= 100) {
-//				direction = "right";
-//			}
-//
-//			actionLockCounter = 0;
-//		}
-
 		if (worldX < gp.player.worldX - gp.tileSize)
 			direction = "right";
 		if (worldX > gp.player.worldX)
@@ -176,7 +143,7 @@ public class MonMushroom extends Character {
 
 	public void draw(Graphics2D g2) {
 
-		BufferedImage image = null;
+		Image image = null;
 
 		switch (direction) {
 		case "left":
@@ -258,7 +225,7 @@ public class MonMushroom extends Character {
 
 		}
 
-		g2.drawImage(image, this.gp.screenX + worldX, this.gp.screenY + worldY, 100, 100, null);
+		g2.drawImage(image, this.gp.screenX + worldX, this.gp.screenY + worldY, size, size, null);
 	}
 
 }

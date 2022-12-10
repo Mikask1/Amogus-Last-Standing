@@ -2,12 +2,11 @@ package main;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.io.IOException;
-import java.security.PublicKey;
-import java.util.Random;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
@@ -17,6 +16,7 @@ import MapGenerator.Voronoi;
 import bullet.Bullet;
 import character.Character;
 import character.Player;
+import character.monster.MonBat;
 import character.monster.MonMushroom;;
 
 @SuppressWarnings("serial")
@@ -64,7 +64,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int titleState = 0;
 	public final int playState = 1;
 	public final int pauseState = 2;
-	public int wave = 1;
+	public int wave = 0;
 
 	public GamePanel() {
 		try {
@@ -80,19 +80,16 @@ public class GamePanel extends JPanel implements Runnable {
 		this.addKeyListener(keyH);
 	}
 
-	public void startGame() {
-		gameState = titleState;
-	}
-
 	public void setupGame(int multiplier) {
-		// Reset
+		// RESET
 		worldWidth = worldWidth / sizeMultiplier;
 		worldHeight = worldHeight / sizeMultiplier;
+
 		monsters.clear();
-
-		// Setup
+		
+		wave = 0;
+		// SETUP
 		sizeMultiplier = multiplier;
-
 		worldWidth = worldWidth * sizeMultiplier;
 		worldHeight = worldHeight * sizeMultiplier;
 		player.worldX = worldWidth / 3;
@@ -100,20 +97,16 @@ public class GamePanel extends JPanel implements Runnable {
 
 		map = new Voronoi(worldWidth, worldHeight, this);
 		gameState = playState;
-
-		monsters.add(new MonMushroom(this));
-		monsters.add(new MonMushroom(this));
-		monsters.add(new MonMushroom(this));
 	}
 
 	public void startGameThread() {
+		gameState = titleState;
+
 		gameThread = new Thread(this);
 		gameThread.start();
 	}
 
-	@Override
 	public void run() {
-
 		double drawInterval = 1000000000 / FPS; // 0.0166 seconds
 		double delta = 0;
 		long lastTime = System.nanoTime();
@@ -151,7 +144,7 @@ public class GamePanel extends JPanel implements Runnable {
 			screenX = player.screenX - player.worldX;
 			screenY = player.screenY - player.worldY;
 			player.update();
-
+			
 			int idx = 0;
 
 			for (int i = 0; i < monsters.size(); i++) {
@@ -178,12 +171,76 @@ public class GamePanel extends JPanel implements Runnable {
 
 				}
 			}
+			
+			if (monsters.isEmpty()) {
+				wave++;
+				
+				switch(wave) {
+				case 1:
+					monsters.add(new MonBat(this));
+					break;
+				case 2:
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonBat(this));
+					break;
+				case 3:
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonBat(this));
+					break;
+				case 4:
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonBat(this));
+					monsters.add(new MonBat(this));
+					break;
+				case 5:
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonBat(this));
+					monsters.add(new MonBat(this));
+					monsters.add(new MonBat(this));
+					monsters.add(new MonBat(this));
+					break;
+				case 6:
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonBat(this));
+					monsters.add(new MonBat(this));
+					monsters.add(new MonBat(this));
+					monsters.add(new MonBat(this));
+					monsters.add(new MonBat(this));
+					monsters.add(new MonBat(this));
+					monsters.add(new MonBat(this));
+					monsters.add(new MonBat(this));
+					break;
+				}					
+			}
 		}
 
-		if (gameState == pauseState)
-
-		{
-
+		if (gameState == pauseState) {
 		}
 
 	}
@@ -227,6 +284,11 @@ public class GamePanel extends JPanel implements Runnable {
 
 			// UI
 			ui.draw(g2);
+			
+			// Wave
+			g2.setColor(Color.white);
+			g2.setFont(UI.OEM8514.deriveFont(Font.PLAIN, 20F));
+			g2.drawString("Wave: " + wave, screenWidth - 130, 25);
 		}
 
 		g2.dispose();

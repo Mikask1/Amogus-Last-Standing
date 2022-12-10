@@ -80,8 +80,7 @@ public class KeyHandler implements KeyListener {
 				}
 
 				if (code == KeyEvent.VK_SPACE || code == KeyEvent.VK_ENTER) {
-					if (gp.ui.commandNum == 1) {
-						
+					if (gp.ui.commandNum == 1) {		
 						if (gp.ui.mapNum == 0) {
 							gp.setupGame(2);
 						}

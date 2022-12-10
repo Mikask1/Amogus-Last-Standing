@@ -25,6 +25,7 @@ public class MonMushroom extends Monster {
 	private void setDefaultValues() {
 		setSpeed(1);
 		setHealth(50);
+		setBodyDamage(3);
 		direction = "left";
 
 		worldX = rand.nextInt(-200, 200) + gp.player.screenX;
@@ -83,7 +84,6 @@ public class MonMushroom extends Monster {
 	public void update() {
 		collisionOn = false;
 		gp.cChecker.insideMap(this);
-		gp.cChecker.checkBulletHitsEnemy(this);
 
 		if (collisionOn == false) {
 			switch (direction) {

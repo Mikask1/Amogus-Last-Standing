@@ -19,8 +19,9 @@ public abstract class Character {
 	public int actionLockCounter = 0;
 	
 	private int speed;
-	private int shoot_speed;
+	private int shootSpeed;
 	private int health;
+	private int bodyDamage;
 	
 	public boolean alive = true;
 	public boolean hurt = false;
@@ -62,12 +63,12 @@ public abstract class Character {
 		this.speed = speed;
 	}
 
-	public int getShoot_speed() {
-		return shoot_speed;
+	public int getShootSpeed() {
+		return shootSpeed;
 	}
 
-	public void setShoot_speed(int shoot_speed) {
-		this.shoot_speed = shoot_speed;
+	public void setShootSpeed(int shootSpeed) {
+		this.shootSpeed = shootSpeed;
 	}
 
 	public int getHealth() {
@@ -81,6 +82,14 @@ public abstract class Character {
 	public int damageHealth(int damage) {
 		this.health -= damage;
 		return this.health;
+	}
+
+	public int getBodyDamage() {
+		return bodyDamage;
+	}
+
+	public void setBodyDamage(int bodyDamage) {
+		this.bodyDamage = bodyDamage;
 	}
 
 }

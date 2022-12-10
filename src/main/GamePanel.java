@@ -17,7 +17,8 @@ import bullet.Bullet;
 import character.Character;
 import character.Player;
 import character.monster.MonBat;
-import character.monster.MonMushroom;;
+import character.monster.MonMushroom;
+import character.monster.Monster;;
 
 @SuppressWarnings("serial")
 public class GamePanel extends JPanel implements Runnable {
@@ -55,7 +56,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 	// ENTITY & OBJECT
 	public Player player = new Player(this, keyH);
-	public Vector<Character> monsters = new Vector<Character>();
+	public Vector<Monster> monsters = new Vector<Monster>();
 
 	public Voronoi map = new Voronoi(worldWidth, worldHeight, this);
 
@@ -143,10 +144,10 @@ public class GamePanel extends JPanel implements Runnable {
 		if (gameState == playState) {
 			screenX = player.screenX - player.worldX;
 			screenY = player.screenY - player.worldY;
+			
 			player.update();
 			
 			int idx = 0;
-
 			for (int i = 0; i < monsters.size(); i++) {
 				Character monster = monsters.get(i);
 				monster.setAction();
@@ -168,8 +169,14 @@ public class GamePanel extends JPanel implements Runnable {
 						screenY + bullet.worldY + bullet.solidArea.y, bullet.solidArea.width,
 						bullet.solidArea.height)) {
 					player.bullets.remove(i);
-
 				}
+			}
+			
+			
+			for (Monster mon : monsters) {
+				cChecker.checkBulletHitsMonster(mon);
+				
+				cChecker.monsterBodyHitPlayer(player, mon);				
 			}
 			
 			if (monsters.isEmpty()) {

@@ -56,7 +56,7 @@ public class Player extends Character {
 	}
 
 	public void setDefaultValues() {
-		setShoot_speed(4);
+		setShootSpeed(4);
 		setSpeed(4);
 		direction = "down";
 		setHealth(10);
@@ -160,7 +160,6 @@ public class Player extends Character {
 
 			// Collision Check
 			collisionOn = false;
-
 			gp.cChecker.insideMap(this);
 
 			// if collision = false, player can move
@@ -201,8 +200,7 @@ public class Player extends Character {
 		}
 
 		if (keyH.shoot) {
-
-			if ((gp.stopwatch - shoot_timer) >= 1000000000 / getShoot_speed()) {
+			if ((gp.stopwatch - shoot_timer) >= 1000000000 / getShootSpeed()) {
 				switch (direction) {
 				case "up":
 					Bullet newBullet = new Bullet(gp, this, direction, playerBulletDimension1, playerBulletDimension2, worldX + gp.tileSize/2 - 3, worldY);

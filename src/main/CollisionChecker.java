@@ -4,10 +4,13 @@ import java.awt.Rectangle;
 
 import bullet.Bullet;
 import character.Character;
+import character.Player;
+import character.monster.Monster;
 import main.GamePanel;
 
 public class CollisionChecker {
 	GamePanel gp;
+	long bodyHitTimer = 0;
 	public CollisionChecker(GamePanel gp) {
 		this.gp = gp;
 	}
@@ -42,28 +45,44 @@ public class CollisionChecker {
 		}
 	}
 
-	public void checkBulletHitsEnemy(Character enemy) {
+	public void checkBulletHitsMonster(Character monster) {
 
-		Rectangle enemySolidArea = new Rectangle(gp.screenX + enemy.worldX + enemy.solidArea.x,
-				gp.screenY + enemy.worldY + enemy.solidArea.y, enemy.solidArea.width, enemy.solidArea.height);
+		Rectangle monsterSolidArea = new Rectangle(gp.screenX + monster.worldX + monster.solidArea.x,
+				gp.screenY + monster.worldY + monster.solidArea.y, monster.solidArea.width, monster.solidArea.height);
 
 		for (int i = 0; i < this.gp.player.bullets.size(); i++) {
 			Bullet bullet = this.gp.player.bullets.get(i);
 			Rectangle bulletSolidArea = new Rectangle(gp.screenX + bullet.worldX + bullet.solidArea.x,
 					gp.screenY + bullet.worldY + bullet.solidArea.y, bullet.solidArea.width, bullet.solidArea.height);
-			boolean hits = bulletSolidArea.intersects(enemySolidArea);
+			boolean hits = bulletSolidArea.intersects(monsterSolidArea);
 			
 			if (hits) {
-				enemy.hurt = true;
+				monster.hurt = true;
 				this.gp.player.bullets.remove(i);
-				enemy.damageHealth(bullet.damage);
-				System.out.print("Enemy health: ");
-				System.out.println(enemy.getHealth());
+				monster.damageHealth(bullet.damage);
 			}
 			
 			bullet = null;
 		}
 		
-		enemySolidArea = null;
+		monsterSolidArea = null;
+	}
+	
+	public void monsterBodyHitPlayer(Player player, Monster monster) {
+		
+		Rectangle monsterSolidArea = new Rectangle(gp.screenX + monster.worldX + monster.solidArea.x,
+				gp.screenY + monster.worldY + monster.solidArea.y, monster.solidArea.width, monster.solidArea.height);
+		
+		Rectangle playerSolidArea = new Rectangle(player.screenX + player.solidArea.x, player.screenY + player.solidArea.y,
+				player.solidArea.width, player.solidArea.height);
+		
+		if (gp.stopwatch - bodyHitTimer >= 500000000) {
+			if (playerSolidArea.intersects(monsterSolidArea)) {
+				player.damageHealth(monster.getBodyDamage());
+				player.hurt = true;
+				bodyHitTimer = gp.stopwatch;
+				System.out.println("Player health: " + player.getHealth());
+			}		
+		}
 	}
 }

@@ -27,6 +27,7 @@ public class MonBat extends Monster {
 	private void setDefaultValues() {
 		setSpeed(1);
 		setHealth(30);
+		setBodyDamage(4);
 		direction = "left";
 
 		worldX = gp.player.screenX;
@@ -97,7 +98,6 @@ public class MonBat extends Monster {
 	public void update() {
 		collisionOn = false;
 		gp.cChecker.insideMap(this);
-		gp.cChecker.checkBulletHitsEnemy(this);
 
 		if (collisionOn == false) {
 			switch (direction) {

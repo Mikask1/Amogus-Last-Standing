@@ -3,6 +3,7 @@ package bullet;
 import java.awt.Rectangle;
 
 import character.Character;
+import character.monster.Monster;
 import main.GamePanel;
 
 public class Bullet {

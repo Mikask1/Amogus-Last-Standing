@@ -29,6 +29,7 @@ public class Player extends Character {
 	int playerBulletDimension2 = 13;
 
 	public Player(GamePanel gp, KeyHandler keyH) {
+		super(gp);
 		this.gp = gp;
 		this.keyH = keyH;
 
@@ -48,15 +49,15 @@ public class Player extends Character {
 		solidArea.width = 28;
 		solidArea.height = 30;
 
-
 		setDefaultValues();
 		getPlayerImage();
 	}
 
 	public void setDefaultValues() {
-		shoot_speed = 4;
-		speed = 4;
+		setShoot_speed(4);
+		setSpeed(4);
 		direction = "down";
+		setHealth(10);
 	}
 
 	public void getPlayerImage() {
@@ -156,25 +157,26 @@ public class Player extends Character {
 
 			// Collision Check
 			collisionOn = false;
-			gp.cChecker.checkTile(this);
+
+			gp.cChecker.insideMap(this);
 
 			// if collision = false, player can move
 			if (collisionOn == false) {
 				switch (direction) {
 				case "up":
-					worldY -= speed;
+					worldY -= getSpeed();
 					break;
 
 				case "down":
-					worldY += speed;
+					worldY += getSpeed();
 					break;
 
 				case "left":
-					worldX -= speed;
+					worldX -= getSpeed();
 					break;
 
 				case "right":
-					worldX += speed;
+					worldX += getSpeed();
 					break;
 				}
 			}
@@ -197,35 +199,25 @@ public class Player extends Character {
 
 		if (keyH.shoot) {
 
-			if ((gp.stopwatch - shoot_timer) >= 1000000000 / shoot_speed) {
+			if ((gp.stopwatch - shoot_timer) >= 1000000000 / getShoot_speed()) {
 				switch (direction) {
 				case "up":
-					Bullet newBullet = new Bullet(this, direction, playerBulletDimension1, playerBulletDimension2);
-					newBullet.worldX = screenX + gp.tileSize / 2 - 2;
-					newBullet.worldY = screenY + gp.tileSize / 2 - height / 2 - 2;
+					Bullet newBullet = new Bullet(gp, this, direction, playerBulletDimension1, playerBulletDimension2, worldX + gp.tileSize/2 - 3, worldY);
 					bullets.add(newBullet);
 					break;
 
 				case "down":
-					Bullet newBullet1 = new Bullet(this, direction, playerBulletDimension1, playerBulletDimension2);
-					newBullet1.worldX = screenX + gp.tileSize / 2 - 2;
-					newBullet1.worldY = screenY + gp.tileSize / 2 + height / 8;
-					newBullet1.width = playerBulletDimension1;
-					newBullet1.height = playerBulletDimension2;
+					Bullet newBullet1 = new Bullet(gp, this, direction, playerBulletDimension1, playerBulletDimension2, worldX + gp.tileSize/2 - 3, worldY + gp.tileSize/2 + 4);
 					bullets.add(newBullet1);
 					break;
 
 				case "left":
-					Bullet newBullet2 = new Bullet(this, direction, playerBulletDimension2, playerBulletDimension1);
-					newBullet2.worldX = screenX + gp.tileSize / 2 - width / 2 - 8;
-					newBullet2.worldY = screenY + gp.tileSize / 2 - 4;
+					Bullet newBullet2 = new Bullet(gp, this, direction, playerBulletDimension2, playerBulletDimension1, worldX, worldY + gp.tileSize/2 - 4);
 					bullets.add(newBullet2);
 					break;
 
 				case "right":
-					Bullet newBullet3 = new Bullet(this, direction, playerBulletDimension2, playerBulletDimension1);
-					newBullet3.worldX = screenX + gp.tileSize / 2 + width / 4 + 10;
-					newBullet3.worldY = screenY + gp.tileSize / 2 - 4;
+					Bullet newBullet3 = new Bullet(gp, this, direction, playerBulletDimension2, playerBulletDimension1, worldX + gp.tileSize/2 + 4, worldY + gp.tileSize/2 - 4);
 					bullets.add(newBullet3);
 					break;
 				}
@@ -381,31 +373,31 @@ public class Player extends Character {
 
 	public void drawBullets(Graphics2D g2) {
 		for (Bullet bullet : bullets) {
-			switch (bullet.direction) {
+			switch (bullet.getDirection()) {
 			case "up":
-				g2.drawImage(bullet_up, bullet.worldX, bullet.worldY, playerBulletDimension1, playerBulletDimension2,
-						null);
+				g2.drawImage(bullet_up, gp.screenX + bullet.worldX, gp.screenY + bullet.worldY, playerBulletDimension1,
+						playerBulletDimension2, null);
 				break;
 
 			case "down":
-				g2.drawImage(bullet_down, bullet.worldX, bullet.worldY, playerBulletDimension1, playerBulletDimension2,
-						null);
+				g2.drawImage(bullet_down, gp.screenX + bullet.worldX, gp.screenY + bullet.worldY,
+						playerBulletDimension1, playerBulletDimension2, null);
 				break;
 
 			case "left":
-				g2.drawImage(bullet_left, bullet.worldX, bullet.worldY, playerBulletDimension2, playerBulletDimension1,
-						null);
+				g2.drawImage(bullet_left, gp.screenX + bullet.worldX, gp.screenY + bullet.worldY,
+						playerBulletDimension2, playerBulletDimension1, null);
 				break;
 
 			case "right":
-				g2.drawImage(bullet_right, bullet.worldX, bullet.worldY, playerBulletDimension2, playerBulletDimension1,
-						null);
+				g2.drawImage(bullet_right, gp.screenX + bullet.worldX, gp.screenY + bullet.worldY,
+						playerBulletDimension2, playerBulletDimension1, null);
 				break;
 			}
 
 			g2.setColor(Color.white);
-			g2.drawRect(bullet.worldX + bullet.solidArea.x, bullet.worldY + bullet.solidArea.y, bullet.solidArea.width,
-					bullet.solidArea.height);
+			g2.drawRect(gp.screenX + bullet.worldX + bullet.solidArea.x, gp.screenY + bullet.worldY + bullet.solidArea.y,
+					bullet.solidArea.width, bullet.solidArea.height);
 		}
 	}
 

@@ -6,6 +6,9 @@ import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
@@ -19,8 +22,8 @@ import MapGenerator.delaunator.Delaunator;
 import main.GamePanel;
 
 public class Voronoi {
-	int screenWidth;
-	int screenHeight;
+	public int mapWidth;
+	public int mapHeight;
 
 	// CONSTANTS
 	final int GRIDSIZE = 15;
@@ -35,29 +38,28 @@ public class Voronoi {
 	private Delaunator delaunator;
 
 	private BufferedImage image;
-	private BufferedImage imageSecondary;
 	private boolean toggle = true;
 
-	public Vector<Rectangle> lava;
-	public Vector<Image> landImage;
-	public Vector<Rectangle> land;
+	private Vector<Rectangle> lava;
+	private Vector<Image> landImage;
+	private Vector<Rectangle> land;
 
-	public Voronoi(int screenWidth, int screenHeight, GamePanel gp) {
+	Area mapArea = new Area();
+
+	public Voronoi(int mapWidth, int mapHeight, GamePanel gp) {
 		try {
-//			TODO: get better textured dirt
-			imageSecondary = ImageIO.read(getClass().getResourceAsStream("/tiles/dirtSecondary.png"));
 			image = ImageIO.read(getClass().getResourceAsStream("/tiles/dirt.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		this.gp = gp;
-		this.screenHeight = screenHeight;
-		this.screenWidth = screenWidth;
+		this.mapHeight = mapHeight;
+		this.mapWidth = mapWidth;
 
 		for (int x = 0; x <= GRIDSIZE; x++) {
 			for (int y = 0; y <= GRIDSIZE; y++) {
-				double randX = (x + JITTER * (Math.random() - Math.random())) * (screenWidth / GRIDSIZE);
-				double randY = (y + JITTER * (Math.random() - Math.random())) * (screenHeight / GRIDSIZE);
+				double randX = (x + JITTER * (Math.random() - Math.random())) * (mapWidth / GRIDSIZE);
+				double randY = (y + JITTER * (Math.random() - Math.random())) * (mapHeight / GRIDSIZE);
 				DPoint point = new DPoint(randX, randY);
 				points.add(point);
 			}
@@ -101,8 +103,8 @@ public class Voronoi {
 		Vector<Double> elevation = new Vector<Double>();
 
 		for (int r = 0; r < map.numRegions; r++) {
-			double nx = ((points.get(r).x / (screenWidth / GRIDSIZE)) / GRIDSIZE - 0.5);
-			double ny = ((points.get(r).y / (screenHeight / GRIDSIZE)) / GRIDSIZE - 0.5);
+			double nx = ((points.get(r).x / (mapWidth / GRIDSIZE)) / GRIDSIZE - 0.5);
+			double ny = ((points.get(r).y / (mapHeight / GRIDSIZE)) / GRIDSIZE - 0.5);
 
 			elevation.insertElementAt((1 + noise.noise(nx / WAVELENGTH, ny / WAVELENGTH)) / 2, r);
 
@@ -140,12 +142,6 @@ public class Voronoi {
 	}
 
 	public void processCells() {
-//		TODO: P3 Make all of these Rectangles in the first place (performance, simpler)
-//		TODO: P2 Make drawCellColors() using vectors instead of arrays (performance, simpler)
-
-//    	ALTERNATIVE
-//		TODO: P1 Make the map bounding box the inside of the polygon (O(n^3)) -> might be worth checking out -> no code on the internet
-
 		Vector<Integer> seen = new Vector<Integer>();
 		land = new Vector<Rectangle>();
 		landImage = new Vector<Image>();
@@ -176,15 +172,13 @@ public class Voronoi {
 				Rectangle bounds = polygon.getBounds();
 				if (map.elevation.get(r) > THRESHOLD) {
 					land.add(bounds);
+					mapArea.add(new Area(bounds));
 
 					int scaleX = bounds.width + (2 * gp.player.footArea.width) + 2 * PADDING;
 					int scaleY = bounds.height + (2 * gp.player.footArea.height) + 2 * PADDING;
 
-					if (toggle) {
-						landImage.add(image.getScaledInstance(scaleX, scaleY, Image.SCALE_DEFAULT));
-					} else {
-						landImage.add(imageSecondary.getScaledInstance(scaleX, scaleY, Image.SCALE_DEFAULT));
-					}
+					landImage.add(image.getScaledInstance(scaleX, scaleY, Image.SCALE_FAST));
+
 				} else {
 					lava.add(bounds);
 				}
@@ -206,27 +200,27 @@ public class Voronoi {
 		int solidX = gp.player.footArea.width + PADDING;
 		int solidY = gp.player.footArea.height + PADDING;
 
+		mapArea = null;
+		mapArea = new Area();
+		g2.setColor(new Color(42, 42, 42));
+
+		for (int i = 0; i < land.size(); i++) {
+			Rectangle rect = new Rectangle(land.get(i).x + screenX - solidX - 4, land.get(i).y + screenY - solidY -6,
+					land.get(i).width + 2 * solidX + 8, land.get(i).height + 2 * solidY + 10);
+			mapArea.add(new Area(rect));
+		}
+
+		g2.fill(mapArea);
+		
 		for (int i = 0; i < land.size(); i++) {
 			g2.drawImage(landImage.get(i), land.get(i).x + screenX - solidX, land.get(i).y + screenY - solidY, null);
 			// Bounding Box
 //			g2.drawRect(land.get(i).x + screenX - solidX, land.get(i).y + screenY - solidY,
 //					land.get(i).width + 2 * solidX, land.get(i).height + 2 * solidY);
 		}
-
 	}
 
-	public boolean inside(int top, int bottom, int left, int right) {
-		for (int i = 0; i < land.size(); i++) {
-			Rectangle mapRect = land.get(i);
-
-			int width = gp.player.footArea.width + PADDING;
-			int height = gp.player.footArea.height + PADDING;
-
-			if (right <= (mapRect.x + mapRect.width + width) && left >= mapRect.x - width && top >= mapRect.y - height
-					&& bottom <= (mapRect.y + mapRect.height + height)) {
-				return true;
-			}
-		}
-		return false;
+	public boolean inside(int worldX, int worldY, int width, int height) {
+		return mapArea.contains(new Rectangle(worldX, worldY, width, height));
 	}
 }

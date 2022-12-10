@@ -19,7 +19,6 @@ public class KeyHandler implements KeyListener {
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -82,6 +81,9 @@ public class KeyHandler implements KeyListener {
 
 				if (code == KeyEvent.VK_SPACE || code == KeyEvent.VK_ENTER) {
 					if (gp.ui.commandNum == 1) {
+						gp.worldWidth = gp.worldWidth / gp.sizeMultiplier;
+						gp.worldHeight = gp.worldHeight / gp.sizeMultiplier;
+						
 						if (gp.ui.mapNum == 0) {
 							gp.sizeMultiplier = 2;
 							gp.worldWidth = gp.worldWidth * gp.sizeMultiplier;
@@ -110,8 +112,10 @@ public class KeyHandler implements KeyListener {
 							gp.player.worldY = gp.worldHeight / 3;
 
 							gp.map = new Voronoi(gp.worldWidth, gp.worldHeight, gp);
-
 							gp.gameState = gp.playState;
+							
+							
+							
 						}
 						gp.ui.titleSubState = 0;
 					}

@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.io.IOException;
+import java.util.Random;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
@@ -65,11 +66,12 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int titleState = 0;
 	public final int playState = 1;
 	public final int pauseState = 2;
+  
 	public int wave = 0;
 	boolean animateWave = false;
 	long animationTimer = stopwatch;
 	long animationDuration = 1000; // in milisecond
-	
+  
 	public GamePanel() {
 		try {
 			backgroundImage = ImageIO.read(getClass().getResourceAsStream("/tiles/bigGrass.png"));
@@ -134,7 +136,7 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 
 			if (timer >= 1000000000) {
-				System.out.println("FPS: " + drawCount);
+//				System.out.println("FPS: " + drawCount);
 				drawCount = 0;
 				timer = 0;
 			}
@@ -149,7 +151,7 @@ public class GamePanel extends JPanel implements Runnable {
 			screenY = player.screenY - player.worldY;
 			
 			player.update();
-			
+
 			int idx = 0;
 			for (int i = 0; i < monsters.size(); i++) {
 				Character monster = monsters.get(i);
@@ -298,7 +300,6 @@ public class GamePanel extends JPanel implements Runnable {
 			ui.draw(g2);
 			
 			// Wave
-			
 			g2.setColor(Color.white);
 			g2.setFont(UI.OEM8514.deriveFont(Font.PLAIN, 20F));
 			

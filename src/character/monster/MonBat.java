@@ -5,20 +5,16 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.Random;
-
 import javax.imageio.ImageIO;
-
 import main.GamePanel;
 
 public class MonBat extends Monster {
-
 	Random rand = new Random();
 	String tempDir = "left";
 
 	public MonBat(GamePanel gp) {
 		super(gp);
 		size = 64;
-
 		setDefaultValues();
 		getImage();
 		setAction();
@@ -34,6 +30,7 @@ public class MonBat extends Monster {
 		worldY = gp.player.screenY;
 
 		solidArea = new Rectangle();
+
 		solidArea.x = 10;
 		solidArea.y = 15;
 		solidArea.width = 50;
@@ -45,7 +42,7 @@ public class MonBat extends Monster {
 		footArea.width = 30;
 		footArea.height = 15;
 	}
-
+  
 	public void getImage() {
 
 		try {
@@ -70,7 +67,7 @@ public class MonBat extends Monster {
 			e.printStackTrace();
 		}
 	}
-
+  
 	public void setAction() {
 		actionLockCounter++;
 
@@ -105,7 +102,6 @@ public class MonBat extends Monster {
 			case "up":
 				worldY -= getSpeed();
 				break;
-
 			case "down":
 				worldY += getSpeed();
 				break;
@@ -151,9 +147,7 @@ public class MonBat extends Monster {
 	public void draw(Graphics2D g2) {
 
 		Image image = null;
-
 		switch (direction) {
-
 		case "up":
 			if (tempDir == "left") {
 				if (spriteNum == 1) {
@@ -172,7 +166,6 @@ public class MonBat extends Monster {
 					image = monLeft4;
 				}
 			}
-
 			if (tempDir == "right") {
 				tempDir = "right";
 				if (spriteNum == 1) {
@@ -192,7 +185,6 @@ public class MonBat extends Monster {
 				}
 			}
 			break;
-
 		case "down":
 			if (tempDir == "left") {
 				if (spriteNum == 1) {
@@ -211,7 +203,6 @@ public class MonBat extends Monster {
 					image = monLeft4;
 				}
 			}
-
 			if (tempDir == "right") {
 				tempDir = "right";
 				if (spriteNum == 1) {
@@ -231,7 +222,6 @@ public class MonBat extends Monster {
 				}
 			}
 			break;
-
 		case "left":
 			tempDir = "left";
 			if (spriteNum == 1) {
@@ -310,8 +300,6 @@ public class MonBat extends Monster {
 			break;
 
 		}
-
 		g2.drawImage(image, this.gp.screenX + worldX, this.gp.screenY + worldY, size, size, null);
 	}
-
 }

@@ -163,8 +163,7 @@ public class Player extends Character {
 					else {
 						worldX -= getSpeed();
 					}					
-				}
-				
+				}	
 			}
 			
 			if(keyH.rightPressed == true) {

@@ -1,7 +1,6 @@
 package main;
 
 import java.awt.Rectangle;
-
 import bullet.Bullet;
 import character.Character;
 import character.Player;
@@ -11,7 +10,7 @@ import main.GamePanel;
 public class CollisionChecker {
 	GamePanel gp;
 	long bodyHitTimer = 0;
-	
+  
 	public CollisionChecker(GamePanel gp) {
 		this.gp = gp;
 	}

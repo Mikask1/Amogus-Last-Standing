@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
-
 import main.GamePanel;
 
 public class MonMushroom extends Monster {
@@ -142,7 +141,6 @@ public class MonMushroom extends Monster {
 	}
 
 	public void draw(Graphics2D g2) {
-
 		Image image = null;
 
 		switch (direction) {
@@ -224,7 +222,6 @@ public class MonMushroom extends Monster {
 			break;
 
 		}
-
 		g2.drawImage(image, this.gp.screenX + worldX, this.gp.screenY + worldY, size, size, null);
 	}
 

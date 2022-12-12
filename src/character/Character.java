@@ -83,7 +83,6 @@ public abstract class Character {
 		this.health -= damage;
 		return this.health;
 	}
-
 	public int getBodyDamage() {
 		return bodyDamage;
 	}
@@ -91,5 +90,4 @@ public abstract class Character {
 	public void setBodyDamage(int bodyDamage) {
 		this.bodyDamage = bodyDamage;
 	}
-
 }

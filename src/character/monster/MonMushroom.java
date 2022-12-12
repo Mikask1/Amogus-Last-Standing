@@ -34,7 +34,7 @@ public class MonMushroom extends Monster {
 		solidArea.x = 25;
 		solidArea.y = 20;
 		solidArea.width = 61;
-		solidArea.height = 86;
+		solidArea.height = 92;
 
 		footArea = new Rectangle();
 		footArea.x = 30;
@@ -77,7 +77,6 @@ public class MonMushroom extends Monster {
 			direction = "right";
 		if (worldX > gp.player.worldX)
 			direction = "left";
-
 	}
 
 	public void update() {
@@ -224,5 +223,4 @@ public class MonMushroom extends Monster {
 		}
 		g2.drawImage(image, this.gp.screenX + worldX, this.gp.screenY + worldY, size, size, null);
 	}
-
 }

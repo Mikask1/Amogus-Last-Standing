@@ -203,8 +203,8 @@ public class Voronoi {
 		g2.setColor(new Color(42, 42, 42));
 
 		for (int i = 0; i < land.size(); i++) {
-			Rectangle rect = new Rectangle(land.get(i).x + screenX - solidX - 4, land.get(i).y + screenY - solidY -6,
-					land.get(i).width + 2 * solidX + 8, land.get(i).height + 2 * solidY + 10);
+			Rectangle rect = new Rectangle(land.get(i).x + screenX - solidX - 2, land.get(i).y + screenY - solidY - 4,
+					land.get(i).width + 2 * solidX + 4, land.get(i).height + 2 * solidY + 10);
 			mapArea.add(new Area(rect));
 		}
 

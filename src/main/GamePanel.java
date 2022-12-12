@@ -19,6 +19,7 @@ import character.Character;
 import character.Player;
 import character.monster.MonBat;
 import character.monster.MonMushroom;
+import character.monster.MonMushroomCharge;
 import character.monster.Monster;;
 
 @SuppressWarnings("serial")
@@ -66,12 +67,12 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int titleState = 0;
 	public final int playState = 1;
 	public final int pauseState = 2;
-  
+
 	public int wave = 0;
 	boolean animateWave = false;
 	long animationTimer = stopwatch;
 	long animationDuration = 1000; // in milisecond
-  
+
 	public GamePanel() {
 		try {
 			backgroundImage = ImageIO.read(getClass().getResourceAsStream("/tiles/bigGrass.png"));
@@ -92,7 +93,7 @@ public class GamePanel extends JPanel implements Runnable {
 		worldHeight = worldHeight / sizeMultiplier;
 
 		monsters.clear();
-		
+
 		wave = 0;
 		// SETUP
 		sizeMultiplier = multiplier;
@@ -140,16 +141,14 @@ public class GamePanel extends JPanel implements Runnable {
 				drawCount = 0;
 				timer = 0;
 			}
-
 		}
-
 	}
 
 	public void update() {
 		if (gameState == playState) {
 			screenX = player.screenX - player.worldX;
 			screenY = player.screenY - player.worldY;
-			
+
 			player.update();
 
 			int idx = 0;
@@ -170,26 +169,28 @@ public class GamePanel extends JPanel implements Runnable {
 
 			for (int i = 0; i < player.bullets.size(); i++) {
 				Bullet bullet = player.bullets.get(i);
-				if (!map.inside(screenX + bullet.worldX + bullet.solidArea.x,
-						screenY + bullet.worldY + bullet.solidArea.y, bullet.solidArea.width,
-						bullet.solidArea.height)) {
+				int bulletX = screenX + bullet.worldX + bullet.solidArea.x;
+				int bulletY = screenY + bullet.worldY + bullet.solidArea.y;
+				if (bulletX < screenX - screenX - (int) (1.5 * screenWidth)
+						|| bulletX > map.mapWidth + (int) (2 * screenWidth)
+						|| bulletY < screenY - (int) (1.5 * screenHeight)
+						|| bulletY > map.mapHeight + (int) (2 * screenHeight)) {
 					player.bullets.remove(i);
 				}
 			}
-			
-			
+
 			for (Monster mon : monsters) {
 				cChecker.checkBulletHitsMonster(mon);
-				
-				cChecker.monsterBodyHitPlayer(player, mon);				
+
+				cChecker.monsterBodyHitPlayer(player, mon);
 			}
-			
+
 			if (monsters.isEmpty()) {
 				animateWave = true;
 				animationTimer = stopwatch;
 				wave++;
-				
-				switch(wave) {
+
+				switch (wave) {
 				case 1:
 					monsters.add(new MonBat(this));
 					break;
@@ -201,6 +202,7 @@ public class GamePanel extends JPanel implements Runnable {
 					monsters.add(new MonMushroom(this));
 					monsters.add(new MonMushroom(this));
 					monsters.add(new MonBat(this));
+					monsters.add(new MonMushroomCharge(this));
 					break;
 				case 4:
 					monsters.add(new MonMushroom(this));
@@ -209,6 +211,7 @@ public class GamePanel extends JPanel implements Runnable {
 					monsters.add(new MonMushroom(this));
 					monsters.add(new MonBat(this));
 					monsters.add(new MonBat(this));
+					monsters.add(new MonMushroomCharge(this));
 					break;
 				case 5:
 					monsters.add(new MonMushroom(this));
@@ -217,12 +220,11 @@ public class GamePanel extends JPanel implements Runnable {
 					monsters.add(new MonMushroom(this));
 					monsters.add(new MonMushroom(this));
 					monsters.add(new MonMushroom(this));
-					monsters.add(new MonMushroom(this));
-					monsters.add(new MonMushroom(this));
 					monsters.add(new MonBat(this));
 					monsters.add(new MonBat(this));
 					monsters.add(new MonBat(this));
-					monsters.add(new MonBat(this));
+					monsters.add(new MonMushroomCharge(this));
+					monsters.add(new MonMushroomCharge(this));
 					break;
 				case 6:
 					monsters.add(new MonMushroom(this));
@@ -236,11 +238,6 @@ public class GamePanel extends JPanel implements Runnable {
 					monsters.add(new MonMushroom(this));
 					monsters.add(new MonMushroom(this));
 					monsters.add(new MonMushroom(this));
-					monsters.add(new MonMushroom(this));
-					monsters.add(new MonMushroom(this));
-					monsters.add(new MonMushroom(this));
-					monsters.add(new MonMushroom(this));
-					monsters.add(new MonMushroom(this));
 					monsters.add(new MonBat(this));
 					monsters.add(new MonBat(this));
 					monsters.add(new MonBat(this));
@@ -249,8 +246,11 @@ public class GamePanel extends JPanel implements Runnable {
 					monsters.add(new MonBat(this));
 					monsters.add(new MonBat(this));
 					monsters.add(new MonBat(this));
+					monsters.add(new MonMushroomCharge(this));
+					monsters.add(new MonMushroomCharge(this));
+					monsters.add(new MonMushroomCharge(this));
 					break;
-				}					
+				}
 			}
 		}
 
@@ -298,24 +298,24 @@ public class GamePanel extends JPanel implements Runnable {
 
 			// UI
 			ui.draw(g2);
-			
+
 			// Wave
 			g2.setColor(Color.white);
 			g2.setFont(UI.OEM8514.deriveFont(Font.PLAIN, 20F));
-			
-			g2.drawString("Wave: " + wave, screenWidth - 130, 25);	
-			
+
+			g2.drawString("Wave: " + wave, screenWidth - 130, 25);
+
 			if (stopwatch - animationTimer < animationDuration * 1000000) {
-				int alpha = (int) ((double) ((stopwatch - animationTimer)/1000000)/animationDuration * 255);
+				int alpha = (int) ((double) ((stopwatch - animationTimer) / 1000000) / animationDuration * 255);
 				g2.setColor(new Color(255, 255, 255, alpha));
 				g2.setFont(UI.OEM8514.deriveFont(Font.PLAIN, 50F));
-				g2.drawString("Wave:" + wave, screenWidth/2 - 100, screenHeight/2 - 25);		
-			}
-			else if (stopwatch - animationTimer < 2 * animationDuration * 1000000) {
-				int alpha = (int) (255 - ((double) ((stopwatch - animationTimer)/1000000)/animationDuration * 255)/2);
+				g2.drawString("Wave:" + wave, screenWidth / 2 - 100, screenHeight / 2 - 25);
+			} else if (stopwatch - animationTimer < 2 * animationDuration * 1000000) {
+				int alpha = (int) (255
+						- ((double) ((stopwatch - animationTimer) / 1000000) / animationDuration * 255) / 2);
 				g2.setColor(new Color(255, 255, 255, alpha));
-				g2.setFont(UI.OEM8514.deriveFont(Font.PLAIN, 50F));	
-				g2.drawString("Wave:" + wave, screenWidth/2 - 100, screenHeight/2 - 25);		
+				g2.setFont(UI.OEM8514.deriveFont(Font.PLAIN, 50F));
+				g2.drawString("Wave:" + wave, screenWidth / 2 - 100, screenHeight / 2 - 25);
 			}
 		}
 

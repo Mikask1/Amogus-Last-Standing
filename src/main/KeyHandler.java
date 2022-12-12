@@ -80,42 +80,15 @@ public class KeyHandler implements KeyListener {
 				}
 
 				if (code == KeyEvent.VK_SPACE || code == KeyEvent.VK_ENTER) {
-					if (gp.ui.commandNum == 1) {
-						gp.worldWidth = gp.worldWidth / gp.sizeMultiplier;
-						gp.worldHeight = gp.worldHeight / gp.sizeMultiplier;
-						
+					if (gp.ui.commandNum == 1) {		
 						if (gp.ui.mapNum == 0) {
-							gp.sizeMultiplier = 2;
-							gp.worldWidth = gp.worldWidth * gp.sizeMultiplier;
-							gp.worldHeight = gp.worldHeight * gp.sizeMultiplier;
-							gp.player.worldX = gp.worldWidth / 3;
-							gp.player.worldY = gp.worldHeight / 3;
-
-							gp.map = new Voronoi(gp.worldWidth, gp.worldHeight, gp);
-							gp.gameState = gp.playState;
+							gp.setupGame(2);
 						}
 						if (gp.ui.mapNum == 1) {
-							gp.sizeMultiplier = 3;
-							gp.worldWidth = gp.worldWidth * gp.sizeMultiplier;
-							gp.worldHeight = gp.worldHeight * gp.sizeMultiplier;
-							gp.player.worldX = gp.worldWidth / 3;
-							gp.player.worldY = gp.worldHeight / 3;
-
-							gp.map = new Voronoi(gp.worldWidth, gp.worldHeight, gp);
-							gp.gameState = gp.playState;
+							gp.setupGame(3);
 						}
 						if (gp.ui.mapNum == 2) {
-							gp.sizeMultiplier = 4;
-							gp.worldWidth = gp.worldWidth * gp.sizeMultiplier;
-							gp.worldHeight = gp.worldHeight * gp.sizeMultiplier;
-							gp.player.worldX = gp.worldWidth / 3;
-							gp.player.worldY = gp.worldHeight / 3;
-
-							gp.map = new Voronoi(gp.worldWidth, gp.worldHeight, gp);
-							gp.gameState = gp.playState;
-							
-							
-							
+							gp.setupGame(4);
 						}
 						gp.ui.titleSubState = 0;
 					}

@@ -21,8 +21,8 @@ public class UI {
 
 	GamePanel gp;
 	Graphics2D g2;
-	Font arial_40, arial_80B;
-	Font OEM8514, maruMonica;
+	public static Font arial_40, arial_80B;
+	public static Font OEM8514, maruMonica;
 	public boolean messageOn = false;
 	public String message = "";
 	int messageCounter = 0;

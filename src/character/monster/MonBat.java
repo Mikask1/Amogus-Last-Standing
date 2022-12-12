@@ -1,24 +1,20 @@
 package character.monster;
 
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
-
 import javax.imageio.ImageIO;
-
-import character.Character;
 import main.GamePanel;
 
-public class MonBat extends Character {
-	
+public class MonBat extends Monster {
 	Random rand = new Random();
 	String tempDir = "left";
 
 	public MonBat(GamePanel gp) {
 		super(gp);
-
+		size = 64;
 		setDefaultValues();
 		getImage();
 		setAction();
@@ -27,29 +23,31 @@ public class MonBat extends Character {
 	private void setDefaultValues() {
 		setSpeed(1);
 		setHealth(30);
+		setBodyDamage(4);
 		direction = "left";
 
 		worldX = gp.player.screenX;
 		worldY = gp.player.screenY;
 
 		solidArea = new Rectangle();
-		solidArea.x = 15;
-		solidArea.y = 20;
-		solidArea.width = 65;
-		solidArea.height = 50;
+
+		solidArea.x = 10;
+		solidArea.y = 15;
+		solidArea.width = 50;
+		solidArea.height = 30;
 
 		footArea = new Rectangle();
-		footArea.x = 30;
-		footArea.y = 80;
-		footArea.width = 40;
-		footArea.height = 13;
+		footArea.x = 20;
+		footArea.y = 45;
+		footArea.width = 30;
+		footArea.height = 15;
 	}
-	
+  
 	public void getImage() {
 
 		try {
 			monLeft = ImageIO.read(getClass().getResourceAsStream("/monster/batleft.png"));
-			monLeft1 = ImageIO.read(getClass().getResourceAsStream("/monster/batleft1.png"));
+			monLeft1 = ImageIO.read(getClass().getResourceAsStream("/monster/batleft1.png")); 
 			monLeft2 = ImageIO.read(getClass().getResourceAsStream("/monster/batleft2.png"));
 			monLeft3 = ImageIO.read(getClass().getResourceAsStream("/monster/batleft3.png"));
 			monRight = ImageIO.read(getClass().getResourceAsStream("/monster/batright.png"));
@@ -66,11 +64,10 @@ public class MonBat extends Character {
 			hurtRight3 = ImageIO.read(getClass().getResourceAsStream("/monster/hbatright3.png"));
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+  
 	public void setAction() {
 		actionLockCounter++;
 
@@ -93,21 +90,18 @@ public class MonBat extends Character {
 
 			actionLockCounter = 0;
 		}
-
 	}
-	
+
 	public void update() {
 		collisionOn = false;
 		gp.cChecker.insideMap(this);
-		gp.cChecker.checkBulletHitsEnemy(this);
 
 		if (collisionOn == false) {
 			switch (direction) {
-			
+
 			case "up":
 				worldY -= getSpeed();
 				break;
-				
 			case "down":
 				worldY += getSpeed();
 				break;
@@ -152,12 +146,10 @@ public class MonBat extends Character {
 
 	public void draw(Graphics2D g2) {
 
-		BufferedImage image = null;
-
+		Image image = null;
 		switch (direction) {
-		
 		case "up":
-			if(tempDir == "left") {
+			if (tempDir == "left") {
 				if (spriteNum == 1) {
 					image = monLeft;
 				}
@@ -174,8 +166,7 @@ public class MonBat extends Character {
 					image = monLeft4;
 				}
 			}
-			
-			if(tempDir == "right") {
+			if (tempDir == "right") {
 				tempDir = "right";
 				if (spriteNum == 1) {
 					image = monRight;
@@ -194,9 +185,8 @@ public class MonBat extends Character {
 				}
 			}
 			break;
-			
 		case "down":
-			if(tempDir == "left") {
+			if (tempDir == "left") {
 				if (spriteNum == 1) {
 					image = monLeft;
 				}
@@ -213,8 +203,7 @@ public class MonBat extends Character {
 					image = monLeft4;
 				}
 			}
-			
-			if(tempDir == "right") {
+			if (tempDir == "right") {
 				tempDir = "right";
 				if (spriteNum == 1) {
 					image = monRight;
@@ -233,7 +222,6 @@ public class MonBat extends Character {
 				}
 			}
 			break;
-		
 		case "left":
 			tempDir = "left";
 			if (spriteNum == 1) {
@@ -312,8 +300,6 @@ public class MonBat extends Character {
 			break;
 
 		}
-
-		g2.drawImage(image, this.gp.screenX + worldX, this.gp.screenY + worldY, 100, 100, null);
+		g2.drawImage(image, this.gp.screenX + worldX, this.gp.screenY + worldY, size, size, null);
 	}
-	
 }

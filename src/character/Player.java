@@ -4,9 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Timer;
 
 import javax.imageio.ImageIO;
 
@@ -19,20 +17,24 @@ public class Player extends Character {
 	GamePanel gp;
 	KeyHandler keyH;
 
-	public int height = 64;
-	public int width = 64;
-
 	public int screenX;
 	public int screenY;
 
 	int playerBulletDimension1 = 4;
 	int playerBulletDimension2 = 13;
-
+	
+	public Image up, up1, up2, down, down1, down2, left, left1, left2, right, right1, right2;
+	public Image up_shoot, up1_shoot, up2_shoot, down_shoot, down1_shoot, down2_shoot, left_shoot, left1_shoot,
+			left2_shoot, right_shoot, right1_shoot, right2_shoot;
+	
+	int diagonalSpeed;
+	
 	public Player(GamePanel gp, KeyHandler keyH) {
 		super(gp);
 		this.gp = gp;
 		this.keyH = keyH;
-
+		
+		size = 48;
 		screenX = gp.worldWidth / 2 - gp.tileSize / 2;
 		screenY = gp.worldHeight / 2 - gp.tileSize / 2;
 
@@ -54,12 +56,12 @@ public class Player extends Character {
 	}
 
 	public void setDefaultValues() {
-		setShoot_speed(4);
+		setShootSpeed(4);
 		setSpeed(4);
 		direction = "down";
 		setHealth(10);
 	}
-
+	
 	public void getPlayerImage() {
 		try {
 			up = ImageIO.read(getClass().getResourceAsStream("/player/amog-back.png"));
@@ -106,37 +108,6 @@ public class Player extends Character {
 		if (keyH.upPressed == true || keyH.leftPressed == true || keyH.downPressed == true
 				|| keyH.rightPressed == true) {
 
-//			//CAN MOVE DIAGONALLY
-//			
-//			collisionOn = false;
-//			gp.cChecker.checkTile(this);
-//			
-//			if(keyH.upPressed == true) {
-//				direction = "up";
-//				if(collisionOn == false)
-//				worldY -= speed;
-//			}
-//			
-//			if(keyH.downPressed == true) {
-//				direction = "down";
-//				if(collisionOn == false)
-//				worldY += speed;
-//			}
-//			
-//			if(keyH.leftPressed == true) {
-//				direction = "left";
-//				if(collisionOn == false)
-//				worldX -= speed;
-//				
-//			}
-//			
-//			if(keyH.rightPressed == true) {
-//				direction = "right";	
-//				if(collisionOn == false)
-//				worldX += speed;
-//							
-//			}
-
 			// CAN'T MOVE DIAGONALLY
 
 			if (keyH.upPressed == true) {
@@ -157,29 +128,56 @@ public class Player extends Character {
 
 			// Collision Check
 			collisionOn = false;
-
 			gp.cChecker.insideMap(this);
-
-			// if collision = false, player can move
-			if (collisionOn == false) {
-				switch (direction) {
-				case "up":
-					worldY -= getSpeed();
-					break;
-
-				case "down":
-					worldY += getSpeed();
-					break;
-
-				case "left":
-					worldX -= getSpeed();
-					break;
-
-				case "right":
-					worldX += getSpeed();
-					break;
+			
+			if(keyH.upPressed == true) {
+				direction = "up";
+				if(collisionOn == false) {		
+					if (keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
+						worldY -= getDiagonalSpeed();
+					}
+					else {
+						worldY -= getSpeed();
+					}
 				}
 			}
+			
+			if(keyH.downPressed == true) {
+				direction = "down";
+				if(collisionOn == false) {
+					if (keyH.upPressed || keyH.leftPressed || keyH.rightPressed) {
+						worldY += getDiagonalSpeed();
+					}
+					else {
+						worldY += getSpeed();
+					}				
+				}
+			}
+			
+			if(keyH.leftPressed == true) {
+				direction = "left";
+				if(collisionOn == false) {
+					if (keyH.upPressed || keyH.rightPressed || keyH.downPressed) {
+						worldX -= getDiagonalSpeed();
+					}
+					else {
+						worldX -= getSpeed();
+					}					
+				}	
+			}
+			
+			if(keyH.rightPressed == true) {
+				direction = "right";	
+				if(collisionOn == false) {
+					if (keyH.upPressed || keyH.leftPressed || keyH.downPressed) {
+						worldX += getDiagonalSpeed();
+					}
+					else {
+						worldX += getSpeed();
+					}		
+				}					
+			}
+
 
 			spriteCounter++;
 			if (spriteCounter > 6) {
@@ -198,8 +196,7 @@ public class Player extends Character {
 		}
 
 		if (keyH.shoot) {
-
-			if ((gp.stopwatch - shoot_timer) >= 1000000000 / getShoot_speed()) {
+			if ((gp.stopwatch - shoot_timer) >= 1000000000 / getShootSpeed()) {
 				switch (direction) {
 				case "up":
 					Bullet newBullet = new Bullet(gp, this, direction, playerBulletDimension1, playerBulletDimension2, worldX + gp.tileSize/2 - 3, worldY);
@@ -228,10 +225,7 @@ public class Player extends Character {
 
 	public void draw(Graphics2D g2) {
 
-//		g2.setColor(Color.white);	
-//		g2.fillRect(x, y, gp.tileSize, gp.tileSize);
-
-		BufferedImage image = null;
+		Image image = null;
 
 		switch (direction) {
 		case "up":
@@ -368,7 +362,7 @@ public class Player extends Character {
 
 		}
 
-		g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+		g2.drawImage(image, screenX, screenY, size, size, null);
 	}
 
 	public void drawBullets(Graphics2D g2) {
@@ -400,5 +394,18 @@ public class Player extends Character {
 					bullet.solidArea.width, bullet.solidArea.height);
 		}
 	}
-
+	
+	@Override
+	public void setSpeed(int speed) {
+		super.setSpeed(speed);
+		this.setDiagonalSpeed(speed);
+	}
+	
+	void setDiagonalSpeed(int speed) {
+		this.diagonalSpeed = (int) Math.ceil(getSpeed()/Math.sqrt(2));
+	}
+	
+	int getDiagonalSpeed() {
+		return this.diagonalSpeed;
+	}
 }

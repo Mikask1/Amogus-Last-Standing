@@ -2,6 +2,7 @@ package main;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -17,12 +18,19 @@ import bullet.Bullet;
 import character.Character;
 import character.Player;
 import character.monster.MonBat;
-import character.monster.MonMushroom;;
+import character.monster.MonMushroom;
+import character.monster.Monster;;
 
 @SuppressWarnings("serial")
 public class GamePanel extends JPanel implements Runnable {
 
-	// SCREEN SETTINGS
+	// SYSTEM
+	public CollisionChecker cChecker = new CollisionChecker(this);
+	KeyHandler keyH = new KeyHandler(this);
+	public UI ui = new UI(this);
+	Thread gameThread;
+
+	// SCREEN % WORLD SETTINGS
 	final int originalTileSize = 16; // 16 x 16 tile
 	final int scale = 3;
 
@@ -32,7 +40,6 @@ public class GamePanel extends JPanel implements Runnable {
 	public int screenWidth = tileSize * maxScreenCol; // 768 pixels
 	public int screenHeight = tileSize * maxScreenRow; // 576 pixels
 
-	// WORLD SETTINGS
 	public int sizeMultiplier = 1;
 	public int maxWorldCol = sizeMultiplier * maxScreenCol;
 	public int maxWorldRow = sizeMultiplier * maxScreenRow;
@@ -48,15 +55,9 @@ public class GamePanel extends JPanel implements Runnable {
 	int FPS = 120;
 	public long stopwatch = 0;
 
-	// SYSTEM
-	public CollisionChecker cChecker = new CollisionChecker(this);
-	KeyHandler keyH = new KeyHandler(this);
-	public UI ui = new UI(this);
-	Thread gameThread;
-
 	// ENTITY & OBJECT
 	public Player player = new Player(this, keyH);
-	public Vector<Character> monsters = new Vector<Character>();
+	public Vector<Monster> monsters = new Vector<Monster>();
 
 	public Voronoi map = new Voronoi(worldWidth, worldHeight, this);
 
@@ -65,7 +66,12 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int titleState = 0;
 	public final int playState = 1;
 	public final int pauseState = 2;
-
+  
+	public int wave = 0;
+	boolean animateWave = false;
+	long animationTimer = stopwatch;
+	long animationDuration = 1000; // in milisecond
+  
 	public GamePanel() {
 		try {
 			backgroundImage = ImageIO.read(getClass().getResourceAsStream("/tiles/bigGrass.png"));
@@ -80,21 +86,33 @@ public class GamePanel extends JPanel implements Runnable {
 		this.addKeyListener(keyH);
 	}
 
-	public void setupGame() {
-		gameState = titleState;
+	public void setupGame(int multiplier) {
+		// RESET
+		worldWidth = worldWidth / sizeMultiplier;
+		worldHeight = worldHeight / sizeMultiplier;
 
-		monsters.add(new MonMushroom(this));
-		monsters.add(new MonBat(this));
+		monsters.clear();
+		
+		wave = 0;
+		// SETUP
+		sizeMultiplier = multiplier;
+		worldWidth = worldWidth * sizeMultiplier;
+		worldHeight = worldHeight * sizeMultiplier;
+		player.worldX = worldWidth / 3;
+		player.worldY = worldHeight / 3;
+
+		map = new Voronoi(worldWidth, worldHeight, this);
+		gameState = playState;
 	}
 
 	public void startGameThread() {
+		gameState = titleState;
+
 		gameThread = new Thread(this);
 		gameThread.start();
 	}
 
-	@Override
 	public void run() {
-
 		double drawInterval = 1000000000 / FPS; // 0.0166 seconds
 		double delta = 0;
 		long lastTime = System.nanoTime();
@@ -131,10 +149,10 @@ public class GamePanel extends JPanel implements Runnable {
 		if (gameState == playState) {
 			screenX = player.screenX - player.worldX;
 			screenY = player.screenY - player.worldY;
+			
 			player.update();
 
 			int idx = 0;
-
 			for (int i = 0; i < monsters.size(); i++) {
 				Character monster = monsters.get(i);
 				monster.setAction();
@@ -152,17 +170,91 @@ public class GamePanel extends JPanel implements Runnable {
 
 			for (int i = 0; i < player.bullets.size(); i++) {
 				Bullet bullet = player.bullets.get(i);
-				if (!map.inside(screenX + bullet.worldX + bullet.solidArea.x, screenY + bullet.worldY + bullet.solidArea.y, bullet.solidArea.width, bullet.solidArea.height)) {
+				if (!map.inside(screenX + bullet.worldX + bullet.solidArea.x,
+						screenY + bullet.worldY + bullet.solidArea.y, bullet.solidArea.width,
+						bullet.solidArea.height)) {
 					player.bullets.remove(i);
-
 				}
+			}
+			
+			
+			for (Monster mon : monsters) {
+				cChecker.checkBulletHitsMonster(mon);
+				
+				cChecker.monsterBodyHitPlayer(player, mon);				
+			}
+			
+			if (monsters.isEmpty()) {
+				animateWave = true;
+				animationTimer = stopwatch;
+				wave++;
+				
+				switch(wave) {
+				case 1:
+					monsters.add(new MonBat(this));
+					break;
+				case 2:
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonBat(this));
+					break;
+				case 3:
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonBat(this));
+					break;
+				case 4:
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonBat(this));
+					monsters.add(new MonBat(this));
+					break;
+				case 5:
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonBat(this));
+					monsters.add(new MonBat(this));
+					monsters.add(new MonBat(this));
+					monsters.add(new MonBat(this));
+					break;
+				case 6:
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonMushroom(this));
+					monsters.add(new MonBat(this));
+					monsters.add(new MonBat(this));
+					monsters.add(new MonBat(this));
+					monsters.add(new MonBat(this));
+					monsters.add(new MonBat(this));
+					monsters.add(new MonBat(this));
+					monsters.add(new MonBat(this));
+					monsters.add(new MonBat(this));
+					break;
+				}					
 			}
 		}
 
-		if (gameState == pauseState)
-
-		{
-
+		if (gameState == pauseState) {
 		}
 
 	}
@@ -206,6 +298,25 @@ public class GamePanel extends JPanel implements Runnable {
 
 			// UI
 			ui.draw(g2);
+			
+			// Wave
+			g2.setColor(Color.white);
+			g2.setFont(UI.OEM8514.deriveFont(Font.PLAIN, 20F));
+			
+			g2.drawString("Wave: " + wave, screenWidth - 130, 25);	
+			
+			if (stopwatch - animationTimer < animationDuration * 1000000) {
+				int alpha = (int) ((double) ((stopwatch - animationTimer)/1000000)/animationDuration * 255);
+				g2.setColor(new Color(255, 255, 255, alpha));
+				g2.setFont(UI.OEM8514.deriveFont(Font.PLAIN, 50F));
+				g2.drawString("Wave:" + wave, screenWidth/2 - 100, screenHeight/2 - 25);		
+			}
+			else if (stopwatch - animationTimer < 2 * animationDuration * 1000000) {
+				int alpha = (int) (255 - ((double) ((stopwatch - animationTimer)/1000000)/animationDuration * 255)/2);
+				g2.setColor(new Color(255, 255, 255, alpha));
+				g2.setFont(UI.OEM8514.deriveFont(Font.PLAIN, 50F));	
+				g2.drawString("Wave:" + wave, screenWidth/2 - 100, screenHeight/2 - 25);		
+			}
 		}
 
 		g2.dispose();

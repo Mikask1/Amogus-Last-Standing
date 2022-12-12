@@ -4,9 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Timer;
 
 import javax.imageio.ImageIO;
 
@@ -28,6 +26,8 @@ public class Player extends Character {
 	public Image up, up1, up2, down, down1, down2, left, left1, left2, right, right1, right2;
 	public Image up_shoot, up1_shoot, up2_shoot, down_shoot, down1_shoot, down2_shoot, left_shoot, left1_shoot,
 			left2_shoot, right_shoot, right1_shoot, right2_shoot;
+	
+	int diagonalSpeed;
 	
 	public Player(GamePanel gp, KeyHandler keyH) {
 		super(gp);
@@ -61,10 +61,9 @@ public class Player extends Character {
 		direction = "down";
 		setHealth(10);
 	}
-
+	
 	public void getPlayerImage() {
 		try {
-
 			up = ImageIO.read(getClass().getResourceAsStream("/player/amog-back.png"));
 			up1 = ImageIO.read(getClass().getResourceAsStream("/player/amog-back1.png"));
 			up2 = ImageIO.read(getClass().getResourceAsStream("/player/amog-back2.png"));
@@ -109,37 +108,6 @@ public class Player extends Character {
 		if (keyH.upPressed == true || keyH.leftPressed == true || keyH.downPressed == true
 				|| keyH.rightPressed == true) {
 
-//			//CAN MOVE DIAGONALLY
-//			
-//			collisionOn = false;
-//			gp.cChecker.checkTile(this);
-//			
-//			if(keyH.upPressed == true) {
-//				direction = "up";
-//				if(collisionOn == false)
-//				worldY -= speed;
-//			}
-//			
-//			if(keyH.downPressed == true) {
-//				direction = "down";
-//				if(collisionOn == false)
-//				worldY += speed;
-//			}
-//			
-//			if(keyH.leftPressed == true) {
-//				direction = "left";
-//				if(collisionOn == false)
-//				worldX -= speed;
-//				
-//			}
-//			
-//			if(keyH.rightPressed == true) {
-//				direction = "right";	
-//				if(collisionOn == false)
-//				worldX += speed;
-//							
-//			}
-
 			// CAN'T MOVE DIAGONALLY
 
 			if (keyH.upPressed == true) {
@@ -161,27 +129,56 @@ public class Player extends Character {
 			// Collision Check
 			collisionOn = false;
 			gp.cChecker.insideMap(this);
-
-			// if collision = false, player can move
-			if (collisionOn == false) {
-				switch (direction) {
-				case "up":
-					worldY -= getSpeed();
-					break;
-
-				case "down":
-					worldY += getSpeed();
-					break;
-
-				case "left":
-					worldX -= getSpeed();
-					break;
-
-				case "right":
-					worldX += getSpeed();
-					break;
+			
+			if(keyH.upPressed == true) {
+				direction = "up";
+				if(collisionOn == false) {		
+					if (keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
+						worldY -= getDiagonalSpeed();
+					}
+					else {
+						worldY -= getSpeed();
+					}
 				}
 			}
+			
+			if(keyH.downPressed == true) {
+				direction = "down";
+				if(collisionOn == false) {
+					if (keyH.upPressed || keyH.leftPressed || keyH.rightPressed) {
+						worldY += getDiagonalSpeed();
+					}
+					else {
+						worldY += getSpeed();
+					}				
+				}
+			}
+			
+			if(keyH.leftPressed == true) {
+				direction = "left";
+				if(collisionOn == false) {
+					if (keyH.upPressed || keyH.rightPressed || keyH.downPressed) {
+						worldX -= getDiagonalSpeed();
+					}
+					else {
+						worldX -= getSpeed();
+					}					
+				}
+				
+			}
+			
+			if(keyH.rightPressed == true) {
+				direction = "right";	
+				if(collisionOn == false) {
+					if (keyH.upPressed || keyH.leftPressed || keyH.downPressed) {
+						worldX += getDiagonalSpeed();
+					}
+					else {
+						worldX += getSpeed();
+					}		
+				}					
+			}
+
 
 			spriteCounter++;
 			if (spriteCounter > 6) {
@@ -398,5 +395,18 @@ public class Player extends Character {
 					bullet.solidArea.width, bullet.solidArea.height);
 		}
 	}
-
+	
+	@Override
+	public void setSpeed(int speed) {
+		super.setSpeed(speed);
+		this.setDiagonalSpeed(speed);
+	}
+	
+	void setDiagonalSpeed(int speed) {
+		this.diagonalSpeed = (int) Math.ceil(getSpeed()/Math.sqrt(2));
+	}
+	
+	int getDiagonalSpeed() {
+		return this.diagonalSpeed;
+	}
 }

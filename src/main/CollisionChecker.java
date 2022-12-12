@@ -11,6 +11,7 @@ import main.GamePanel;
 public class CollisionChecker {
 	GamePanel gp;
 	long bodyHitTimer = 0;
+	
 	public CollisionChecker(GamePanel gp) {
 		this.gp = gp;
 	}
@@ -21,27 +22,26 @@ public class CollisionChecker {
 		int worldYNext = character.gp.screenY + character.worldY + character.footArea.y;
 		int height = character.footArea.height;
 		
-		switch (character.direction) {
-		case "up":
-			if (!gp.map.inside(worldXNext, worldYNext - character.getSpeed() - 1, width, height)) {
+		if (character.direction == "up") {
+			if (!gp.map.inside(worldXNext, worldYNext - character.getSpeed(), width, height)) {
 				character.collisionOn = true;
 			}
-			break;
-		case "down":
-			if (!gp.map.inside(worldXNext, worldYNext + character.getSpeed() + 1, width, height)) {
+		}
+		
+		if (character.direction == "down") {
+			if (!gp.map.inside(worldXNext, worldYNext + character.getSpeed(), width, height)) {
 				character.collisionOn = true;
 			}
-			break;
-		case "left":
-			if (!gp.map.inside(worldXNext - character.getSpeed() - 1, worldYNext, width, height)) {
+		}
+		if (character.direction == "left") {
+			if (!gp.map.inside(worldXNext - character.getSpeed(), worldYNext, width, height)) {
 				character.collisionOn = true;
 			}
-			break;
-		case "right":
-			if (!gp.map.inside(worldXNext + character.getSpeed() + 1, worldYNext, width, height)) {
+		}
+		if (character.direction == "right") {
+			if (!gp.map.inside(worldXNext + character.getSpeed(), worldYNext, width, height)) {
 				character.collisionOn = true;
 			}
-			break;
 		}
 	}
 

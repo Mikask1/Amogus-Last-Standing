@@ -66,7 +66,10 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int playState = 1;
 	public final int pauseState = 2;
 	public int wave = 0;
-
+	boolean animateWave = false;
+	long animationTimer = stopwatch;
+	long animationDuration = 1000; // in milisecond
+	
 	public GamePanel() {
 		try {
 			backgroundImage = ImageIO.read(getClass().getResourceAsStream("/tiles/bigGrass.png"));
@@ -131,7 +134,7 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 
 			if (timer >= 1000000000) {
-//				System.out.println("FPS: " + drawCount);
+				System.out.println("FPS: " + drawCount);
 				drawCount = 0;
 				timer = 0;
 			}
@@ -180,6 +183,8 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 			
 			if (monsters.isEmpty()) {
+				animateWave = true;
+				animationTimer = stopwatch;
 				wave++;
 				
 				switch(wave) {
@@ -293,9 +298,24 @@ public class GamePanel extends JPanel implements Runnable {
 			ui.draw(g2);
 			
 			// Wave
+			
 			g2.setColor(Color.white);
 			g2.setFont(UI.OEM8514.deriveFont(Font.PLAIN, 20F));
-			g2.drawString("Wave: " + wave, screenWidth - 130, 25);
+			
+			g2.drawString("Wave: " + wave, screenWidth - 130, 25);	
+			
+			if (stopwatch - animationTimer < animationDuration * 1000000) {
+				int alpha = (int) ((double) ((stopwatch - animationTimer)/1000000)/animationDuration * 255);
+				g2.setColor(new Color(255, 255, 255, alpha));
+				g2.setFont(UI.OEM8514.deriveFont(Font.PLAIN, 50F));
+				g2.drawString("Wave:" + wave, screenWidth/2 - 100, screenHeight/2 - 25);		
+			}
+			else if (stopwatch - animationTimer < 2 * animationDuration * 1000000) {
+				int alpha = (int) (255 - ((double) ((stopwatch - animationTimer)/1000000)/animationDuration * 255)/2);
+				g2.setColor(new Color(255, 255, 255, alpha));
+				g2.setFont(UI.OEM8514.deriveFont(Font.PLAIN, 50F));	
+				g2.drawString("Wave:" + wave, screenWidth/2 - 100, screenHeight/2 - 25);		
+			}
 		}
 
 		g2.dispose();

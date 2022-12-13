@@ -26,8 +26,8 @@ public class MonBat extends Monster {
 		setBodyDamage(4);
 		direction = "left";
 
-		worldX = gp.player.screenX;
-		worldY = gp.player.screenY;
+		worldX = rand.nextInt(-200, 200) + gp.player.screenX;
+		worldY = rand.nextInt(-200, 200) + gp.player.screenY;
 
 		solidArea = new Rectangle();
 
@@ -100,18 +100,26 @@ public class MonBat extends Monster {
 			switch (direction) {
 
 			case "up":
-				worldY -= getSpeed();
+				if (!collisionUp) {
+					worldY -= getSpeed();
+				}
 				break;
 			case "down":
-				worldY += getSpeed();
+				if (!collisionDown) {
+					worldY += getSpeed();
+				}
 				break;
 
 			case "left":
-				worldX -= getSpeed();
+				if (!collisionLeft) {
+					worldX -= getSpeed();
+				}
 				break;
 
 			case "right":
-				worldX += getSpeed();
+				if (!collisionRight) {
+					worldX += getSpeed();
+				}
 				break;
 			}
 		}

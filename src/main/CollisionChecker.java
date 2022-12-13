@@ -10,41 +10,41 @@ import main.GamePanel;
 public class CollisionChecker {
 	GamePanel gp;
 	long bodyHitTimer = 0;
-  
+
 	public CollisionChecker(GamePanel gp) {
 		this.gp = gp;
 	}
-	
+
 	public void insideMap(Character character) {
+		
 		int worldXNext = character.gp.screenX + character.worldX + character.footArea.x;
 		int width = character.footArea.width;
 		int worldYNext = character.gp.screenY + character.worldY + character.footArea.y;
 		int height = character.footArea.height;
-		
-		if (character.direction == "up") {
+
+		if (character.direction.contains("up")) {
 			if (!gp.map.inside(worldXNext, worldYNext - character.getSpeed(), width, height)) {
 				character.collisionOn = true;
 			}
 		}
-		
-		if (character.direction == "down") {
+		if (character.direction.contains("down")) {
 			if (!gp.map.inside(worldXNext, worldYNext + character.getSpeed(), width, height)) {
 				character.collisionOn = true;
 			}
 		}
-		if (character.direction == "left") {
+		if (character.direction.contains("left")) {
 			if (!gp.map.inside(worldXNext - character.getSpeed(), worldYNext, width, height)) {
 				character.collisionOn = true;
 			}
 		}
-		if (character.direction == "right") {
+		if (character.direction.contains("right")) {
 			if (!gp.map.inside(worldXNext + character.getSpeed(), worldYNext, width, height)) {
 				character.collisionOn = true;
 			}
 		}
 	}
 
-	public void checkBulletHitsMonster(Character monster) {
+	public void checkBulletHitsMonster(Monster monster) {
 
 		Rectangle monsterSolidArea = new Rectangle(gp.screenX + monster.worldX + monster.solidArea.x,
 				gp.screenY + monster.worldY + monster.solidArea.y, monster.solidArea.width, monster.solidArea.height);
@@ -54,34 +54,79 @@ public class CollisionChecker {
 			Rectangle bulletSolidArea = new Rectangle(gp.screenX + bullet.worldX + bullet.solidArea.x,
 					gp.screenY + bullet.worldY + bullet.solidArea.y, bullet.solidArea.width, bullet.solidArea.height);
 			boolean hits = bulletSolidArea.intersects(monsterSolidArea);
-			
+
 			if (hits) {
 				monster.hurt = true;
 				this.gp.player.bullets.remove(i);
 				monster.damageHealth(bullet.damage);
 			}
-			
+
 			bullet = null;
 		}
-		
+
 		monsterSolidArea = null;
 	}
-	
+
 	public void monsterBodyHitPlayer(Player player, Monster monster) {
-		
+
 		Rectangle monsterSolidArea = new Rectangle(gp.screenX + monster.worldX + monster.solidArea.x,
 				gp.screenY + monster.worldY + monster.solidArea.y, monster.solidArea.width, monster.solidArea.height);
-		
-		Rectangle playerSolidArea = new Rectangle(player.screenX + player.solidArea.x, player.screenY + player.solidArea.y,
-				player.solidArea.width, player.solidArea.height);
-		
+
+		Rectangle playerSolidArea = new Rectangle(player.screenX + player.solidArea.x,
+				player.screenY + player.solidArea.y, player.solidArea.width, player.solidArea.height);
+
 		if (gp.stopwatch - bodyHitTimer >= 500000000) {
 			if (playerSolidArea.intersects(monsterSolidArea)) {
 				player.damageHealth(monster.getBodyDamage());
 				player.hurt = true;
 				bodyHitTimer = gp.stopwatch;
 				System.out.println("Player health: " + player.getHealth());
-			}		
+			}
+		}
+	}
+
+	public void monsterCollideMonster(Monster enemy) {
+		enemy.collisionDown = false;
+		enemy.collisionUp = false;
+		enemy.collisionLeft = false;
+		enemy.collisionRight = false;
+		
+		Rectangle enemyFootArea = new Rectangle(gp.screenX + enemy.worldX + enemy.footArea.x,
+				gp.screenY + enemy.worldY + enemy.footArea.y, enemy.footArea.width, enemy.footArea.height);
+
+		int worldXNext = enemy.gp.screenX + enemy.worldX + enemy.footArea.x;
+		int width = enemy.footArea.width;
+		int worldYNext = enemy.gp.screenY + enemy.worldY + enemy.footArea.y;
+		int height = enemy.footArea.height;
+
+		for (Monster enemy2 : gp.monsters) {
+			if (enemy2 == enemy) {
+				continue;
+			}
+			
+			Rectangle enemy2FootArea = new Rectangle(gp.screenX + enemy2.worldX + enemy2.footArea.x,
+					gp.screenY + enemy2.worldY + enemy2.footArea.y, enemy2.footArea.width, enemy2.footArea.height);
+
+			if (enemy.direction.contains("up")) {
+				if (enemy2FootArea.intersects(worldXNext, worldYNext - enemy.getSpeed() - 1, width, height)) {
+					enemy.collisionUp = true;
+				}
+			}
+			if (enemy.direction.contains("down")) {
+				if (enemy2FootArea.intersects(worldXNext, worldYNext + enemy.getSpeed() + 1, width, height)) {
+					enemy.collisionDown = true;
+				}
+			}
+			if (enemy.direction.contains("left")) {
+				if (enemy2FootArea.intersects(worldXNext - enemy.getSpeed() - 1, worldYNext, width, height)) {
+					enemy.collisionLeft = true;
+				}
+			}
+			if (enemy.direction.contains("right")) {
+				if (enemy2FootArea.intersects(worldXNext + enemy.getSpeed() + 1, worldYNext, width, height)) {
+					enemy.collisionRight = true;
+				}
+			}
 		}
 	}
 }

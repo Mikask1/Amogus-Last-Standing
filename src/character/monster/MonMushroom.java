@@ -73,10 +73,22 @@ public class MonMushroom extends Monster {
 	}
 
 	public void setAction() {
-		if (worldX < gp.player.worldX - gp.tileSize)
+		if (worldX < gp.player.worldX - gp.tileSize) {
 			direction = "right";
-		if (worldX > gp.player.worldX)
+			if (worldY < gp.player.worldY - gp.tileSize) {
+				direction = "right down";
+			} else{
+				direction = "right up";
+			}
+		}
+		if (worldX > gp.player.worldX) {
 			direction = "left";
+			if (worldY < gp.player.worldY - gp.tileSize) {
+				direction = "left down";
+			} else{
+				direction = "left up";
+			}
+		}
 	}
 
 	public void update() {
@@ -85,24 +97,26 @@ public class MonMushroom extends Monster {
 
 		if (collisionOn == false) {
 			switch (direction) {
-
 			case "left":
-				if (worldX != gp.player.worldX) {
+			case "left up":
+			case "left down":
+				if ((worldX != gp.player.worldX) && !collisionLeft) {
 					worldX -= getSpeed();
 				}
-				if (worldY < gp.player.worldY - gp.tileSize) {
+				if (worldY < gp.player.worldY - gp.tileSize && !collisionDown) {
 					worldY += getSpeed();
-				} else {
+				} else if (!collisionUp){
 					worldY -= getSpeed();
 				}
 				break;
-
 			case "right":
-				if (worldX != gp.player.worldX - gp.tileSize)
+			case "right up":
+			case "right down":
+				if ((worldX != gp.player.worldX - gp.tileSize) && !collisionRight)
 					worldX += getSpeed();
-				if (worldY <= gp.player.worldY - gp.tileSize) {
+				if (worldY <= gp.player.worldY - gp.tileSize && !collisionDown) {
 					worldY += getSpeed();
-				} else {
+				} else if (!collisionUp){
 					worldY -= getSpeed();
 				}
 				break;
@@ -144,6 +158,8 @@ public class MonMushroom extends Monster {
 
 		switch (direction) {
 		case "left":
+		case "left up":
+		case "left down":
 			tempDir = "left";
 			if (spriteNum == 1) {
 				image = monLeft;
@@ -161,8 +177,10 @@ public class MonMushroom extends Monster {
 				image = monLeft4;
 			}
 			break;
-
+		
 		case "right":
+		case "right up":
+		case "right down":
 			tempDir = "right";
 			if (spriteNum == 1) {
 				image = monRight;
@@ -182,7 +200,10 @@ public class MonMushroom extends Monster {
 			break;
 
 		case "hurt":
-			if (tempDir == "left") {
+			switch (tempDir) {
+			case "left":
+			case "left up":
+			case "left down":
 				if (spriteNum == 1) {
 					image = hurtLeft;
 				}
@@ -199,8 +220,10 @@ public class MonMushroom extends Monster {
 					image = hurtLeft4;
 				}
 				direction = "left";
-			}
-			if (tempDir == "right") {
+				break;
+			case "right":
+			case "right up":
+			case "right down":
 				if (spriteNum == 1) {
 					image = hurtRight;
 				}
@@ -217,9 +240,9 @@ public class MonMushroom extends Monster {
 					image = hurtRight4;
 				}
 				direction = "right";
+				break;
 			}
 			break;
-
 		}
 		g2.drawImage(image, this.gp.screenX + worldX, this.gp.screenY + worldY, size, size, null);
 	}

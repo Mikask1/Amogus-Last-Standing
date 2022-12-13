@@ -24,7 +24,7 @@ public class MonMushroomCharge extends Monster {
 	private long chargeCooldown = 5000;
 	private long chargePowerup = 2000;
 	private long chargeDuration = 500;
-	private int chargeSpeed = 5;
+	private int chargeSpeed = 4;
 	private boolean charge = false;
 	private boolean release = false;
 
@@ -92,11 +92,22 @@ public class MonMushroomCharge extends Monster {
 	}
 
 	public void setAction() {
-		if (worldX < gp.player.worldX - gp.tileSize)
+		if (worldX < gp.player.worldX - gp.tileSize) {
 			direction = "right";
-		if (worldX > gp.player.worldX)
+			if (worldY < gp.player.worldY - gp.tileSize) {
+				direction = "right down";
+			} else{
+				direction = "right up";
+			}
+		}
+		if (worldX > gp.player.worldX) {
 			direction = "left";
-
+			if (worldY < gp.player.worldY - gp.tileSize) {
+				direction = "left down";
+			} else{
+				direction = "left up";
+			}
+		}
 	}
 
 	public void update() {
@@ -131,25 +142,26 @@ public class MonMushroomCharge extends Monster {
 
 		if (collisionOn == false) {
 			switch (direction) {
-
 			case "left":
-				if (worldX >= gp.player.worldX) {
+			case "left up":
+			case "left down":
+				if ((worldX != gp.player.worldX) && !collisionLeft) {
 					worldX -= speed;
 				}
-				if (worldY < gp.player.worldY - gp.tileSize) {
+				if (worldY < gp.player.worldY - gp.tileSize && !collisionDown) {
 					worldY += speed;
-				} else {
+				} else if (!collisionUp){
 					worldY -= speed;
 				}
 				break;
-
 			case "right":
-				if (worldX <= gp.player.worldX - gp.tileSize)
+			case "right up":
+			case "right down":
+				if ((worldX != gp.player.worldX - gp.tileSize) && !collisionRight)
 					worldX += speed;
-
-				if (worldY <= gp.player.worldY - gp.tileSize) {
+				if (worldY <= gp.player.worldY - gp.tileSize && !collisionDown) {
 					worldY += speed;
-				} else {
+				} else if (!collisionUp){
 					worldY -= speed;
 				}
 				break;
@@ -191,6 +203,9 @@ public class MonMushroomCharge extends Monster {
 
 		switch (direction) {
 		case "left":
+		case "left up":
+		case "left down":
+			tempDir = "left";
 			tempDir = "left";
 			if (spriteNum == 1) {
 				image = monLeft;
@@ -210,6 +225,8 @@ public class MonMushroomCharge extends Monster {
 			break;
 
 		case "right":
+		case "right up":
+		case "right down":
 			tempDir = "right";
 			if (spriteNum == 1) {
 				image = monRight;

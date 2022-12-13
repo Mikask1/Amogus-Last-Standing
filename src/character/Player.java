@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -23,8 +24,8 @@ public class Player extends Character {
 	int playerBulletDimension1 = 4;
 	int playerBulletDimension2 = 13;
 	
-	public Image up, up1, up2, down, down1, down2, left, left1, left2, right, right1, right2;
-	public Image up_shoot, up1_shoot, up2_shoot, down_shoot, down1_shoot, down2_shoot, left_shoot, left1_shoot,
+	public BufferedImage up, up1, up2, down, down1, down2, left, left1, left2, right, right1, right2;
+	public BufferedImage up_shoot, up1_shoot, up2_shoot, down_shoot, down1_shoot, down2_shoot, left_shoot, left1_shoot,
 			left2_shoot, right_shoot, right1_shoot, right2_shoot;
 	
 	int diagonalSpeed;
@@ -221,11 +222,19 @@ public class Player extends Character {
 				shoot_timer = gp.stopwatch;
 			}
 		}
+		
+		if (hurt == true) {
+			hurtCounter++;
+			if (hurtCounter > 30) {
+				hurt = false;
+				hurtCounter = 0;
+			}
+		}
 	}
 
 	public void draw(Graphics2D g2) {
 
-		Image image = null;
+		BufferedImage image = null;
 
 		switch (direction) {
 		case "up":
@@ -362,7 +371,12 @@ public class Player extends Character {
 
 		}
 
-		g2.drawImage(image, screenX, screenY, size, size, null);
+		if (hurt) {
+			g2.drawImage(tint(image, 1, 0.3, 0.3, 1), screenX, screenY, size, size, null);			
+		}
+		else {
+			g2.drawImage(image, screenX, screenY, size, size, null);
+		}
 	}
 
 	public void drawBullets(Graphics2D g2) {
@@ -407,5 +421,28 @@ public class Player extends Character {
 	
 	int getDiagonalSpeed() {
 		return this.diagonalSpeed;
+	}
+	
+	protected BufferedImage tint(BufferedImage sprite, double d, double e, double f, double g) {
+		BufferedImage tintedSprite = new BufferedImage(sprite.getWidth(), sprite.getHeight(),
+				BufferedImage.TRANSLUCENT);
+		Graphics2D graphics = tintedSprite.createGraphics();
+		graphics.drawImage(sprite, 0, 0, null);
+		graphics.dispose();
+
+		for (int i = 0; i < tintedSprite.getWidth(); i++) {
+			for (int j = 0; j < tintedSprite.getHeight(); j++) {
+				int ax = tintedSprite.getColorModel().getAlpha(tintedSprite.getRaster().getDataElements(i, j, null));
+				int rx = tintedSprite.getColorModel().getRed(tintedSprite.getRaster().getDataElements(i, j, null));
+				int gx = tintedSprite.getColorModel().getGreen(tintedSprite.getRaster().getDataElements(i, j, null));
+				int bx = tintedSprite.getColorModel().getBlue(tintedSprite.getRaster().getDataElements(i, j, null));
+				rx *= d;
+				gx *= e;
+				bx *= f;
+				ax *= g;
+				tintedSprite.setRGB(i, j, (ax << 24) | (rx << 16) | (gx << 8) | (bx));
+			}
+		}
+		return tintedSprite;
 	}
 }

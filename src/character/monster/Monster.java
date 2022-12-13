@@ -12,6 +12,11 @@ public abstract class Monster extends Character{
 	public BufferedImage hurtLeft, hurtLeft1, hurtLeft2, hurtLeft3, hurtLeft4, hurtRight, hurtRight1, hurtRight2, hurtRight3,
 	hurtRight4;
 	
+	public boolean collisionLeft = false;
+	public boolean collisionRight = false;
+	public boolean collisionUp = false;
+	public boolean collisionDown = false;
+	
 	public Monster(GamePanel gp) {
 		super(gp);
 	}

@@ -212,9 +212,6 @@ public class Voronoi {
 		
 		for (int i = 0; i < land.size(); i++) {
 			g2.drawImage(landImage.get(i), land.get(i).x + screenX - solidX, land.get(i).y + screenY - solidY, null);
-			// Bounding Box
-//			g2.drawRect(land.get(i).x + screenX - solidX, land.get(i).y + screenY - solidY,
-//					land.get(i).width + 2 * solidX, land.get(i).height + 2 * solidY);
 		}
 	}
 

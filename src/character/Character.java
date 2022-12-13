@@ -1,6 +1,7 @@
 package character;
 
 import java.awt.Graphics2D;
+
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.Vector;
@@ -48,11 +49,15 @@ public abstract class Character {
 	}
 
 	public void update() {
-//		setAction();
+		
 	}
 
 	public void draw(Graphics2D g2) {
 
+	}
+	
+	public void drawBullets(Graphics2D g2) {
+		
 	}
 
 	public int getSpeed() {

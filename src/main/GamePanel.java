@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.Color;
+
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -18,6 +19,7 @@ import bullet.Bullet;
 import character.Character;
 import character.Player;
 import character.monster.MonBat;
+import character.monster.MonLilMushroom;
 import character.monster.MonMushroom;
 import character.monster.Monster;;
 
@@ -66,6 +68,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int titleState = 0;
 	public final int playState = 1;
 	public final int pauseState = 2;
+	public final int overState = 3;
   
 	public int wave = 0;
 	boolean animateWave = false;
@@ -136,7 +139,7 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 
 			if (timer >= 1000000000) {
-//				System.out.println("FPS: " + drawCount);
+				System.out.println("FPS: " + drawCount);
 				drawCount = 0;
 				timer = 0;
 			}
@@ -146,6 +149,7 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 
 	public void update() {
+		
 		if (gameState == playState) {
 			screenX = player.screenX - player.worldX;
 			screenY = player.screenY - player.worldY;
@@ -157,6 +161,10 @@ public class GamePanel extends JPanel implements Runnable {
 				Character monster = monsters.get(i);
 				monster.setAction();
 				monster.update();
+				
+				for (Bullet monBt : monster.bullets) {
+					monBt.update();
+				}
 
 				if (!monster.alive) {
 					monsters.remove(idx);
@@ -175,13 +183,14 @@ public class GamePanel extends JPanel implements Runnable {
 						bullet.solidArea.height)) {
 					player.bullets.remove(i);
 				}
+				
 			}
 			
 			
 			for (Monster mon : monsters) {
 				cChecker.checkBulletHitsMonster(mon);
-				
-				cChecker.monsterBodyHitPlayer(player, mon);				
+			
+				cChecker.monsterBodyHitPlayer(player, mon);	
 			}
 			
 			if (monsters.isEmpty()) {
@@ -192,6 +201,7 @@ public class GamePanel extends JPanel implements Runnable {
 				switch(wave) {
 				case 1:
 					monsters.add(new MonBat(this));
+					monsters.add(new MonLilMushroom(this));					
 					break;
 				case 2:
 					monsters.add(new MonMushroom(this));
@@ -284,6 +294,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 			for (Character monster : monsters) {
 				monster.draw(g2);
+				monster.drawBullets(g2);
 				g2.setColor(Color.red);
 				g2.drawRect(screenX + monster.worldX + monster.footArea.x,
 						screenY + monster.worldY + monster.footArea.y, monster.footArea.width, monster.footArea.height);
@@ -295,7 +306,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 			// Bullets
 			player.drawBullets(g2);
-
+			
 			// UI
 			ui.draw(g2);
 			

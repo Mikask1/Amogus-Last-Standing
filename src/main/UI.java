@@ -29,7 +29,7 @@ public class UI {
 	public boolean gameFinished = false;
 	public int commandNum = 0;
 	public int mapNum = 1;
-	public int titleSubState = 0; // 0 : main menu, 1 : map menu
+	public int titleSubState = 0; // 0 : main menu, 1 : map menu, 2 : game over
 	public int highScore = 0;
 	
 	
@@ -68,6 +68,9 @@ public class UI {
 		
 		// TITLE STATE
 		if(gp.gameState == gp.titleState) {
+			if(titleSubState == 2) {
+				drawGameOver();
+			}
 			drawMainMenu();
 		}
 		
@@ -81,6 +84,11 @@ public class UI {
 			drawPauseScreen();
 		}
 		
+		// GAME OVER STATE
+		if(gp.player.getHealth() <= 0) {
+			titleSubState = 2;
+			gp.gameState = gp.titleState;
+		}
 	}
 	
 	public void drawMainMenu() {
@@ -317,6 +325,68 @@ public class UI {
 			text = "MAIN MENU";
 			g2.setColor(Color.WHITE);
 			g2.drawString(text, x+gp.tileSize*3+15, y+gp.tileSize+5);
+		}
+		
+	}
+	
+	public void drawGameOver() {
+		g2.setColor(new Color (54, 31, 2));
+		g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+		
+		int x = gp.screenWidth / 2 - (gp.tileSize * 6) / 2;
+		int y = gp.tileSize;
+		try {
+			BufferedImage logo = ImageIO.read(getClass().getResourceAsStream("/player/dead.png"));
+			g2.drawImage(logo, x, y, gp.tileSize * 6, gp.tileSize * 6, null);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		String text = "Game Over";
+		g2.setFont(maruMonica.deriveFont(Font.BOLD, 50F));
+		g2.setColor(Color.WHITE);
+		g2.drawString(text, getXforCenteredText(text), gp.screenHeight/2);
+		
+		g2.setFont(OEM8514.deriveFont(Font.PLAIN, 30F));
+		text = "Back to Main Menu";
+		x = getXforCenteredText(text);
+		y += gp.tileSize * 9;
+		int boxX = x - 30;
+		int boxY = y - 40;
+		g2.setColor(Color.BLACK);
+		g2.fillRoundRect(boxX-3, boxY-3, 387, 76, 25, 25);
+		g2.setColor(new Color(123, 75, 6));
+		g2.fillRoundRect(boxX, boxY, 381, 70, 20, 20);
+		g2.setColor(Color.white);
+		g2.drawString(text, x, y);
+		if(commandNum == 0) {
+			g2.setColor(new Color(166, 101, 6));
+			g2.fillRoundRect(boxX, boxY, 381, 70, 20, 20);
+			
+			g2.setFont(OEM8514.deriveFont(Font.PLAIN, 30F));
+			text = "Back to Main Menu";
+			g2.setColor(Color.WHITE);
+			g2.drawString(text, x, y);
+		}
+		
+		text = "Exit";
+		x = getXforCenteredText(text);
+		y += gp.tileSize * 2;
+		boxY = y - 40;
+		g2.setColor(Color.BLACK);
+		g2.fillRoundRect(boxX-3, boxY-3, 387, 76, 25, 25);
+		g2.setColor(new Color(123, 75, 6));
+		g2.fillRoundRect(boxX, boxY, 381, 70, 20, 20);
+		g2.setColor(Color.white);
+		g2.drawString(text, x, y);
+		if(commandNum == 1) {
+			g2.setColor(new Color(166, 101, 6));
+			g2.fillRoundRect(boxX, boxY, 381, 70, 20, 20);
+			
+			g2.setFont(OEM8514.deriveFont(Font.PLAIN, 30F));
+			text = "Exit";
+			g2.setColor(Color.WHITE);
+			g2.drawString(text, x, y);
 		}
 		
 	}

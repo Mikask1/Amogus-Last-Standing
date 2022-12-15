@@ -20,6 +20,10 @@ public class Bullet {
 	private String direction;
 	public Rectangle solidArea;
 	protected GamePanel gp;
+	
+	public Bullet() {
+		
+	}
 
 	public Bullet(GamePanel gp, Character character, String direction, int width, int height, int worldX, int worldY) {
 		this.gp = gp;

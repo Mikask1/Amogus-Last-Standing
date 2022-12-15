@@ -18,6 +18,7 @@ import bullet.Bullet;
 import character.Character;
 import character.Player;
 import character.monster.MonBat;
+import character.monster.MonLilMushroom;
 import character.monster.MonMushroom;
 import character.monster.MonMushroomCharge;
 import character.monster.Monster;;
@@ -29,6 +30,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public CollisionChecker cChecker = new CollisionChecker(this);
 	KeyHandler keyH = new KeyHandler(this);
 	public UI ui = new UI(this);
+	public Bullet bullet = new Bullet();
 	Thread gameThread;
 
 	// SCREEN % WORLD SETTINGS
@@ -156,8 +158,14 @@ public class GamePanel extends JPanel implements Runnable {
 				monster.setAction();
 
 				monster.update();
+				
+				for (Bullet monBt : monster.monBullets) {
+					monBt.update();
+				}
+				
 				cChecker.monsterCollideMonster(monster);
 				cChecker.checkBulletHitsMonster(monster);
+				cChecker.checkBulletHitsPlayer(player);
 				cChecker.monsterBodyHitPlayer(player, monster);
 				if (!monster.alive) {
 					monsters.remove(i);
@@ -213,6 +221,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 			for (Character monster : monsters) {
 				monster.draw(g2);
+				monster.drawBullets(g2);
 				g2.setColor(Color.red);
 				g2.drawRect(screenX + monster.worldX + monster.footArea.x,
 						screenY + monster.worldY + monster.footArea.y, monster.footArea.width, monster.footArea.height);
@@ -233,6 +242,7 @@ public class GamePanel extends JPanel implements Runnable {
 			g2.setFont(UI.OEM8514.deriveFont(Font.PLAIN, 20F));
 
 			g2.drawString("Wave: " + wave, screenWidth - 130, 25);
+			g2.drawString("HP:" + player.getHealth(), 25, 25);
 
 			if (stopwatch - animationTimer < animationDuration * 1000000) {
 				int alpha = (int) ((double) ((stopwatch - animationTimer) / 1000000) / animationDuration * 255);
@@ -246,6 +256,8 @@ public class GamePanel extends JPanel implements Runnable {
 				g2.setFont(UI.OEM8514.deriveFont(Font.PLAIN, 50F));
 				g2.drawString("Wave:" + wave, screenWidth / 2 - 100, screenHeight / 2 - 25);
 			}
+			
+
 		}
 
 		g2.dispose();
@@ -255,19 +267,24 @@ public class GamePanel extends JPanel implements Runnable {
 		if (monsters.isEmpty()) {
 			animateWave = true;
 			animationTimer = stopwatch;
+			if(wave > 0) {
+				ui.pauseSubState = 1;
+				gameState = pauseState;
+			}
 			wave++;
 
 			switch (wave) {
 			case 1:
 				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonMushroomCharge(this));
+//				monsters.add(new MonBat(this));
+//				monsters.add(new MonBat(this));
+//				monsters.add(new MonBat(this));
+//				monsters.add(new MonBat(this));
+//				monsters.add(new MonBat(this));
+//				monsters.add(new MonBat(this));
+//				monsters.add(new MonBat(this));
+//				monsters.add(new MonMushroomCharge(this));
+				monsters.add(new MonLilMushroom(this));
 				break;
 			case 2:
 				monsters.add(new MonMushroom(this));

@@ -28,6 +28,7 @@ public abstract class Character {
 	public int hurtCounter = 0;
 	
 	public Vector<Bullet> bullets = new Vector<Bullet>();
+	public Vector<Bullet> monBullets = new Vector<Bullet>();
 
 	public long shoot_timer;
 	public Image bullet_up, bullet_down, bullet_left, bullet_right;
@@ -53,6 +54,10 @@ public abstract class Character {
 
 	public void draw(Graphics2D g2) {
 
+	}
+	
+	public void drawBullets(Graphics2D g2) {
+		
 	}
 
 	public int getSpeed() {

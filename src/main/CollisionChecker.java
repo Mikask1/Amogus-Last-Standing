@@ -60,11 +60,34 @@ public class CollisionChecker {
 				this.gp.player.bullets.remove(i);
 				monster.damageHealth(bullet.damage);
 			}
-
+			
 			bullet = null;
 		}
 
 		monsterSolidArea = null;
+	}
+	
+	public void checkBulletHitsPlayer(Player player) {
+
+		Rectangle playerSolidArea = new Rectangle(player.screenX + player.solidArea.x,
+				player.screenY + player.solidArea.y, player.solidArea.width, player.solidArea.height);
+
+		for (int i = 0; i < this.gp.player.monBullets.size(); i++) {
+			Bullet bullet = this.gp.player.monBullets.get(i);
+			Rectangle bulletSolidArea = new Rectangle(gp.screenX + bullet.worldX + bullet.solidArea.x,
+					gp.screenY + bullet.worldY + bullet.solidArea.y, bullet.solidArea.width, bullet.solidArea.height);
+			boolean hits = bulletSolidArea.intersects(playerSolidArea);
+			
+			if (hits) {
+				player.hurt = true;
+				this.gp.player.monBullets.remove(i);
+				player.damageHealth(bullet.damage);
+			}
+			
+			bullet = null;
+		}
+
+		playerSolidArea = null;
 	}
 
 	public void monsterBodyHitPlayer(Player player, Monster monster) {

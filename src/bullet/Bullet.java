@@ -9,7 +9,7 @@ import main.GamePanel;
 public class Bullet {
 	Character character;
 	
-	public int damage = 5;
+	private int damage = 5;
 	private int bulletSpeed = 6;
 	
 	public int width;
@@ -25,7 +25,7 @@ public class Bullet {
 		
 	}
 
-	public Bullet(GamePanel gp, Character character, String direction, int width, int height, int worldX, int worldY) {
+	public Bullet(GamePanel gp, Character character, String direction, int width, int height, int worldX, int worldY, int damage) {
 		this.gp = gp;
 		
 		this.worldX = worldX;
@@ -35,7 +35,8 @@ public class Bullet {
 
 		this.width = width;
 		this.height = height;
-
+		
+		this.damage = damage;
 		solidArea = new Rectangle(0, 0, this.width, this.height);
 	}
 
@@ -44,16 +45,17 @@ public class Bullet {
 		case "up":
 			worldY -= bulletSpeed;
 			break;
-
 		case "down":
 			worldY += bulletSpeed;
 			break;
-
 		case "left":
+		case "left up":
+		case "left down":
 			worldX -= bulletSpeed;
 			break;
-
 		case "right":
+		case "right up":
+		case "right down":
 			worldX += bulletSpeed;
 			break;
 		}
@@ -61,5 +63,13 @@ public class Bullet {
 
 	public String getDirection() {
 		return direction;
+	}
+
+	public int getDamage() {
+		return damage;
+	}
+
+	public void setDamage(int damage) {
+		this.damage = damage;
 	}
 }

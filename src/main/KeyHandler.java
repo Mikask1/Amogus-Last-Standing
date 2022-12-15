@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import MapGenerator.Voronoi;
+import bullet.Bullet;
 import character.Player;
 
 public class KeyHandler implements KeyListener {
@@ -44,7 +45,7 @@ public class KeyHandler implements KeyListener {
 					}
 				}
 
-				if (code == KeyEvent.VK_SPACE || code == KeyEvent.VK_ENTER) {
+				if (code == KeyEvent.VK_ENTER) {
 					if (gp.ui.commandNum == 0) {
 //						gp.gameState = gp.playState;
 						gp.ui.titleSubState = 1;
@@ -150,7 +151,7 @@ public class KeyHandler implements KeyListener {
 
 				}
 
-				if (code == KeyEvent.VK_SPACE || code == KeyEvent.VK_ENTER) {
+				if (code == KeyEvent.VK_ENTER) {
 					if (gp.ui.commandNum == 0) {
 						gp.gameState = gp.playState;
 					}
@@ -176,19 +177,21 @@ public class KeyHandler implements KeyListener {
 
 				}
 				
-				if (code == KeyEvent.VK_SPACE || code == KeyEvent.VK_ENTER) {
+				if (code == KeyEvent.VK_ENTER) {
 					if (gp.ui.powNum == 0) {
-						gp.player.setHealth(gp.player.getHealth() + 15);
+						gp.player.setHealth(gp.player.getHealth() + 10);
 						gp.ui.pauseSubState = 0;
 						gp.gameState = gp.playState;
 					}
 					if (gp.ui.powNum == 1) {
-						gp.bullet.damage += 1;
+						for (Bullet bullet: gp.player.bullets) {
+							bullet.setDamage(bullet.getDamage() + 1);							
+						}
 						gp.ui.pauseSubState = 0;
 						gp.gameState = gp.playState;
 					}
 					if (gp.ui.powNum == 2) {
-						gp.player.setShootSpeed(gp.player.getShootSpeed() + 2);
+						gp.player.setShootSpeed(gp.player.getShootSpeed() + 1);
 						gp.ui.pauseSubState = 0;
 						gp.gameState = gp.playState;
 					}

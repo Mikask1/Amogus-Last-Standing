@@ -3,32 +3,33 @@ package character;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.io.IOException;
 import java.util.Vector;
+
+import javax.imageio.ImageIO;
 
 import bullet.Bullet;
 import main.GamePanel;
 
 public abstract class Character {
 	public GamePanel gp;
-	
+
 	public int worldX;
 	public int worldY;
 	protected int size = 64;
 	public int x, y;
 	public String direction;
 	public int actionLockCounter = 0;
-	
+
 	private int speed;
 	private int shootSpeed;
 	private int health;
-	private int bodyDamage;
-	
+
 	public boolean alive = true;
 	public boolean hurt = false;
 	public int hurtCounter = 0;
-	
+
 	public Vector<Bullet> bullets = new Vector<Bullet>();
-	public Vector<Bullet> monBullets = new Vector<Bullet>();
 
 	public long shoot_timer;
 	public Image bullet_up, bullet_down, bullet_left, bullet_right;
@@ -42,6 +43,19 @@ public abstract class Character {
 
 	public Character(GamePanel gp) {
 		this.gp = gp;
+		try {
+			bullet_up = ImageIO.read(getClass().getResourceAsStream("/bullets/bullet_up.png")).getScaledInstance(4, 13,
+					Image.SCALE_DEFAULT);
+			bullet_down = ImageIO.read(getClass().getResourceAsStream("/bullets/bullet_down.png")).getScaledInstance(4,
+					13, Image.SCALE_DEFAULT);
+			bullet_left = ImageIO.read(getClass().getResourceAsStream("/bullets/bullet_left.png")).getScaledInstance(13,
+					4, Image.SCALE_DEFAULT);
+			bullet_right = ImageIO.read(getClass().getResourceAsStream("/bullets/bullet_right.png"))
+					.getScaledInstance(13, 4, Image.SCALE_DEFAULT);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void setAction() {
@@ -55,9 +69,9 @@ public abstract class Character {
 	public void draw(Graphics2D g2) {
 
 	}
-	
+
 	public void drawBullets(Graphics2D g2) {
-		
+
 	}
 
 	public int getSpeed() {
@@ -87,12 +101,5 @@ public abstract class Character {
 	public int damageHealth(int damage) {
 		this.health -= damage;
 		return this.health;
-	}
-	public int getBodyDamage() {
-		return bodyDamage;
-	}
-
-	public void setBodyDamage(int bodyDamage) {
-		this.bodyDamage = bodyDamage;
 	}
 }

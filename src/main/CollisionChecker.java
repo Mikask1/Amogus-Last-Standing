@@ -58,7 +58,7 @@ public class CollisionChecker {
 			if (hits) {
 				monster.hurt = true;
 				this.gp.player.bullets.remove(i);
-				monster.damageHealth(bullet.damage);
+				monster.damageHealth(bullet.getDamage());
 			}
 			
 			bullet = null;
@@ -67,26 +67,25 @@ public class CollisionChecker {
 		monsterSolidArea = null;
 	}
 	
-	public void checkBulletHitsPlayer(Player player) {
-
-		Rectangle playerSolidArea = new Rectangle(player.screenX + player.solidArea.x,
-				player.screenY + player.solidArea.y, player.solidArea.width, player.solidArea.height);
-
-		for (int i = 0; i < this.gp.player.monBullets.size(); i++) {
-			Bullet bullet = this.gp.player.monBullets.get(i);
+	public void checkBulletHitsPlayer(Monster monster) {
+		Rectangle playerSolidArea = new Rectangle(gp.player.screenX + gp.player.solidArea.x,
+				gp.player.screenY + gp.player.solidArea.y, gp.player.solidArea.width, gp.player.solidArea.height);
+		
+		for (int i = 0; i < monster.monBullets.size(); i++) {
+			Bullet bullet = monster.monBullets.get(i);
 			Rectangle bulletSolidArea = new Rectangle(gp.screenX + bullet.worldX + bullet.solidArea.x,
 					gp.screenY + bullet.worldY + bullet.solidArea.y, bullet.solidArea.width, bullet.solidArea.height);
 			boolean hits = bulletSolidArea.intersects(playerSolidArea);
-			
+
 			if (hits) {
-				player.hurt = true;
-				this.gp.player.monBullets.remove(i);
-				player.damageHealth(bullet.damage);
+				gp.player.damageHealth(bullet.getDamage());
+				gp.player.hurt = true;
+				monster.monBullets.remove(i);
 			}
 			
 			bullet = null;
 		}
-
+		
 		playerSolidArea = null;
 	}
 
@@ -103,53 +102,49 @@ public class CollisionChecker {
 				player.damageHealth(monster.getBodyDamage());
 				player.hurt = true;
 				bodyHitTimer = gp.stopwatch;
-				System.out.println("Player health: " + player.getHealth());
 			}
 		}
 	}
 
-	public void monsterCollideMonster(Monster enemy) {
-		enemy.collisionDown = false;
-		enemy.collisionUp = false;
-		enemy.collisionLeft = false;
-		enemy.collisionRight = false;
-		
-		Rectangle enemyFootArea = new Rectangle(gp.screenX + enemy.worldX + enemy.footArea.x,
-				gp.screenY + enemy.worldY + enemy.footArea.y, enemy.footArea.width, enemy.footArea.height);
-
-		int worldXNext = enemy.gp.screenX + enemy.worldX + enemy.footArea.x;
-		int width = enemy.footArea.width;
-		int worldYNext = enemy.gp.screenY + enemy.worldY + enemy.footArea.y;
-		int height = enemy.footArea.height;
-
-		for (Monster enemy2 : gp.monsters) {
-			if (enemy2 == enemy) {
-				continue;
-			}
-			
-			Rectangle enemy2FootArea = new Rectangle(gp.screenX + enemy2.worldX + enemy2.footArea.x,
-					gp.screenY + enemy2.worldY + enemy2.footArea.y, enemy2.footArea.width, enemy2.footArea.height);
-
-			if (enemy.direction.contains("up")) {
-				if (enemy2FootArea.intersects(worldXNext, worldYNext - enemy.getSpeed() - 1, width, height)) {
-					enemy.collisionUp = true;
-				}
-			}
-			if (enemy.direction.contains("down")) {
-				if (enemy2FootArea.intersects(worldXNext, worldYNext + enemy.getSpeed() + 1, width, height)) {
-					enemy.collisionDown = true;
-				}
-			}
-			if (enemy.direction.contains("left")) {
-				if (enemy2FootArea.intersects(worldXNext - enemy.getSpeed() - 1, worldYNext, width, height)) {
-					enemy.collisionLeft = true;
-				}
-			}
-			if (enemy.direction.contains("right")) {
-				if (enemy2FootArea.intersects(worldXNext + enemy.getSpeed() + 1, worldYNext, width, height)) {
-					enemy.collisionRight = true;
-				}
-			}
-		}
-	}
+//	public void monsterCollideMonster(Monster enemy) {
+//		enemy.collisionDown = false;
+//		enemy.collisionUp = false;
+//		enemy.collisionLeft = false;
+//		enemy.collisionRight = false;
+//
+//		int worldXNext = enemy.gp.screenX + enemy.worldX + enemy.footArea.x;
+//		int width = enemy.footArea.width;
+//		int worldYNext = enemy.gp.screenY + enemy.worldY + enemy.footArea.y;
+//		int height = enemy.footArea.height;
+//
+//		for (Monster enemy2 : gp.monsters) {
+//			if (enemy2 == enemy) {
+//				continue;
+//			}
+//			
+//			Rectangle enemy2FootArea = new Rectangle(gp.screenX + enemy2.worldX + enemy2.footArea.x,
+//					gp.screenY + enemy2.worldY + enemy2.footArea.y, enemy2.footArea.width, enemy2.footArea.height);
+//
+//			if (enemy.direction.contains("up")) {
+//				if (enemy2FootArea.intersects(worldXNext, worldYNext - enemy.getSpeed() - 1, width, height)) {
+//					enemy.collisionUp = true;
+//				}
+//			}
+//			if (enemy.direction.contains("down")) {
+//				if (enemy2FootArea.intersects(worldXNext, worldYNext + enemy.getSpeed() + 1, width, height)) {
+//					enemy.collisionDown = true;
+//				}
+//			}
+//			if (enemy.direction.contains("left")) {
+//				if (enemy2FootArea.intersects(worldXNext - enemy.getSpeed() - 1, worldYNext, width, height)) {
+//					enemy.collisionLeft = true;
+//				}
+//			}
+//			if (enemy.direction.contains("right")) {
+//				if (enemy2FootArea.intersects(worldXNext + enemy.getSpeed() + 1, worldYNext, width, height)) {
+//					enemy.collisionRight = true;
+//				}
+//			}
+//		}
+//	}
 }

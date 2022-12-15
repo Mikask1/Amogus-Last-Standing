@@ -16,10 +16,12 @@ public class MonLilMushroom extends Monster {
 
 	Random rand = new Random();
 	String tempDir = "left";
-	
-	int playerBulletDimension1 = 4;
-	int playerBulletDimension2 = 13;
+	private final int playerDetectionOffset = 10;
 
+	int bulletDimension1 = 4;
+	int bulletDimension2 = 13;
+	private int bulletDamage;
+	
 	public MonLilMushroom(GamePanel gp) {
 		super(gp);
 		size = 90;
@@ -27,12 +29,13 @@ public class MonLilMushroom extends Monster {
 		getImage();
 		setAction();
 	}
-	
+
 	private void setDefaultValues() {
 		setSpeed(1);
 		setShootSpeed(1);
-		setHealth(50);
-		setBodyDamage(0);
+		setHealth(20);
+		setBodyDamage(2);
+		bulletDamage = 5;
 		direction = "left";
 
 		worldX = rand.nextInt(-200, 200) + gp.player.screenX;
@@ -70,18 +73,29 @@ public class MonLilMushroom extends Monster {
 			hurtRight1 = ImageIO.read(getClass().getResourceAsStream("/monster/hlilright1.png"));
 			hurtRight2 = ImageIO.read(getClass().getResourceAsStream("/monster/hlilright2.png"));
 			hurtRight3 = ImageIO.read(getClass().getResourceAsStream("/monster/hlilright3.png"));
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void setAction() {
-		if (worldX < gp.player.worldX - gp.tileSize)
+		if (worldX < gp.player.worldX - gp.tileSize) {
 			direction = "right";
-		if (worldX > gp.player.worldX)
+			if (worldY < gp.player.worldY - (int) (gp.player.solidArea.height / 2) - playerDetectionOffset) {
+				direction = "right down";
+			} else {
+				direction = "right up";
+			}
+		}
+		if (worldX > gp.player.worldX) {
 			direction = "left";
-
+			if (worldY < gp.player.worldY - (int) (gp.player.solidArea.height / 2) - playerDetectionOffset) {
+				direction = "left down";
+			} else {
+				direction = "left up";
+			}
+		}
 	}
 
 	public void update() {
@@ -90,24 +104,28 @@ public class MonLilMushroom extends Monster {
 
 		if (collisionOn == false) {
 			switch (direction) {
-
 			case "left":
-				if (worldX != gp.player.worldX) {
+			case "left up":
+			case "left down":
+				if ((worldX != gp.player.worldX) && !collisionLeft) {
 					worldX -= getSpeed();
 				}
-				if (worldY < gp.player.worldY - 25) {
+				if (worldY < gp.player.worldY - (int) (gp.player.solidArea.height / 2) - playerDetectionOffset
+						&& !collisionDown) {
 					worldY += getSpeed();
-				} else {
+				} else if (!collisionUp) {
 					worldY -= getSpeed();
 				}
 				break;
-
 			case "right":
-				if (worldX != gp.player.worldX - gp.tileSize)
+			case "right up":
+			case "right down":
+				if ((worldX != gp.player.worldX - gp.tileSize) && !collisionRight)
 					worldX += getSpeed();
-				if (worldY <= gp.player.worldY - 25) {
+				if (worldY <= gp.player.worldY - (int) (gp.player.solidArea.height / 2) - playerDetectionOffset
+						&& !collisionDown) {
 					worldY += getSpeed();
-				} else {
+				} else if (!collisionUp) {
 					worldY -= getSpeed();
 				}
 				break;
@@ -140,25 +158,26 @@ public class MonLilMushroom extends Monster {
 				hurtCounter = 0;
 			}
 		}
-		
-		if(Math.abs(worldX - gp.player.worldX) < 500) {
+
+		if (Math.abs(worldX - gp.player.worldX) < 500) {
 			if ((gp.stopwatch - shoot_timer) >= 1000000000 / getShootSpeed()) {
-				switch (direction) {
-				case "left":
-					Bullet newBullet2 = new Bullet(gp, this, direction, playerBulletDimension2, playerBulletDimension1, worldX, worldY + gp.tileSize);
-					monBullets.add(newBullet2);
-					break;
+				Bullet newBullet;
 
-				case "right":
-					Bullet newBullet3 = new Bullet(gp, this, direction, playerBulletDimension2, playerBulletDimension1, worldX + gp.tileSize/2 + 4, worldY + gp.tileSize);
-					monBullets.add(newBullet3);
-					break;
+				if (gp.screenY + this.worldY <= gp.player.screenY + 50
+						&& gp.screenY + this.worldY >= gp.player.screenY - 50) {
 
+					if (gp.screenX + this.worldX <= gp.player.screenX) {
+						newBullet = new Bullet(gp, this, "right", bulletDimension2, bulletDimension1,
+								worldX + solidArea.x + solidArea.width + 20, worldY + gp.tileSize + 5, bulletDamage);
+					} else {
+						newBullet = new Bullet(gp, this, "left", bulletDimension2, bulletDimension1, worldX,
+								worldY + gp.tileSize + 5, bulletDamage);
+					}
+					monBullets.add(newBullet);
 				}
 				shoot_timer = gp.stopwatch;
 			}
 		}
-		
 
 	}
 
@@ -167,6 +186,8 @@ public class MonLilMushroom extends Monster {
 
 		switch (direction) {
 		case "left":
+		case "left up":
+		case "left down":
 			tempDir = "left";
 			if (spriteNum == 1) {
 				image = monLeft;
@@ -184,8 +205,9 @@ public class MonLilMushroom extends Monster {
 				image = monLeft4;
 			}
 			break;
-
 		case "right":
+		case "right up":
+		case "right down":
 			tempDir = "right";
 			if (spriteNum == 1) {
 				image = monRight;
@@ -240,27 +262,26 @@ public class MonLilMushroom extends Monster {
 		}
 		g2.drawImage(image, this.gp.screenX + worldX, this.gp.screenY + worldY, size, size, null);
 	}
-	
+
 	public void drawBullets(Graphics2D g2) {
 		for (Bullet bullet : monBullets) {
 
-			if(this.worldY == gp.player.worldY){
-				if(this.worldX < gp.player.worldX) {
-					g2.drawImage(bullet_left, bullet.worldX+gp.tileSize, bullet.worldY+gp.tileSize, 20, 20, null);
-				}
-				
-				if(this.worldX > gp.player.worldX) {
-					g2.drawImage(bullet_right, bullet.worldX+gp.tileSize, bullet.worldY+gp.tileSize, 20, 20, null);
-				}
-
+			switch (bullet.getDirection()) {
+			case "right":
+				g2.drawImage(bullet_right, gp.screenX + bullet.worldX + bullet.solidArea.x,
+						gp.screenY + bullet.worldY + bullet.solidArea.y, bullet.solidArea.width,
+						bullet.solidArea.height, null);
+				break;
+			case "left":
+				g2.drawImage(bullet_left, gp.screenX + bullet.worldX + bullet.solidArea.x,
+						gp.screenY + bullet.worldY + bullet.solidArea.y, bullet.solidArea.width,
+						bullet.solidArea.height, null);
+				break;
 			}
-			
-			
 
-			g2.setColor(Color.white);
-			g2.drawRect(gp.screenX + bullet.worldX + bullet.solidArea.x, gp.screenY + bullet.worldY + bullet.solidArea.y,
-					bullet.solidArea.width, bullet.solidArea.height);
+//				g2.setColor(Color.white);
+//				g2.drawRect(gp.screenX + bullet.worldX + bullet.solidArea.x, gp.screenY + bullet.worldY + bullet.solidArea.y,
+//						bullet.solidArea.width, bullet.solidArea.height);
 		}
 	}
-	
 }

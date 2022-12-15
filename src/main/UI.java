@@ -34,7 +34,6 @@ public class UI {
 	public int pauseSubState = 0; // 0 : main menu, 1 : map menu, 2 : game over
 	public int highScore = 0;
 	
-	
 	double playTime;
 	DecimalFormat dFormat = new DecimalFormat("#0.00");
 	
@@ -44,7 +43,6 @@ public class UI {
 		arial_40 = new Font("Arial", Font.PLAIN, 40);
 		arial_80B = new Font("Arial", Font.BOLD, 80);
 		
-
 		try {
 			InputStream is = getClass().getResourceAsStream("/font/OEM8514.ttf");
 			OEM8514 = Font.createFont(Font.TRUETYPE_FONT, is);
@@ -269,10 +267,7 @@ public class UI {
 	}
 	
 	public void drawPauseScreen() {
-		
-//		g2.setColor(Color.LIGHT_GRAY);
-//		g2.fillRoundRect(gp.screenWidth / 3 + 30, gp.screenHeight / 3 + 50, 353, 80, 20, 20);
-//		commandNum = 0;
+
 		if(pauseSubState == 0) {
 			// PAUSED
 			g2.setColor(Color.BLACK);
@@ -364,7 +359,7 @@ public class UI {
 			
 			g2.setFont(maruMonica.deriveFont(Font.PLAIN, 30F));
 			g2.drawString("Increase player's", gp.tileSize*4 - 25, gp.screenHeight/2 + gp.tileSize);
-			g2.drawString("health by 15", gp.tileSize*4, gp.screenHeight/2 + gp.tileSize+35);
+			g2.drawString("health by 10", gp.tileSize*4, gp.screenHeight/2 + gp.tileSize+35);
 			g2.drawString("Increase player's", gp.tileSize*9 - 15, gp.screenHeight/2 + gp.tileSize);
 			g2.drawString("damage by 1", gp.tileSize*9 + 5, gp.screenHeight/2 + gp.tileSize+35);
 			g2.drawString("Increase player's", gp.tileSize*14 - 20, gp.screenHeight/2 + gp.tileSize+35);
@@ -459,7 +454,6 @@ public class UI {
 	}
 	
 	public int getXforCenteredText(String text) {
-		
 		int length = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
 		int x = gp.screenWidth / 2 - length / 2;
 		return x;

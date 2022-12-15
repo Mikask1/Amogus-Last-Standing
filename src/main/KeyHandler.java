@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import MapGenerator.Voronoi;
+import bullet.Bullet;
 import character.Player;
 
 public class KeyHandler implements KeyListener {
@@ -44,7 +45,7 @@ public class KeyHandler implements KeyListener {
 					}
 				}
 
-				if (code == KeyEvent.VK_SPACE || code == KeyEvent.VK_ENTER) {
+				if (code == KeyEvent.VK_ENTER) {
 					if (gp.ui.commandNum == 0) {
 //						gp.gameState = gp.playState;
 						gp.ui.titleSubState = 1;
@@ -96,36 +97,113 @@ public class KeyHandler implements KeyListener {
 				}
 
 			}
+			
+			if(gp.ui.titleSubState == 2) {
+				
+				if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+					gp.ui.commandNum--;
+					if(gp.ui.commandNum < 0) {
+						gp.ui.commandNum = 1;
+					}
+				}
+				
+				if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+					gp.ui.commandNum++;
+					if(gp.ui.commandNum > 1) {
+						gp.ui.commandNum = 0;
+					}
+				}
+				
+				if (code == KeyEvent.VK_SPACE || code == KeyEvent.VK_ENTER) {
+					if(gp.ui.commandNum == 0) {
+						gp.ui.titleSubState = 0;
+						gp.player.setHealth(10);
+					}
+					
+					if(gp.ui.commandNum == 1) {
+						System.exit(0);
+					}
+					
+				}
+			}
 
 		}
+		
+		
 
 		// PAUSE STATE
 		if (gp.gameState == gp.pauseState) {
+			
+			if(gp.ui.pauseSubState == 0) {
+				if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
+					gp.ui.commandNum--;
+					if (gp.ui.commandNum < 0) {
+						gp.ui.commandNum = 1;
+					}
 
-			if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
-				gp.ui.commandNum--;
-				if (gp.ui.commandNum < 0) {
-					gp.ui.commandNum = 1;
 				}
 
+				if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
+					gp.ui.commandNum++;
+					if (gp.ui.commandNum > 1) {
+						gp.ui.commandNum = 0;
+					}
+
+				}
+
+				if (code == KeyEvent.VK_ENTER) {
+					if (gp.ui.commandNum == 0) {
+						gp.gameState = gp.playState;
+					}
+					if (gp.ui.commandNum == 1) {
+						gp.gameState = gp.titleState;
+					}
+				}
 			}
 
-			if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
-				gp.ui.commandNum++;
-				if (gp.ui.commandNum > 1) {
-					gp.ui.commandNum = 0;
+			if(gp.ui.pauseSubState == 1) {
+				if(code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
+					gp.ui.powNum--;
+					if(gp.ui.powNum < 0) {
+						gp.ui.powNum = 3;
+					}
 				}
+				
+				if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
+					gp.ui.powNum++;
+					if (gp.ui.powNum > 3) {
+						gp.ui.powNum = 0;
+					}
 
+				}
+				
+				if (code == KeyEvent.VK_ENTER) {
+					if (gp.ui.powNum == 0) {
+						gp.player.setHealth(gp.player.getHealth() + 10);
+						gp.ui.pauseSubState = 0;
+						gp.gameState = gp.playState;
+					}
+					if (gp.ui.powNum == 1) {
+						for (Bullet bullet: gp.player.bullets) {
+							bullet.setDamage(bullet.getDamage() + 1);							
+						}
+						gp.ui.pauseSubState = 0;
+						gp.gameState = gp.playState;
+					}
+					if (gp.ui.powNum == 2) {
+						gp.player.setShootSpeed(gp.player.getShootSpeed() + 1);
+						gp.ui.pauseSubState = 0;
+						gp.gameState = gp.playState;
+					}
+					if (gp.ui.powNum == 3) {
+						gp.player.setSpeed(gp.player.getSpeed() + 1);
+						gp.ui.pauseSubState = 0;
+						gp.gameState = gp.playState;
+					}
+				}
+				
 			}
 
-			if (code == KeyEvent.VK_SPACE || code == KeyEvent.VK_ENTER) {
-				if (gp.ui.commandNum == 0) {
-					gp.gameState = gp.playState;
-				}
-				if (gp.ui.commandNum == 1) {
-					gp.gameState = gp.titleState;
-				}
-			}
 		}
 
 		// PLAY STATE

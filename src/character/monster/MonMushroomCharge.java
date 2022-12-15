@@ -20,11 +20,13 @@ public class MonMushroomCharge extends Monster {
 
 	private int normalSize;
 
+	private final int playerDetectionOffset = 20;
+
 	// Miliseconds
 	private long chargeCooldown = 5000;
 	private long chargePowerup = 2000;
 	private long chargeDuration = 500;
-	private int chargeSpeed = 4;
+	private int chargeSpeed = 5;
 	private boolean charge = false;
 	private boolean release = false;
 
@@ -94,17 +96,21 @@ public class MonMushroomCharge extends Monster {
 	public void setAction() {
 		if (worldX < gp.player.worldX - gp.tileSize) {
 			direction = "right";
-			if (worldY < gp.player.worldY - gp.tileSize) {
+			if (worldY < gp.player.worldY - (int) (gp.player.solidArea.height / 2) - playerDetectionOffset + 10
+					&& worldY > gp.player.worldY - (int) (gp.player.solidArea.height / 2) - playerDetectionOffset
+							- 10) {
 				direction = "right down";
-			} else{
+			} else {
 				direction = "right up";
 			}
 		}
 		if (worldX > gp.player.worldX) {
 			direction = "left";
-			if (worldY < gp.player.worldY - gp.tileSize) {
+			if (worldY < gp.player.worldY - (int) (gp.player.solidArea.height / 2) - playerDetectionOffset + 10
+					&& worldY > gp.player.worldY - (int) (gp.player.solidArea.height / 2) - playerDetectionOffset
+							- 10) {
 				direction = "left down";
-			} else{
+			} else {
 				direction = "left up";
 			}
 		}
@@ -148,20 +154,29 @@ public class MonMushroomCharge extends Monster {
 				if ((worldX != gp.player.worldX) && !collisionLeft) {
 					worldX -= speed;
 				}
-				if (worldY < gp.player.worldY - gp.tileSize && !collisionDown) {
+
+				int playerY = gp.player.worldY - (int) (gp.player.solidArea.height / 2) - playerDetectionOffset;
+				if (worldY < playerY + 10 && worldY > playerY - 10 && !collisionDown) {
+					worldY += 0;
+				} else if (worldY < playerY && !collisionDown) {
 					worldY += speed;
-				} else if (!collisionUp){
+				} else if (!collisionUp) {
 					worldY -= speed;
 				}
 				break;
 			case "right":
 			case "right up":
 			case "right down":
-				if ((worldX != gp.player.worldX - gp.tileSize) && !collisionRight)
+				if ((worldX != gp.player.worldX) && !collisionLeft) {
 					worldX += speed;
-				if (worldY <= gp.player.worldY - gp.tileSize && !collisionDown) {
+				}
+				
+				int playerY1 = gp.player.worldY - (int) (gp.player.solidArea.height / 2) - playerDetectionOffset;
+				if (worldY < playerY1 + 10 && worldY > playerY1 - 10 && !collisionDown) {
+					worldY += 0;
+				} else if (worldY < playerY1 && !collisionDown) {
 					worldY += speed;
-				} else if (!collisionUp){
+				} else if (!collisionUp) {
 					worldY -= speed;
 				}
 				break;
@@ -287,37 +302,35 @@ public class MonMushroomCharge extends Monster {
 
 		g2.drawImage(image, this.gp.screenX + worldX, this.gp.screenY + worldY, size, size, null);
 	}
-	
+
 	public static void tint(BufferedImage image, Color color) {
-	    for (int x = 0; x < image.getWidth(); x++) {
-	        for (int y = 0; y < image.getHeight(); y++) {
-	            Color pixelColor = new Color(image.getRGB(x, y), true);
-	            int r = (pixelColor.getRed() + color.getRed()) / 2;
-	            int g = (pixelColor.getGreen() + color.getGreen()) / 2;
-	            int b = (pixelColor.getBlue() + color.getBlue()) / 2;
-	            int a = pixelColor.getAlpha();
-	            int rgba = (a << 24) | (r << 16) | (g << 8) | b;
-	            image.setRGB(x, y, rgba);
-	        }
-	    }
+		for (int x = 0; x < image.getWidth(); x++) {
+			for (int y = 0; y < image.getHeight(); y++) {
+				Color pixelColor = new Color(image.getRGB(x, y), true);
+				int r = (pixelColor.getRed() + color.getRed()) / 2;
+				int g = (pixelColor.getGreen() + color.getGreen()) / 2;
+				int b = (pixelColor.getBlue() + color.getBlue()) / 2;
+				int a = pixelColor.getAlpha();
+				int rgba = (a << 24) | (r << 16) | (g << 8) | b;
+				image.setRGB(x, y, rgba);
+			}
+		}
 	}
-	
-	public static BufferedImage toBufferedImage(Image img)
-	{
-	    if (img instanceof BufferedImage)
-	    {
-	        return (BufferedImage) img;
-	    }
 
-	    // Create a buffered image with transparency
-	    BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+	public static BufferedImage toBufferedImage(Image img) {
+		if (img instanceof BufferedImage) {
+			return (BufferedImage) img;
+		}
 
-	    // Draw the image on to the buffered image
-	    Graphics2D bGr = bimage.createGraphics();
-	    bGr.drawImage(img, 0, 0, null);
-	    bGr.dispose();
+		// Create a buffered image with transparency
+		BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 
-	    // Return the buffered image
-	    return bimage;
+		// Draw the image on to the buffered image
+		Graphics2D bGr = bimage.createGraphics();
+		bGr.drawImage(img, 0, 0, null);
+		bGr.dispose();
+
+		// Return the buffered image
+		return bimage;
 	}
 }

@@ -12,7 +12,9 @@ import main.GamePanel;
 public class MonMushroom extends Monster {
 	Random rand = new Random();
 	String tempDir = "left";
-
+	
+	private final int playerDetectionOffset = 30;
+	
 	public MonMushroom(GamePanel gp) {
 		super(gp);
 		size = 112;
@@ -75,7 +77,7 @@ public class MonMushroom extends Monster {
 	public void setAction() {
 		if (worldX < gp.player.worldX - gp.tileSize) {
 			direction = "right";
-			if (worldY < gp.player.worldY - gp.tileSize) {
+			if (worldY < gp.player.worldY - (int) (gp.player.solidArea.height/2) - playerDetectionOffset) {
 				direction = "right down";
 			} else{
 				direction = "right up";
@@ -83,7 +85,7 @@ public class MonMushroom extends Monster {
 		}
 		if (worldX > gp.player.worldX) {
 			direction = "left";
-			if (worldY < gp.player.worldY - gp.tileSize) {
+			if (worldY < gp.player.worldY - (int) (gp.player.solidArea.height/2) - playerDetectionOffset) {
 				direction = "left down";
 			} else{
 				direction = "left up";
@@ -103,7 +105,7 @@ public class MonMushroom extends Monster {
 				if ((worldX != gp.player.worldX) && !collisionLeft) {
 					worldX -= getSpeed();
 				}
-				if (worldY < gp.player.worldY - gp.tileSize && !collisionDown) {
+				if (worldY < gp.player.worldY - (int) (gp.player.solidArea.height/2) - playerDetectionOffset && !collisionDown) {
 					worldY += getSpeed();
 				} else if (!collisionUp){
 					worldY -= getSpeed();
@@ -114,7 +116,7 @@ public class MonMushroom extends Monster {
 			case "right down":
 				if ((worldX != gp.player.worldX - gp.tileSize) && !collisionRight)
 					worldX += getSpeed();
-				if (worldY <= gp.player.worldY - gp.tileSize && !collisionDown) {
+				if (worldY <= gp.player.worldY - (int) (gp.player.solidArea.height/2) - playerDetectionOffset && !collisionDown) {
 					worldY += getSpeed();
 				} else if (!collisionUp){
 					worldY -= getSpeed();

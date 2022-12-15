@@ -18,6 +18,7 @@ import bullet.Bullet;
 import character.Character;
 import character.Player;
 import character.monster.MonBat;
+import character.monster.MonLilMushroom;
 import character.monster.MonMushroom;
 import character.monster.MonMushroomCharge;
 import character.monster.Monster;;
@@ -50,25 +51,25 @@ public class GamePanel extends JPanel implements Runnable {
 	public int screenX = 0;
 	public int screenY = 0;
 
-	Image backgroundImage;
-
 	// FPS
 	int FPS = 120;
 	public long stopwatch = 0;
 
 	// ENTITY & OBJECT
+	Image backgroundImage;
 	public Player player = new Player(this, keyH);
 	public Vector<Monster> monsters = new Vector<Monster>();
-
 	public Voronoi map = new Voronoi(worldWidth, worldHeight, this);
-
+	Random rnd = new Random();
+	
 	// GAME STATE
 	public int gameState;
 	public final int titleState = 0;
 	public final int playState = 1;
 	public final int pauseState = 2;
+	
 
-	public int wave = 0;
+	public int wave = 0;	
 	boolean animateWave = false;
 	long animationTimer = stopwatch;
 	long animationDuration = 1000; // in milisecond
@@ -154,11 +155,25 @@ public class GamePanel extends JPanel implements Runnable {
 			for (int i = 0; i < monsters.size(); i++) {
 				Monster monster = monsters.get(i);
 				monster.setAction();
-
 				monster.update();
-				cChecker.monsterCollideMonster(monster);
+
+				for (int j = 0; j < monster.monBullets.size(); j++) {
+					Bullet bullet = monster.monBullets.get(j);
+					bullet.update();
+					int bulletX = screenX + bullet.worldX + bullet.solidArea.x;
+					int bulletY = screenY + bullet.worldY + bullet.solidArea.y;
+					if (bulletX < screenX - screenX - (int) (1.5 * screenWidth)
+							|| bulletX > map.mapWidth + (int) (2 * screenWidth)
+							|| bulletY < screenY - (int) (1.5 * screenHeight)
+							|| bulletY > map.mapHeight + (int) (2 * screenHeight)) {
+						monster.monBullets.remove(j);
+					}
+				}
+
 				cChecker.checkBulletHitsMonster(monster);
+				cChecker.checkBulletHitsPlayer(monster);
 				cChecker.monsterBodyHitPlayer(player, monster);
+
 				if (!monster.alive) {
 					monsters.remove(i);
 				}
@@ -179,7 +194,7 @@ public class GamePanel extends JPanel implements Runnable {
 					player.bullets.remove(i);
 				}
 			}
-			
+
 			wave();
 		}
 
@@ -205,21 +220,13 @@ public class GamePanel extends JPanel implements Runnable {
 
 			// Player
 			player.draw(g2);
-			g2.setColor(Color.blue);
-			g2.drawRect(player.screenX + player.solidArea.x, player.screenY + player.solidArea.y,
-					player.solidArea.width, player.solidArea.height);
 
 			// Monsters
 
-			for (Character monster : monsters) {
+			for (Monster monster : monsters) {
 				monster.draw(g2);
-				g2.setColor(Color.red);
-				g2.drawRect(screenX + monster.worldX + monster.footArea.x,
-						screenY + monster.worldY + monster.footArea.y, monster.footArea.width, monster.footArea.height);
-				g2.setColor(Color.BLUE);
-				g2.drawRect(screenX + monster.worldX + monster.solidArea.x,
-						screenY + monster.worldY + monster.solidArea.y, monster.solidArea.width,
-						monster.solidArea.height);
+				
+				monster.drawBullets(g2);
 			}
 
 			// Bullets
@@ -233,6 +240,7 @@ public class GamePanel extends JPanel implements Runnable {
 			g2.setFont(UI.OEM8514.deriveFont(Font.PLAIN, 20F));
 
 			g2.drawString("Wave: " + wave, screenWidth - 130, 25);
+			g2.drawString("HP:" + player.getHealth(), 25, 25);
 
 			if (stopwatch - animationTimer < animationDuration * 1000000) {
 				int alpha = (int) ((double) ((stopwatch - animationTimer) / 1000000) / animationDuration * 255);
@@ -250,82 +258,68 @@ public class GamePanel extends JPanel implements Runnable {
 
 		g2.dispose();
 	}
-	
+
 	public void wave() {
 		if (monsters.isEmpty()) {
 			animateWave = true;
 			animationTimer = stopwatch;
+			if (wave > 0) {
+				ui.pauseSubState = 1;
+				gameState = pauseState;
+			}
 			wave++;
 
-			switch (wave) {
-			case 1:
-				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonMushroomCharge(this));
-				break;
-			case 2:
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonBat(this));
-				break;
-			case 3:
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonMushroomCharge(this));
-				break;
-			case 4:
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonMushroomCharge(this));
-				break;
-			case 5:
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonMushroomCharge(this));
-				monsters.add(new MonMushroomCharge(this));
-				break;
-			case 6:
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonMushroom(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonBat(this));
-				monsters.add(new MonMushroomCharge(this));
-				monsters.add(new MonMushroomCharge(this));
-				monsters.add(new MonMushroomCharge(this));
-				break;
+			if (wave >= 1) {
+				int funcLower = (int) (1 * Math.sqrt(wave));
+				int funcUpper = (int) (3 * Math.sqrt(wave));
+				
+				if (funcLower == funcUpper) {
+					funcUpper += 1;
+				}
+				
+				for (int i = 0; i < rnd.nextInt(funcLower, funcUpper); i++) {				
+					monsters.add(new MonBat(this));
+				}
 			}
+
+			if (wave >= 2) {
+				int funcLower = (int) (2 * Math.sqrt(wave));
+				int funcUpper = (int) (3 * Math.sqrt(wave));
+				
+				if (funcLower == funcUpper) {
+					funcUpper += 1;
+				}
+				
+				for (int i = 0; i < rnd.nextInt(funcLower, funcUpper); i++) {
+					monsters.add(new MonMushroom(this));					
+				}
+			}
+			
+			if (wave >= 3) {
+				int funcLower = (int) (Math.pow(wave, 1.1));
+				int funcUpper = (int) (Math.pow(wave, 1.15));
+				
+				if (funcLower == funcUpper) {
+					funcUpper += 1;
+				}
+				for (int i = 0; i < rnd.nextInt(funcLower, funcUpper); i++) {
+					monsters.add(new MonLilMushroom(this));				
+				}		
+			}
+			
+			if (wave >= 4) {
+				int funcLower = (int) (1 * Math.sqrt(wave));
+				int funcUpper = (int) (2 * Math.sqrt(wave));
+				
+				if (funcLower == funcUpper) {
+					funcUpper += 1;
+				}
+				
+				for (int i = 0; i < rnd.nextInt(funcLower, funcUpper); i++) {
+					monsters.add(new MonMushroomCharge(this));			
+				}
+			}
+
 		}
 	}
 }

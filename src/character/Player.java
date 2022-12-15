@@ -29,6 +29,7 @@ public class Player extends Character {
 			left2_shoot, right_shoot, right1_shoot, right2_shoot;
 	
 	int diagonalSpeed;
+	private int bulletDamage;
 	
 	public Player(GamePanel gp, KeyHandler keyH) {
 		super(gp);
@@ -57,8 +58,9 @@ public class Player extends Character {
 	}
 
 	public void setDefaultValues() {
-		setShootSpeed(4);
-		setSpeed(4);
+		setShootSpeed(10);
+		setSpeed(5);
+		setBulletDamage(1000);
 		direction = "down";
 		setHealth(10);
 	}
@@ -90,15 +92,6 @@ public class Player extends Character {
 			right_shoot = ImageIO.read(getClass().getResourceAsStream("/player/amog-right-shoot.png"));
 			right1_shoot = ImageIO.read(getClass().getResourceAsStream("/player/amog-right1-shoot.png"));
 			right2_shoot = ImageIO.read(getClass().getResourceAsStream("/player/amog-right2-shoot.png"));
-
-			bullet_up = ImageIO.read(getClass().getResourceAsStream("/bullets/bullet_up.png")).getScaledInstance(4, 13,
-					Image.SCALE_DEFAULT);
-			bullet_down = ImageIO.read(getClass().getResourceAsStream("/bullets/bullet_down.png")).getScaledInstance(4,
-					13, Image.SCALE_DEFAULT);
-			bullet_left = ImageIO.read(getClass().getResourceAsStream("/bullets/bullet_left.png")).getScaledInstance(13,
-					4, Image.SCALE_DEFAULT);
-			bullet_right = ImageIO.read(getClass().getResourceAsStream("/bullets/bullet_right.png"))
-					.getScaledInstance(13, 4, Image.SCALE_DEFAULT);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -200,22 +193,22 @@ public class Player extends Character {
 			if ((gp.stopwatch - shoot_timer) >= 1000000000 / getShootSpeed()) {
 				switch (direction) {
 				case "up":
-					Bullet newBullet = new Bullet(gp, this, direction, playerBulletDimension1, playerBulletDimension2, worldX + gp.tileSize/2 - 3, worldY);
+					Bullet newBullet = new Bullet(gp, this, direction, playerBulletDimension1, playerBulletDimension2, worldX + gp.tileSize/2 - 3, worldY, bulletDamage);
 					bullets.add(newBullet);
 					break;
 
 				case "down":
-					Bullet newBullet1 = new Bullet(gp, this, direction, playerBulletDimension1, playerBulletDimension2, worldX + gp.tileSize/2 - 3, worldY + gp.tileSize/2 + 4);
+					Bullet newBullet1 = new Bullet(gp, this, direction, playerBulletDimension1, playerBulletDimension2, worldX + gp.tileSize/2 - 3, worldY + gp.tileSize/2 + 4, bulletDamage);
 					bullets.add(newBullet1);
 					break;
 
 				case "left":
-					Bullet newBullet2 = new Bullet(gp, this, direction, playerBulletDimension2, playerBulletDimension1, worldX, worldY + gp.tileSize/2 - 4);
+					Bullet newBullet2 = new Bullet(gp, this, direction, playerBulletDimension2, playerBulletDimension1, worldX, worldY + gp.tileSize/2 - 4, bulletDamage);
 					bullets.add(newBullet2);
 					break;
 
 				case "right":
-					Bullet newBullet3 = new Bullet(gp, this, direction, playerBulletDimension2, playerBulletDimension1, worldX + gp.tileSize/2 + 4, worldY + gp.tileSize/2 - 4);
+					Bullet newBullet3 = new Bullet(gp, this, direction, playerBulletDimension2, playerBulletDimension1, worldX + gp.tileSize/2 + 4, worldY + gp.tileSize/2 - 4, bulletDamage);
 					bullets.add(newBullet3);
 					break;
 				}
@@ -404,8 +397,6 @@ public class Player extends Character {
 			}
 
 			g2.setColor(Color.white);
-			g2.drawRect(gp.screenX + bullet.worldX + bullet.solidArea.x, gp.screenY + bullet.worldY + bullet.solidArea.y,
-					bullet.solidArea.width, bullet.solidArea.height);
 		}
 	}
 	
@@ -416,7 +407,9 @@ public class Player extends Character {
 	}
 	
 	void setDiagonalSpeed(int speed) {
-		this.diagonalSpeed = (int) Math.ceil(getSpeed()/Math.sqrt(2));
+		this.diagonalSpeed = (int) Math.round(getSpeed()/Math.sqrt(2));
+		System.out.println(getSpeed());
+		System.out.println(diagonalSpeed);
 	}
 	
 	int getDiagonalSpeed() {
@@ -444,5 +437,13 @@ public class Player extends Character {
 			}
 		}
 		return tintedSprite;
+	}
+
+	public int getBulletDamage() {
+		return bulletDamage;
+	}
+
+	public void setBulletDamage(int bulletDamage) {
+		this.bulletDamage = bulletDamage;
 	}
 }

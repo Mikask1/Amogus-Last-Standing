@@ -32,6 +32,7 @@ public class KeyHandler implements KeyListener {
 
 			if (gp.ui.titleSubState == 0) {
 				if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+					gp.playSE(5);
 					gp.ui.commandNum--;
 					if (gp.ui.commandNum < 0) {
 						gp.ui.commandNum = 2;
@@ -39,6 +40,7 @@ public class KeyHandler implements KeyListener {
 				}
 
 				if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+					gp.playSE(5);
 					gp.ui.commandNum++;
 					if (gp.ui.commandNum > 2) {
 						gp.ui.commandNum = 0;
@@ -46,12 +48,13 @@ public class KeyHandler implements KeyListener {
 				}
 
 				if (code == KeyEvent.VK_ENTER) {
+					gp.playSE(5);
 					if (gp.ui.commandNum == 0) {
 //						gp.gameState = gp.playState;
 						gp.ui.titleSubState = 1;
 					}
 					if (gp.ui.commandNum == 1) {
-
+						gp.ui.titleSubState = 3;
 					}
 					if (gp.ui.commandNum == 2) {
 						System.exit(0);
@@ -61,6 +64,7 @@ public class KeyHandler implements KeyListener {
 
 			if (gp.ui.titleSubState == 1) {
 				if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
+					gp.playSE(5);
 					gp.ui.mapNum--;
 					gp.ui.commandNum = 0;
 					if (gp.ui.mapNum < 0) {
@@ -69,6 +73,7 @@ public class KeyHandler implements KeyListener {
 
 				}
 				if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
+					gp.playSE(5);
 					gp.ui.mapNum++;
 					gp.ui.commandNum = 0;
 					if (gp.ui.mapNum > 2) {
@@ -76,11 +81,13 @@ public class KeyHandler implements KeyListener {
 					}
 				}
 				if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+					gp.playSE(5);
 					gp.ui.commandNum = 1;
 
 				}
 
 				if (code == KeyEvent.VK_SPACE || code == KeyEvent.VK_ENTER) {
+					gp.playSE(5);
 					if (gp.ui.commandNum == 1) {		
 						if (gp.ui.mapNum == 0) {
 							gp.setupGame(2);
@@ -92,22 +99,31 @@ public class KeyHandler implements KeyListener {
 							gp.setupGame(4);
 						}
 						gp.ui.titleSubState = 0;
+						gp.playSE(4);
 					}
 
+				}
+				
+				if (code == KeyEvent.VK_ESCAPE) {
+					gp.playSE(5);
+					gp.ui.titleSubState = 0;
 				}
 
 			}
 			
-			if(gp.ui.titleSubState == 2) {
+			// GAME OVER
+			if (gp.ui.titleSubState == 2) {
 				
-				if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+				if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+					gp.playSE(5);
 					gp.ui.commandNum--;
 					if(gp.ui.commandNum < 0) {
 						gp.ui.commandNum = 1;
 					}
 				}
 				
-				if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+				if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+					gp.playSE(5);
 					gp.ui.commandNum++;
 					if(gp.ui.commandNum > 1) {
 						gp.ui.commandNum = 0;
@@ -115,8 +131,10 @@ public class KeyHandler implements KeyListener {
 				}
 				
 				if (code == KeyEvent.VK_SPACE || code == KeyEvent.VK_ENTER) {
+					gp.playSE(5);
 					if(gp.ui.commandNum == 0) {
 						gp.ui.titleSubState = 0;
+						gp.gameState = gp.titleState;
 						gp.player.setHealth(10);
 					}
 					
@@ -125,6 +143,33 @@ public class KeyHandler implements KeyListener {
 					}
 					
 				}
+			}
+			
+			// SETTINGS
+			if (gp.ui.titleSubState == 3) {
+				
+				if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
+					gp.playSE(5);
+					if(gp.ui.volume > 0) {
+						gp.ui.volume -= 10;
+						gp.sound.volumeDown();
+					}
+				}
+				
+				if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
+					gp.playSE(5);
+					if(gp.ui.volume < 100) {
+						gp.ui.volume += 10;
+						gp.sound.volumeUp();
+					}
+					
+				}
+				
+				if (code == KeyEvent.VK_ESCAPE) {
+					gp.playSE(5);
+					gp.ui.titleSubState = 0;
+				}
+				
 			}
 
 		}
@@ -136,6 +181,7 @@ public class KeyHandler implements KeyListener {
 			
 			if(gp.ui.pauseSubState == 0) {
 				if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
+					gp.playSE(5);
 					gp.ui.commandNum--;
 					if (gp.ui.commandNum < 0) {
 						gp.ui.commandNum = 1;
@@ -144,6 +190,7 @@ public class KeyHandler implements KeyListener {
 				}
 
 				if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
+					gp.playSE(5);
 					gp.ui.commandNum++;
 					if (gp.ui.commandNum > 1) {
 						gp.ui.commandNum = 0;
@@ -152,6 +199,7 @@ public class KeyHandler implements KeyListener {
 				}
 
 				if (code == KeyEvent.VK_ENTER) {
+					gp.playSE(5);
 					if (gp.ui.commandNum == 0) {
 						gp.gameState = gp.playState;
 					}
@@ -159,10 +207,16 @@ public class KeyHandler implements KeyListener {
 						gp.gameState = gp.titleState;
 					}
 				}
+				
+				if (code == KeyEvent.VK_ESCAPE) {
+					gp.playSE(5);
+					gp.gameState = gp.playState;
+				}
 			}
 
 			if(gp.ui.pauseSubState == 1) {
 				if(code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
+					gp.playSE(5);
 					gp.ui.powNum--;
 					if(gp.ui.powNum < 0) {
 						gp.ui.powNum = 3;
@@ -170,6 +224,7 @@ public class KeyHandler implements KeyListener {
 				}
 				
 				if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
+					gp.playSE(5);
 					gp.ui.powNum++;
 					if (gp.ui.powNum > 3) {
 						gp.ui.powNum = 0;
@@ -178,6 +233,7 @@ public class KeyHandler implements KeyListener {
 				}
 				
 				if (code == KeyEvent.VK_ENTER) {
+					gp.playSE(5);
 					if (gp.ui.powNum == 0) {
 						gp.player.setHealth(gp.player.getHealth() + 10);
 						gp.ui.pauseSubState = 0;

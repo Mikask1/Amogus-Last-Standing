@@ -78,6 +78,7 @@ public class CollisionChecker {
 			boolean hits = bulletSolidArea.intersects(playerSolidArea);
 
 			if (hits) {
+				gp.playSE(3);
 				gp.player.damageHealth(bullet.getDamage());
 				gp.player.hurt = true;
 				monster.monBullets.remove(i);
@@ -99,6 +100,7 @@ public class CollisionChecker {
 
 		if (gp.stopwatch - bodyHitTimer >= 500000000) {
 			if (playerSolidArea.intersects(monsterSolidArea)) {
+				gp.playSE(3);
 				player.damageHealth(monster.getBodyDamage());
 				player.hurt = true;
 				bodyHitTimer = gp.stopwatch;

@@ -61,6 +61,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public Vector<Monster> monsters = new Vector<Monster>();
 	public Voronoi map = new Voronoi(worldWidth, worldHeight, this);
 	Random rnd = new Random();
+	Sound sound = new Sound();
 	
 	// GAME STATE
 	public int gameState;
@@ -108,6 +109,7 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 
 	public void startGameThread() {
+		playMusic(0);
 		gameState = titleState;
 
 		gameThread = new Thread(this);
@@ -257,6 +259,21 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 
 		g2.dispose();
+	}
+	
+	public void playMusic(int i) {
+		sound.setFile(i);
+		sound.play();
+		sound.loop();
+	}
+	
+	public void stopMusic() {
+		sound.stop();
+	}
+	
+	public void playSE(int i) {
+		sound.setFile(i);
+		sound.play();
 	}
 
 	public void wave() {

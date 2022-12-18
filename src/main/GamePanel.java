@@ -6,18 +6,20 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.xml.crypto.dsig.keyinfo.PGPData;
 
 import MapGenerator.Voronoi;
 import bullet.Bullet;
-import character.Character;
 import character.Player;
 import character.monster.MonBat;
+import character.monster.MonFireBat;
 import character.monster.MonLilMushroom;
 import character.monster.MonMushroom;
 import character.monster.MonMushroomCharge;
@@ -25,7 +27,9 @@ import character.monster.Monster;;
 
 @SuppressWarnings("serial")
 public class GamePanel extends JPanel implements Runnable {
-
+	// CONSTANTS
+	public final long NANO_TO_MILI = 1000000;
+	
 	// SYSTEM
 	public CollisionChecker cChecker = new CollisionChecker(this);
 	KeyHandler keyH = new KeyHandler(this);
@@ -56,7 +60,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public long stopwatch = 0;
 
 	// ENTITY & OBJECT
-	Image backgroundImage;
+	BufferedImage backgroundImage,onFireStatusEffect;
 	public Player player = new Player(this, keyH);
 	public Vector<Monster> monsters = new Vector<Monster>();
 	public Voronoi map = new Voronoi(worldWidth, worldHeight, this);
@@ -78,6 +82,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public GamePanel() {
 		try {
 			backgroundImage = ImageIO.read(getClass().getResourceAsStream("/tiles/bigGrass.png"));
+			onFireStatusEffect = ImageIO.read(getClass().getResourceAsStream("/status/onFire.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -237,12 +242,10 @@ public class GamePanel extends JPanel implements Runnable {
 			// UI
 			ui.draw(g2);
 
-			// Wave
+			// Overlay
 			g2.setColor(Color.white);
 			g2.setFont(UI.OEM8514.deriveFont(Font.PLAIN, 20F));
-
 			g2.drawString("Wave: " + wave, screenWidth - 130, 25);
-			g2.drawString("HP:" + player.getHealth(), 25, 25);
 
 			if (stopwatch - animationTimer < animationDuration * 1000000) {
 				int alpha = (int) ((double) ((stopwatch - animationTimer) / 1000000) / animationDuration * 255);
@@ -255,6 +258,22 @@ public class GamePanel extends JPanel implements Runnable {
 				g2.setColor(new Color(255, 255, 255, alpha));
 				g2.setFont(UI.OEM8514.deriveFont(Font.PLAIN, 50F));
 				g2.drawString("Wave:" + wave, screenWidth / 2 - 100, screenHeight / 2 - 25);
+			}
+			
+			
+			// Player Stats
+			g2.setColor(Color.white);
+			g2.setFont(UI.OEM8514.deriveFont(Font.PLAIN, 20F));
+			g2.drawString("HP:" + player.getHealth(), 25, 25);
+			g2.drawString("Damage:" + player.getBulletDamage(), 25, 50);
+			g2.drawString("Attack Speed:" + player.getShootSpeed(), 25, 75);
+			g2.drawString("Walk Speed:" + player.getSpeed(), 25, 100);
+			
+			// Status Effects
+			if (player.onFire) {
+				g2.setColor(Color.black);
+				g2.fillRect(23, 108, 24, 24); // stroke
+				g2.drawImage(onFireStatusEffect, 25, 110, 20, 20, null);
 			}
 		}
 
@@ -297,6 +316,7 @@ public class GamePanel extends JPanel implements Runnable {
 				for (int i = 0; i < rnd.nextInt(funcLower, funcUpper); i++) {				
 					monsters.add(new MonBat(this));
 				}
+				monsters.add(new MonFireBat(this));
 			}
 
 			if (wave >= 2) {
@@ -335,6 +355,18 @@ public class GamePanel extends JPanel implements Runnable {
 				for (int i = 0; i < rnd.nextInt(funcLower, funcUpper); i++) {
 					monsters.add(new MonMushroomCharge(this));			
 				}
+			}
+			
+			if (wave >= 5) {
+				int funcLower = (int) (Math.pow(wave, 1.1));
+				int funcUpper = (int) (Math.pow(wave, 1.15));
+				
+				if (funcLower == funcUpper) {
+					funcUpper += 1;
+				}
+				for (int i = 0; i < rnd.nextInt(funcLower, funcUpper); i++) {
+					monsters.add(new MonFireBat(this));
+				}		
 			}
 
 		}

@@ -60,7 +60,7 @@ public class Player extends Character {
 	public void setDefaultValues() {
 		setShootSpeed(10);
 		setSpeed(5);
-		setBulletDamage(1000);
+		setBulletDamage(1);
 		direction = "down";
 		setHealth(10);
 	}
@@ -101,7 +101,7 @@ public class Player extends Character {
 	public void update() {
 		if (keyH.upPressed == true || keyH.leftPressed == true || keyH.downPressed == true
 				|| keyH.rightPressed == true) {
-
+			
 			// CAN'T MOVE DIAGONALLY
 
 			if (keyH.upPressed == true) {
@@ -191,6 +191,7 @@ public class Player extends Character {
 
 		if (keyH.shoot) {
 			if ((gp.stopwatch - shoot_timer) >= 1000000000 / getShootSpeed()) {
+				gp.playSE(1);
 				switch (direction) {
 				case "up":
 					Bullet newBullet = new Bullet(gp, this, direction, playerBulletDimension1, playerBulletDimension2, worldX + gp.tileSize/2 - 3, worldY, bulletDamage);

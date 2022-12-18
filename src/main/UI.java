@@ -30,9 +30,10 @@ public class UI {
 	public int commandNum = 0;
 	public int mapNum = 1;
 	public int powNum = 1;
-	public int titleSubState = 0; // 0 : main menu, 1 : map menu, 2 : game over
-	public int pauseSubState = 0; // 0 : main menu, 1 : map menu, 2 : game over
-	public int highScore = 0;
+	public int titleSubState = 0; // 0 : main menu, 1 : map menu, 2 : game over, 3 : settings
+	public int pauseSubState = 0; // 0 : pause, 1 : power up
+	public int volume = 100;
+	public int oof;
 	
 	double playTime;
 	DecimalFormat dFormat = new DecimalFormat("#0.00");
@@ -66,17 +67,22 @@ public class UI {
 		g2.setFont(arial_40);
 		g2.setColor(Color.BLACK);
 		
+		
 		// TITLE STATE
 		if(gp.gameState == gp.titleState) {
 			if(titleSubState == 2) {
 				drawGameOver();
+				if(gp.ui.oof == 1) {
+					gp.playSE(6);
+					gp.ui.oof--;
+				}
 			}
 			drawMainMenu();
 		}
 		
 		// PLAY STATE
 		if(gp.gameState == gp.playState) {
-
+			oof = 1;
 		}
 		
 		// PAUSE STATE
@@ -104,9 +110,6 @@ public class UI {
 			String text = "Amogus : Last Standing";
 			int x = getXforCenteredText(text);
 			int y = 200;
-			
-//			g2.setColor(Color.white);
-//			g2.drawString(text, x, y);
 			
 			// Title Logo
 			x = gp.screenWidth / 2 - (gp.tileSize * 6) / 2 + 5;
@@ -173,12 +176,12 @@ public class UI {
 				g2.drawString(text, x, y);
 			}
 			
-			g2.setFont(maruMonica.deriveFont(Font.PLAIN, 30F));
-			text = "HIGH SCORE: WAVE " + highScore;
-			x = getXforCenteredText(text);
-			y += gp.tileSize * 1.7;
-			g2.setColor(Color.white);
-			g2.drawString(text, x, y);
+//			g2.setFont(maruMonica.deriveFont(Font.PLAIN, 30F));
+//			text = "HIGH SCORE: WAVE " + highScore;
+//			x = getXforCenteredText(text);
+//			y += gp.tileSize * 1.7;
+//			g2.setColor(Color.white);
+//			g2.drawString(text, x, y);
 		}
 		
 		// Map menu
@@ -236,7 +239,6 @@ public class UI {
 						g2.drawImage(map, x+gp.tileSize*5, y-gp.tileSize, gp.tileSize * 5, gp.tileSize * 5, null);
 					}
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			
@@ -263,6 +265,20 @@ public class UI {
 			
 		}
 
+		// Settings
+		else if(titleSubState == 3) {
+			g2.setColor(new Color (54, 31, 2));
+			g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+			
+			g2.setFont(maruMonica.deriveFont(Font.BOLD, 50F));
+			g2.setColor(Color.WHITE);
+			g2.drawString("Volume", getXforCenteredText("Volume"), gp.screenHeight/2);
+			g2.drawString("<        >", getXforCenteredText("<        >"), gp.screenHeight/2 + gp.tileSize);
+			
+			g2.setFont(maruMonica.deriveFont(Font.PLAIN, 50F));
+			g2.setColor(Color.WHITE);
+			g2.drawString("" + volume, getXforCenteredText("" + volume), gp.screenHeight/2 + gp.tileSize);
+		}
 
 	}
 	
@@ -398,8 +414,9 @@ public class UI {
 		int x = gp.screenWidth / 2 - (gp.tileSize * 6) / 2;
 		int y = gp.tileSize;
 		try {
-			BufferedImage logo = ImageIO.read(getClass().getResourceAsStream("/player/dead.png"));
-			g2.drawImage(logo, x, y, gp.tileSize * 6, gp.tileSize * 6, null);
+//			BufferedImage dead = ImageIO.read(getClass().getResourceAsStream("/player/dead.png"));
+			BufferedImage dead2 = ImageIO.read(getClass().getResourceAsStream("/player/dead2.png"));
+			g2.drawImage(dead2, x, y, gp.tileSize * 6, gp.tileSize * 6, null);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

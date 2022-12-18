@@ -169,9 +169,11 @@ public class MonLilMushroom extends Monster {
 					if (gp.screenX + this.worldX <= gp.player.screenX) {
 						newBullet = new Bullet(gp, this, "right", bulletDimension2, bulletDimension1,
 								worldX + solidArea.x + solidArea.width + 20, worldY + gp.tileSize + 5, bulletDamage);
+						gp.playSE(2);
 					} else {
 						newBullet = new Bullet(gp, this, "left", bulletDimension2, bulletDimension1, worldX,
 								worldY + gp.tileSize + 5, bulletDamage);
+						gp.playSE(2);
 					}
 					monBullets.add(newBullet);
 				}
@@ -265,7 +267,6 @@ public class MonLilMushroom extends Monster {
 
 	public void drawBullets(Graphics2D g2) {
 		for (Bullet bullet : monBullets) {
-
 			switch (bullet.getDirection()) {
 			case "right":
 				g2.drawImage(bullet_right, gp.screenX + bullet.worldX + bullet.solidArea.x,

@@ -4,6 +4,7 @@ import java.awt.Rectangle;
 import bullet.Bullet;
 import character.Character;
 import character.Player;
+import character.monster.MonFireBat;
 import character.monster.Monster;
 import main.GamePanel;
 
@@ -78,9 +79,15 @@ public class CollisionChecker {
 			boolean hits = bulletSolidArea.intersects(playerSolidArea);
 
 			if (hits) {
+				gp.player.hurt = true;
 				gp.playSE(3);
 				gp.player.damageHealth(bullet.getDamage());
-				gp.player.hurt = true;
+				if (bullet.character instanceof MonFireBat) {
+					gp.player.onFire = true;
+					gp.player.fireCounter = 0;
+					gp.player.onFireDuration = MonFireBat.fireDuration;
+				}
+				
 				monster.monBullets.remove(i);
 			}
 			

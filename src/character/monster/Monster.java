@@ -23,6 +23,8 @@ public abstract class Monster extends Character{
 	public boolean collisionDown = false;
 	
 	public static int randomSpawnRadius = 200;
+
+	public abstract void setAction();
 	
 	public Monster(GamePanel gp) {
 		super(gp);

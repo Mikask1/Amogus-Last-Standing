@@ -70,20 +70,13 @@ public abstract class Character {
 			e.printStackTrace();
 		}
 	}
+	
 
-	public void setAction() {
+	public abstract void update();
 
-	}
+	public abstract void draw(Graphics2D g2);
 
-	public void update() {
-//		setAction();
-	}
-
-	public void draw(Graphics2D g2) {
-
-	}
-
-	public void drawBullets(Graphics2D g2) {
+	public void drawBullets(Graphics2D g2) { // some monsters don't shoot bullets
 
 	}
 

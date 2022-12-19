@@ -12,21 +12,21 @@ import bullet.Bullet;
 import main.GamePanel;
 import main.Sound;
 
+public class MonIceBat extends Monster{
 
-public class MonFireBat extends Monster {
 	Random rand = new Random();
 	String tempDir = "left";
 	private final int playerDetectionOffset = 0;
 
 	int bulletDimension = 10;
-	public static long fireDuration = 5000;
-  
+	public static long freezeDuration = 100;
+	
 	public static int DefaultHealth = 20;
 	public static int DefaultBodyDamage = 2;
-	public static int DefaultBulletDamage = 3;
+	public static int DefaultBulletDamage = 1;
 	public static int DefaultSpeed = 1;
-	
-	public MonFireBat(GamePanel gp) {
+
+	public MonIceBat(GamePanel gp) {
 		super(gp);
 		size = 64;
 		setDefaultValues();
@@ -58,7 +58,7 @@ public class MonFireBat extends Monster {
 		footArea.height = 15;
 
 		try {
-			bullet_left = ImageIO.read(getClass().getResourceAsStream("/bullets/FireBall.png")).getScaledInstance(16,
+			bullet_left = ImageIO.read(getClass().getResourceAsStream("/bullets/IceBall.png")).getScaledInstance(16,
 					16, Image.SCALE_DEFAULT);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -68,14 +68,14 @@ public class MonFireBat extends Monster {
 	public void getImage() {
 
 		try {
-			monLeft = ImageIO.read(getClass().getResourceAsStream("/monster/fireBatleft.png"));
-			monLeft1 = ImageIO.read(getClass().getResourceAsStream("/monster/fireBatleft1.png"));
-			monLeft2 = ImageIO.read(getClass().getResourceAsStream("/monster/fireBatleft2.png"));
-			monLeft3 = ImageIO.read(getClass().getResourceAsStream("/monster/fireBatleft3.png"));
-			monRight = ImageIO.read(getClass().getResourceAsStream("/monster/fireBatright.png"));
-			monRight1 = ImageIO.read(getClass().getResourceAsStream("/monster/fireBatright1.png"));
-			monRight2 = ImageIO.read(getClass().getResourceAsStream("/monster/fireBatright2.png"));
-			monRight3 = ImageIO.read(getClass().getResourceAsStream("/monster/fireBatright3.png"));
+			monLeft = ImageIO.read(getClass().getResourceAsStream("/monster/iceBatleft.png"));
+			monLeft1 = ImageIO.read(getClass().getResourceAsStream("/monster/iceBatleft1.png"));
+			monLeft2 = ImageIO.read(getClass().getResourceAsStream("/monster/iceBatleft2.png"));
+			monLeft3 = ImageIO.read(getClass().getResourceAsStream("/monster/iceBatleft3.png"));
+			monRight = ImageIO.read(getClass().getResourceAsStream("/monster/iceBatright.png"));
+			monRight1 = ImageIO.read(getClass().getResourceAsStream("/monster/iceBatright1.png"));
+			monRight2 = ImageIO.read(getClass().getResourceAsStream("/monster/iceBatright2.png"));
+			monRight3 = ImageIO.read(getClass().getResourceAsStream("/monster/iceBatright3.png"));
 			hurtLeft = ImageIO.read(getClass().getResourceAsStream("/monster/hbatleft.png"));
 			hurtLeft1 = ImageIO.read(getClass().getResourceAsStream("/monster/hbatleft1.png"));
 			hurtLeft2 = ImageIO.read(getClass().getResourceAsStream("/monster/hbatleft2.png"));
@@ -183,7 +183,7 @@ public class MonFireBat extends Monster {
 						newBullet = new Bullet(gp, this, "left", bulletDimension, bulletDimension, worldX,
 								(int) (worldY + solidArea.y + solidArea.height/2), getBulletDamage());
 					}
-					gp.playSE(Sound.FireBullet);
+					gp.playSE(Sound.IceBullet);
 					monBullets.add(newBullet);
 				}
 				shoot_timer = gp.stopwatch;

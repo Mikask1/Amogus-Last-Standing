@@ -19,27 +19,28 @@ public abstract class Character {
 	protected int size = 64;
 	public int x, y;
 	public String direction;
-	public int actionLockCounter = 0;
 
 	private int speed;
 	private int shootSpeed;
 	private int health;
+	private int bulletDamage;
+	
+	public Rectangle footArea;
+	public Rectangle solidArea;
+	public boolean collisionOn = false;
 	
 	public boolean alive = true;
 	public boolean hurt = false;
 	public int hurtCounter = 0;
-
+	public int hurtDuration = 30;
+	
 	public Vector<Bullet> bullets = new Vector<Bullet>();
-
 	public long shoot_timer;
 	public Image bullet_up, bullet_down, bullet_left, bullet_right;
 
+	public int actionLockCounter = 0;
 	public int spriteCounter = 0;
 	public int spriteNum = 1;
-
-	public Rectangle footArea;
-	public Rectangle solidArea;
-	public boolean collisionOn = false;
 	
 	public boolean onFire = false;
 	public long onFireDuration = 0;
@@ -47,6 +48,11 @@ public abstract class Character {
 	public int fireCounter = 0;
 	protected final long fireInterval = 1000;
 	
+	public boolean freeze = false;
+	public long freezeDuration = 1000;
+	protected long freezeTimer;
+	public int freezeCounter = 0;
+
 	public Character(GamePanel gp) {
 		this.gp = gp;
 		
@@ -61,7 +67,6 @@ public abstract class Character {
 			bullet_right = ImageIO.read(getClass().getResourceAsStream("/bullets/bullet_right.png"))
 					.getScaledInstance(13, 4, Image.SCALE_DEFAULT);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -88,6 +93,9 @@ public abstract class Character {
 
 	public void setSpeed(int speed) {
 		this.speed = speed;
+		if (speed == 0) {
+			this.speed = 1;
+		}
 	}
 
 	public int getShootSpeed() {
@@ -109,5 +117,13 @@ public abstract class Character {
 	public int damageHealth(int damage) {
 		this.health -= damage;
 		return this.health;
+	}
+
+	public int getBulletDamage() {
+		return bulletDamage;
+	}
+
+	public void setBulletDamage(int bulletDamage) {
+		this.bulletDamage = bulletDamage;
 	}
 }

@@ -20,6 +20,7 @@ import bullet.Bullet;
 import character.Player;
 import character.monster.MonBat;
 import character.monster.MonFireBat;
+import character.monster.MonIceBat;
 import character.monster.MonLilMushroom;
 import character.monster.MonMushroom;
 import character.monster.MonMushroomCharge;
@@ -27,8 +28,9 @@ import character.monster.Monster;;
 
 @SuppressWarnings("serial")
 public class GamePanel extends JPanel implements Runnable {
+
 	// CONSTANTS
-	public final long NANO_TO_MILI = 1000000;
+	public static final long NANO_TO_MILI = 1000000;
 	
 	// SYSTEM
 	public CollisionChecker cChecker = new CollisionChecker(this);
@@ -60,7 +62,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public long stopwatch = 0;
 
 	// ENTITY & OBJECT
-	BufferedImage backgroundImage,onFireStatusEffect;
+	BufferedImage backgroundImage, onFireStatusEffect, freezeStatusEffect;
 	public Player player = new Player(this, keyH);
 	public Vector<Monster> monsters = new Vector<Monster>();
 	public Voronoi map = new Voronoi(worldWidth, worldHeight, this);
@@ -72,7 +74,6 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int titleState = 0;
 	public final int playState = 1;
 	public final int pauseState = 2;
-	
 
 	public int wave = 0;	
 	boolean animateWave = false;
@@ -83,6 +84,7 @@ public class GamePanel extends JPanel implements Runnable {
 		try {
 			backgroundImage = ImageIO.read(getClass().getResourceAsStream("/tiles/bigGrass.png"));
 			onFireStatusEffect = ImageIO.read(getClass().getResourceAsStream("/status/onFire.png"));
+			freezeStatusEffect = ImageIO.read(getClass().getResourceAsStream("/status/freeze.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -100,7 +102,7 @@ public class GamePanel extends JPanel implements Runnable {
 		worldHeight = worldHeight / sizeMultiplier;
 
 		monsters.clear();
-
+		
 		wave = 0;
 		// SETUP
 		sizeMultiplier = multiplier;
@@ -108,7 +110,8 @@ public class GamePanel extends JPanel implements Runnable {
 		worldHeight = worldHeight * sizeMultiplier;
 		player.worldX = worldWidth / 3;
 		player.worldY = worldHeight / 3;
-
+		player.setDefaultValues();
+		
 		map = new Voronoi(worldWidth, worldHeight, this);
 		gameState = playState;
 	}
@@ -260,7 +263,6 @@ public class GamePanel extends JPanel implements Runnable {
 				g2.drawString("Wave:" + wave, screenWidth / 2 - 100, screenHeight / 2 - 25);
 			}
 			
-			
 			// Player Stats
 			g2.setColor(Color.white);
 			g2.setFont(UI.OEM8514.deriveFont(Font.PLAIN, 20F));
@@ -268,13 +270,20 @@ public class GamePanel extends JPanel implements Runnable {
 			g2.drawString("Damage:" + player.getBulletDamage(), 25, 50);
 			g2.drawString("Attack Speed:" + player.getShootSpeed(), 25, 75);
 			g2.drawString("Walk Speed:" + player.getSpeed(), 25, 100);
-			
+
 			// Status Effects
 			if (player.onFire) {
 				g2.setColor(Color.black);
 				g2.fillRect(23, 108, 24, 24); // stroke
 				g2.drawImage(onFireStatusEffect, 25, 110, 20, 20, null);
 			}
+			
+			if (player.freeze) {
+				g2.setColor(Color.BLACK);
+				g2.fillRect(55, 108, 24, 24);
+				g2.drawImage(freezeStatusEffect, 57, 110, 20, 20, null);
+			}
+
 		}
 
 		g2.dispose();
@@ -304,8 +313,9 @@ public class GamePanel extends JPanel implements Runnable {
 				gameState = pauseState;
 			}
 			wave++;
+			playSE(Sound.StartGame);
 
-			if (wave >= 1) {
+			if (wave >= 1 && wave <= 3) {
 				int funcLower = (int) (1 * Math.sqrt(wave));
 				int funcUpper = (int) (3 * Math.sqrt(wave));
 				
@@ -316,10 +326,9 @@ public class GamePanel extends JPanel implements Runnable {
 				for (int i = 0; i < rnd.nextInt(funcLower, funcUpper); i++) {				
 					monsters.add(new MonBat(this));
 				}
-				monsters.add(new MonFireBat(this));
 			}
 
-			if (wave >= 2) {
+			if (wave == 2 && wave >= 5) {
 				int funcLower = (int) (2 * Math.sqrt(wave));
 				int funcUpper = (int) (3 * Math.sqrt(wave));
 				
@@ -332,7 +341,7 @@ public class GamePanel extends JPanel implements Runnable {
 				}
 			}
 			
-			if (wave >= 3) {
+			if (wave >= 3 && wave != 4 && wave != 5 && wave != 7 && wave != 8) {
 				int funcLower = (int) (Math.pow(wave, 1.1));
 				int funcUpper = (int) (Math.pow(wave, 1.15));
 				
@@ -344,7 +353,7 @@ public class GamePanel extends JPanel implements Runnable {
 				}		
 			}
 			
-			if (wave >= 4) {
+			if (wave >= 4 && wave != 5 && wave != 6 && wave != 8) {
 				int funcLower = (int) (1 * Math.sqrt(wave));
 				int funcUpper = (int) (2 * Math.sqrt(wave));
 				
@@ -357,10 +366,22 @@ public class GamePanel extends JPanel implements Runnable {
 				}
 			}
 			
-			if (wave >= 5) {
+			if (wave >= 5 && wave != 6 && wave!= 7) {
 				int funcLower = (int) (Math.pow(wave, 1.1));
 				int funcUpper = (int) (Math.pow(wave, 1.15));
-				
+
+				if (funcLower == funcUpper) {
+					funcUpper += 1;
+				}
+				for (int i = 0; i < rnd.nextInt(funcLower, funcUpper); i++) {
+					monsters.add(new MonIceBat(this));
+				}		
+			}
+			
+			if (wave >= 6) {
+				int funcLower = (int) (Math.pow(wave, 1.1));
+				int funcUpper = (int) (Math.pow(wave, 1.15));
+
 				if (funcLower == funcUpper) {
 					funcUpper += 1;
 				}

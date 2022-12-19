@@ -9,8 +9,8 @@ import main.GamePanel;
 public class Bullet {
 	public Character character;
 	
-	private int damage = 5;
-	private int bulletSpeed = 6;
+	private int damage;
+	private int bulletSpeed = 7;
 	
 	public int width;
 	public int height;
@@ -20,7 +20,6 @@ public class Bullet {
 	private String direction;
 	public Rectangle solidArea;
 	protected GamePanel gp;
-
 
 	public Bullet(GamePanel gp, Character character, String direction, int width, int height, int worldX, int worldY, int damage) {
 		this.gp = gp;

@@ -40,6 +40,19 @@ public abstract class Character {
 	public Rectangle footArea;
 	public Rectangle solidArea;
 	public boolean collisionOn = false;
+	
+	public boolean onFire = false;
+	public long onFireDuration = 0;
+	protected long fireTimer;
+	public int fireCounter = 0;
+	protected final long fireInterval = 1000;
+	
+	public boolean freeze = false;
+	public long freezeDuration = 0;
+	protected long freezeTimer;
+	public int freezeCounter = 0;
+	protected final long freezeInterval = 1000;
+	public int tempSpeed;
 
 	public Character(GamePanel gp) {
 		this.gp = gp;

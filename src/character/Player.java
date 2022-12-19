@@ -60,9 +60,11 @@ public class Player extends Character {
 	public void setDefaultValues() {
 		setShootSpeed(10);
 		setSpeed(5);
-		setBulletDamage(1);
+		setBulletDamage(1000);
 		direction = "down";
-		setHealth(10);
+		setHealth(1000);
+		fireTimer = gp.stopwatch;
+		freezeTimer = gp.stopwatch;
 	}
 	
 	public void getPlayerImage() {
@@ -217,12 +219,47 @@ public class Player extends Character {
 			}
 		}
 		
+		if (onFire && (gp.stopwatch - fireTimer >= fireInterval * gp.NANO_TO_MILI)) {
+			hurt = true;
+			damageHealth(1);
+			fireTimer = gp.stopwatch;
+		}
+
+		if (onFire && fireCounter >= onFireDuration / fireInterval) {
+			onFire = false;
+			onFireDuration = 0;
+			fireCounter = 0;
+			hurtCounter = 0;
+			fireTimer = gp.stopwatch;
+		}
+		
+		if (freeze && (gp.stopwatch - freezeTimer >= freezeInterval * gp.NANO_TO_MILI)) {
+			setSpeed(2);
+			freezeTimer = gp.stopwatch;
+		}
+		
+		if (freeze && freezeCounter >= freezeDuration) {
+			freeze = false;
+			setSpeed(5);
+			freezeDuration = 0;
+			freezeCounter = 0;
+			freezeTimer = gp.stopwatch;
+		}
+		
 		if (hurt == true) {
 			hurtCounter++;
 			if (hurtCounter > 30) {
+				if (onFire) {
+					fireCounter += 1;
+					gp.playSE(3);
+				}
 				hurt = false;
 				hurtCounter = 0;
 			}
+		}
+		
+		if (freeze) {
+			freezeCounter += 1;
 		}
 	}
 
@@ -366,10 +403,13 @@ public class Player extends Character {
 		}
 
 		if (hurt) {
-			g2.drawImage(tint(image, 1, 0.3, 0.3, 1), screenX, screenY, size, size, null);			
+			g2.drawImage(tint(image, 1, 0.3, 0.3, 1), screenX, screenY, size, size, null);		
+		}
+		else if (freeze) {
+			g2.drawImage(tint(image, 0.2, 1, 1.9, 1), screenX, screenY, size, size, null);
 		}
 		else {
-			g2.drawImage(image, screenX, screenY, size, size, null);
+			g2.drawImage(image, screenX, screenY, size, size, null);		
 		}
 	}
 
@@ -408,7 +448,7 @@ public class Player extends Character {
 	}
 	
 	void setDiagonalSpeed(int speed) {
-		this.diagonalSpeed = (int) Math.round(getSpeed()/Math.sqrt(2));
+		this.diagonalSpeed = (int) Math.round(getSpeed() / Math.sqrt(2));
 		System.out.println(getSpeed());
 		System.out.println(diagonalSpeed);
 	}

@@ -7,7 +7,7 @@ import character.monster.Monster;
 import main.GamePanel;
 
 public class Bullet {
-	Character character;
+	public Character character;
 	
 	private int damage = 5;
 	private int bulletSpeed = 6;
@@ -20,10 +20,6 @@ public class Bullet {
 	private String direction;
 	public Rectangle solidArea;
 	protected GamePanel gp;
-	
-	public Bullet() {
-		
-	}
 
 	public Bullet(GamePanel gp, Character character, String direction, int width, int height, int worldX, int worldY, int damage) {
 		this.gp = gp;

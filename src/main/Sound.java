@@ -20,6 +20,8 @@ public class Sound {
 		soundURL[4] = getClass().getResource("/sound/StartGame.wav");
 		soundURL[5] = getClass().getResource("/sound/Select.wav");
 		soundURL[6] = getClass().getResource("/sound/Death.wav");
+		soundURL[7] = getClass().getResource("/sound/Burn.wav");
+		soundURL[8] = getClass().getResource("/sound/IceBullet.wav");
 	}
 	
 	public void setFile(int i) {
@@ -34,6 +36,9 @@ public class Sound {
 			
 		}
 		
+		FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+		gainControl.setValue(gainControl.getValue()-10.0f);
+		
 	}
 	
 	public void play() {
@@ -41,13 +46,13 @@ public class Sound {
 	}
 	
 	public void loop() {
-		clip.loop(clip.LOOP_CONTINUOUSLY);
+		clip.loop(Clip.LOOP_CONTINUOUSLY);
 	}
 	
 	public void stop() {
 		clip.stop();
 	}
-	
+
 	public void volumeUp() {
 		FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 		gainControl.setValue(gainControl.getValue()+5.0f);

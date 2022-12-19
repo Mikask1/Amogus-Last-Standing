@@ -34,6 +34,7 @@ public class UI {
 	public int pauseSubState = 0; // 0 : pause, 1 : power up
 	public int volume = 100;
 	public int oof;
+	public int wikiNum = 0;
 	
 	double playTime;
 	DecimalFormat dFormat = new DecimalFormat("#0.00");
@@ -142,7 +143,7 @@ public class UI {
 				g2.drawString(text, x, y);
 			}
 			
-			text = "SETTINGS";
+			text = "HELP";
 			x = getXforCenteredText(text);
 			y += gp.tileSize * 2;
 			boxY = y - 40;
@@ -265,19 +266,119 @@ public class UI {
 			
 		}
 
-		// Settings
+		// Help
 		else if(titleSubState == 3) {
 			g2.setColor(new Color (54, 31, 2));
 			g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+		
+			int length = (int)g2.getFontMetrics().getStringBounds("In Combat", g2).getWidth();
+			int midLeft = gp.screenWidth / 4 - length / 2;
 			
-			g2.setFont(maruMonica.deriveFont(Font.BOLD, 50F));
+			g2.setFont(OEM8514.deriveFont(Font.PLAIN, 30F));
 			g2.setColor(Color.WHITE);
-			g2.drawString("Volume", getXforCenteredText("Volume"), gp.screenHeight/2);
-			g2.drawString("<        >", getXforCenteredText("<        >"), gp.screenHeight/2 + gp.tileSize);
+			g2.drawString("CONTROLS", getXforCenteredText("CONTROLS"), gp.tileSize*2);
+			g2.drawString("_________", getXforCenteredText("_________"), gp.tileSize*2+5);
+			g2.drawString("In Combat", midLeft, gp.tileSize * 4);
+			g2.drawString("W/A/S/D or", gp.tileSize * 3, gp.tileSize * 5+5);
+			g2.drawString(": Move", gp.tileSize * 7 + 19, gp.tileSize * 5 + 20);
+			g2.drawString("Arrow Keys", gp.tileSize * 3, gp.tileSize * 6-5);
+			g2.drawString("Spacebar   : Shoot", gp.tileSize * 3, gp.tileSize * 7);
+			g2.drawString("Esc        : Pause", gp.tileSize * 3, gp.tileSize * 8);
 			
-			g2.setFont(maruMonica.deriveFont(Font.PLAIN, 50F));
-			g2.setColor(Color.WHITE);
-			g2.drawString("" + volume, getXforCenteredText("" + volume), gp.screenHeight/2 + gp.tileSize);
+			length = (int)g2.getFontMetrics().getStringBounds("In Menu", g2).getWidth();
+			int midRight = gp.screenWidth / 2 + (gp.screenWidth / 4 - length / 2);
+			g2.drawString("In Menu", midRight, gp.tileSize * 4);
+			g2.drawString("W/A/S/D or", gp.tileSize * 14, gp.tileSize * 5+5);
+			g2.drawString(": Navigate Menu", gp.tileSize * 18 + 19, gp.tileSize * 5 + 20);
+			g2.drawString("Arrow Keys", gp.tileSize * 14, gp.tileSize * 6-5);
+			g2.drawString("Enter      : Confirm Option", gp.tileSize * 14, gp.tileSize * 7);
+			g2.drawString("Esc        : Go Back", gp.tileSize * 14, gp.tileSize * 8);
+			
+			// Wiki
+			g2.setFont(maruMonica.deriveFont(Font.BOLD, 30F));
+			g2.drawString("<                                 >", gp.tileSize * 4, gp.tileSize*12 + 20);
+			g2.setFont(maruMonica.deriveFont(Font.PLAIN, 30F));
+			g2.drawString("Amogus Wiki", gp.tileSize * 5+10, gp.tileSize*10);
+			g2.setFont(maruMonica.deriveFont(Font.PLAIN, 25F));
+			
+			try {
+				BufferedImage player = ImageIO.read(getClass().getResourceAsStream("/player/amog-down.png"));
+				BufferedImage bat = ImageIO.read(getClass().getResourceAsStream("/monster/batright.png"));
+				BufferedImage mush = ImageIO.read(getClass().getResourceAsStream("/monster/right.png"));
+				BufferedImage lilMush = ImageIO.read(getClass().getResourceAsStream("/monster/lilright.png"));
+				BufferedImage chargeMush = ImageIO.read(getClass().getResourceAsStream("/monster/cright.png"));
+				BufferedImage fireBat = ImageIO.read(getClass().getResourceAsStream("/monster/fireBatright.png"));
+				BufferedImage iceBat = ImageIO.read(getClass().getResourceAsStream("/monster/iceBatright.png"));
+				
+				if(wikiNum == 0) {
+					g2.drawImage(player, gp.tileSize*6+10, gp.tileSize*12-10, gp.tileSize, gp.tileSize, null);
+					g2.drawString("Name     : Mongus", gp.tileSize*11, gp.tileSize*11);
+					g2.drawString("Species  : Impostor", gp.tileSize*11, gp.tileSize*12);
+					g2.drawString("Ability     : Shoots Bullets", gp.tileSize*11, gp.tileSize*13);
+					g2.drawString("HP                   : 10", gp.tileSize*17, gp.tileSize*11);
+					g2.drawString("Bullet Damage  : 10", gp.tileSize*17, gp.tileSize*12);
+					g2.drawString("Attack Speed    : 10", gp.tileSize*17, gp.tileSize*13);
+				}
+				if(wikiNum == 1) {
+					g2.drawImage(bat, gp.tileSize*6-15, gp.tileSize*11, gp.tileSize*2, gp.tileSize*2, null);
+					g2.drawString("Name     : Bat", gp.tileSize*11, gp.tileSize*11);
+					g2.drawString("Species  : Cave Bat", gp.tileSize*11, gp.tileSize*12);
+					g2.drawString("Ability     : Random Movement", gp.tileSize*11, gp.tileSize*13);
+					g2.drawString("HP                   : 10", gp.tileSize*17, gp.tileSize*11);
+					g2.drawString("Body Damage   : 10", gp.tileSize*17, gp.tileSize*12);
+				}
+				if(wikiNum == 2) {
+					g2.drawImage(fireBat, gp.tileSize*6-15, gp.tileSize*11, gp.tileSize*2, gp.tileSize*2, null);
+					g2.drawString("Name     : Fire Bat", gp.tileSize*11, gp.tileSize*11);
+					g2.drawString("Species  : Cave Bat", gp.tileSize*11, gp.tileSize*12);
+					g2.drawString("Ability     : Shoots Fireballs", gp.tileSize*11, gp.tileSize*13);
+					g2.drawString("HP                   : 10", gp.tileSize*17, gp.tileSize*11);
+					g2.drawString("Body Damage   : 10", gp.tileSize*17, gp.tileSize*12);
+					g2.drawString("Bullet Damage  : 10", gp.tileSize*17, gp.tileSize*13);
+				}
+				if(wikiNum == 3) {
+					g2.drawImage(iceBat, gp.tileSize*6-15, gp.tileSize*11, gp.tileSize*2, gp.tileSize*2, null);
+					g2.drawString("Name     : Ice Bat", gp.tileSize*11, gp.tileSize*11);
+					g2.drawString("Species  : Cave Bat", gp.tileSize*11, gp.tileSize*12);
+					g2.drawString("Ability     : Shoots Iceballs", gp.tileSize*11, gp.tileSize*13);
+					g2.drawString("HP                   : 10", gp.tileSize*17, gp.tileSize*11);
+					g2.drawString("Body Damage   : 10", gp.tileSize*17, gp.tileSize*12);
+					g2.drawString("Bullet Damage  : 10", gp.tileSize*17, gp.tileSize*13);
+				}
+				if(wikiNum == 4) {
+					g2.drawImage(mush, gp.tileSize*5+10, gp.tileSize*11-20, gp.tileSize*3, gp.tileSize*3, null);
+					g2.drawString("Name     : Mushroom", gp.tileSize*11, gp.tileSize*11);
+					g2.drawString("Species  : Fungi", gp.tileSize*11, gp.tileSize*12);
+					g2.drawString("Ability     : Chases Player", gp.tileSize*11, gp.tileSize*13);
+					g2.drawString("HP                   : 10", gp.tileSize*17, gp.tileSize*11);
+					g2.drawString("Body Damage   : 10", gp.tileSize*17, gp.tileSize*12);
+				}
+				if(wikiNum == 5) {
+					g2.drawImage(lilMush, gp.tileSize*6-20, gp.tileSize*11, gp.tileSize*2+20, gp.tileSize*2+20, null);
+					g2.drawString("Name     : Lil Mushroom", gp.tileSize*11, gp.tileSize*11);
+					g2.drawString("Species  : Fungi", gp.tileSize*11, gp.tileSize*12);
+					g2.drawString("Ability     : Shoots Bullets", gp.tileSize*11, gp.tileSize*13);
+					g2.drawString("HP                   : 10", gp.tileSize*17, gp.tileSize*11);
+					g2.drawString("Body Damage   : 10", gp.tileSize*17, gp.tileSize*12);
+					g2.drawString("Bullet Damage  : 10", gp.tileSize*17, gp.tileSize*13);
+					g2.drawString("Attack Speed    : 10", gp.tileSize*17, gp.tileSize*14);
+				}
+				if(wikiNum == 6) {
+					g2.drawImage(chargeMush, gp.tileSize*5+20, gp.tileSize*11-20, gp.tileSize*3, gp.tileSize*3, null);
+					g2.drawString("Name     : Knight Mushroom", gp.tileSize*11, gp.tileSize*11);
+					g2.drawString("Species  : Fungi", gp.tileSize*11, gp.tileSize*12);
+					g2.drawString("Ability     : Charged Attack", gp.tileSize*11, gp.tileSize*13);
+					g2.drawString("HP                      : 10", gp.tileSize*17, gp.tileSize*11);
+					g2.drawString("Body Damage      : 10", gp.tileSize*17, gp.tileSize*12);
+					g2.drawString("Charge Duration   : 10", gp.tileSize*17, gp.tileSize*13);
+				}
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			
+			
 		}
 
 	}
@@ -427,43 +528,37 @@ public class UI {
 		g2.drawString(text, getXforCenteredText(text), gp.screenHeight/2);
 		
 		g2.setFont(OEM8514.deriveFont(Font.PLAIN, 30F));
-		text = "Back to Main Menu";
+		text = "MAIN MENU";
 		x = getXforCenteredText(text);
 		y += gp.tileSize * 9;
 		int boxX = x - 30;
 		int boxY = y - 40;
 		g2.setColor(Color.BLACK);
-		g2.fillRoundRect(boxX-3, boxY-3, 387, 76, 25, 25);
+		g2.fillRoundRect(boxX-3, boxY-3, 239, 76, 25, 25);
 		g2.setColor(new Color(123, 75, 6));
-		g2.fillRoundRect(boxX, boxY, 381, 70, 20, 20);
+		g2.fillRoundRect(boxX, boxY, 233, 70, 20, 20);
 		g2.setColor(Color.white);
 		g2.drawString(text, x, y);
 		if(commandNum == 0) {
 			g2.setColor(new Color(166, 101, 6));
-			g2.fillRoundRect(boxX, boxY, 381, 70, 20, 20);
-			
-			g2.setFont(OEM8514.deriveFont(Font.PLAIN, 30F));
-			text = "Back to Main Menu";
+			g2.fillRoundRect(boxX, boxY, 233, 70, 20, 20);
 			g2.setColor(Color.WHITE);
 			g2.drawString(text, x, y);
 		}
 		
-		text = "Exit";
+		text = "EXIT";
 		x = getXforCenteredText(text);
 		y += gp.tileSize * 2;
 		boxY = y - 40;
 		g2.setColor(Color.BLACK);
-		g2.fillRoundRect(boxX-3, boxY-3, 387, 76, 25, 25);
+		g2.fillRoundRect(boxX-3, boxY-3, 239, 76, 25, 25);
 		g2.setColor(new Color(123, 75, 6));
-		g2.fillRoundRect(boxX, boxY, 381, 70, 20, 20);
+		g2.fillRoundRect(boxX, boxY, 233, 70, 20, 20);
 		g2.setColor(Color.white);
 		g2.drawString(text, x, y);
 		if(commandNum == 1) {
 			g2.setColor(new Color(166, 101, 6));
-			g2.fillRoundRect(boxX, boxY, 381, 70, 20, 20);
-			
-			g2.setFont(OEM8514.deriveFont(Font.PLAIN, 30F));
-			text = "Exit";
+			g2.fillRoundRect(boxX, boxY, 233, 70, 20, 20);
 			g2.setColor(Color.WHITE);
 			g2.drawString(text, x, y);
 		}

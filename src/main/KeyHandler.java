@@ -29,6 +29,7 @@ public class KeyHandler implements KeyListener {
 
 		// TITLE STATE
 		if (gp.gameState == gp.titleState) {
+			
 
 			if (gp.ui.titleSubState == 0) {
 				if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
@@ -145,24 +146,23 @@ public class KeyHandler implements KeyListener {
 				}
 			}
 			
-			// SETTINGS
+			// HELP
 			if (gp.ui.titleSubState == 3) {
 				
 				if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
 					gp.playSE(5);
-					if(gp.ui.volume > 0) {
-						gp.ui.volume -= 10;
-						gp.sound.volumeDown();
+					gp.ui.wikiNum--;
+					if(gp.ui.wikiNum < 0) {
+						gp.ui.wikiNum = 6;
 					}
 				}
 				
 				if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
 					gp.playSE(5);
-					if(gp.ui.volume < 100) {
-						gp.ui.volume += 10;
-						gp.sound.volumeUp();
+					gp.ui.wikiNum++;
+					if(gp.ui.wikiNum > 6) {
+						gp.ui.wikiNum = 0;
 					}
-					
 				}
 				
 				if (code == KeyEvent.VK_ESCAPE) {

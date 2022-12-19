@@ -33,7 +33,7 @@ public class KeyHandler implements KeyListener {
 
 			if (gp.ui.titleSubState == 0) {
 				if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
-					gp.playSE(5);
+					gp.playSE(Sound.Select);
 					gp.ui.commandNum--;
 					if (gp.ui.commandNum < 0) {
 						gp.ui.commandNum = 2;
@@ -41,7 +41,7 @@ public class KeyHandler implements KeyListener {
 				}
 
 				if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
-					gp.playSE(5);
+					gp.playSE(Sound.Select);
 					gp.ui.commandNum++;
 					if (gp.ui.commandNum > 2) {
 						gp.ui.commandNum = 0;
@@ -49,7 +49,7 @@ public class KeyHandler implements KeyListener {
 				}
 
 				if (code == KeyEvent.VK_ENTER) {
-					gp.playSE(5);
+					gp.playSE(Sound.Select);
 					if (gp.ui.commandNum == 0) {
 //						gp.gameState = gp.playState;
 						gp.ui.titleSubState = 1;
@@ -65,7 +65,7 @@ public class KeyHandler implements KeyListener {
 
 			if (gp.ui.titleSubState == 1) {
 				if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
-					gp.playSE(5);
+					gp.playSE(Sound.Select);
 					gp.ui.mapNum--;
 					gp.ui.commandNum = 0;
 					if (gp.ui.mapNum < 0) {
@@ -74,7 +74,7 @@ public class KeyHandler implements KeyListener {
 
 				}
 				if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
-					gp.playSE(5);
+					gp.playSE(Sound.Select);
 					gp.ui.mapNum++;
 					gp.ui.commandNum = 0;
 					if (gp.ui.mapNum > 2) {
@@ -82,13 +82,13 @@ public class KeyHandler implements KeyListener {
 					}
 				}
 				if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
-					gp.playSE(5);
+					gp.playSE(Sound.Select);
 					gp.ui.commandNum = 1;
 
 				}
 
 				if (code == KeyEvent.VK_SPACE || code == KeyEvent.VK_ENTER) {
-					gp.playSE(5);
+					gp.playSE(Sound.Select);
 					if (gp.ui.commandNum == 1) {		
 						if (gp.ui.mapNum == 0) {
 							gp.setupGame(2);
@@ -106,7 +106,7 @@ public class KeyHandler implements KeyListener {
 				}
 				
 				if (code == KeyEvent.VK_ESCAPE) {
-					gp.playSE(5);
+					gp.playSE(Sound.Select);
 					gp.ui.titleSubState = 0;
 				}
 
@@ -116,7 +116,7 @@ public class KeyHandler implements KeyListener {
 			if (gp.ui.titleSubState == 2) {
 				
 				if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
-					gp.playSE(5);
+					gp.playSE(Sound.Select);
 					gp.ui.commandNum--;
 					if(gp.ui.commandNum < 0) {
 						gp.ui.commandNum = 1;
@@ -124,7 +124,7 @@ public class KeyHandler implements KeyListener {
 				}
 				
 				if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
-					gp.playSE(5);
+					gp.playSE(Sound.Select);
 					gp.ui.commandNum++;
 					if(gp.ui.commandNum > 1) {
 						gp.ui.commandNum = 0;
@@ -132,7 +132,7 @@ public class KeyHandler implements KeyListener {
 				}
 				
 				if (code == KeyEvent.VK_SPACE || code == KeyEvent.VK_ENTER) {
-					gp.playSE(5);
+					gp.playSE(Sound.Select);
 					if(gp.ui.commandNum == 0) {
 						gp.ui.titleSubState = 0;
 						gp.gameState = gp.titleState;
@@ -150,7 +150,7 @@ public class KeyHandler implements KeyListener {
 			if (gp.ui.titleSubState == 3) {
 				
 				if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
-					gp.playSE(5)
+					gp.playSE(Sound.Select);
 					gp.ui.wikiNum--;
 					if(gp.ui.wikiNum < 0) {
 						gp.ui.wikiNum = 6;
@@ -158,7 +158,7 @@ public class KeyHandler implements KeyListener {
 				}
 				
 				if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
-					gp.playSE(5);
+					gp.playSE(Sound.Select);
 					gp.ui.wikiNum++;
 					if(gp.ui.wikiNum > 6) {
 						gp.ui.wikiNum = 0;
@@ -166,7 +166,7 @@ public class KeyHandler implements KeyListener {
 				}
 				
 				if (code == KeyEvent.VK_ESCAPE) {
-					gp.playSE(5);
+					gp.playSE(Sound.Select);
 					gp.ui.titleSubState = 0;
 				}
 				
@@ -181,7 +181,7 @@ public class KeyHandler implements KeyListener {
 			
 			if(gp.ui.pauseSubState == 0) {
 				if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
-					gp.playSE(5);
+					gp.playSE(Sound.Select);
 					gp.ui.commandNum--;
 					if (gp.ui.commandNum < 0) {
 						gp.ui.commandNum = 1;
@@ -190,7 +190,7 @@ public class KeyHandler implements KeyListener {
 				}
 
 				if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
-					gp.playSE(5);
+					gp.playSE(Sound.Select);
 					gp.ui.commandNum++;
 					if (gp.ui.commandNum > 1) {
 						gp.ui.commandNum = 0;
@@ -199,7 +199,7 @@ public class KeyHandler implements KeyListener {
 				}
 
 				if (code == KeyEvent.VK_ENTER) {
-					gp.playSE(5);
+					gp.playSE(Sound.Select);
 					if (gp.ui.commandNum == 0) {
 						gp.gameState = gp.playState;
 					}
@@ -209,14 +209,14 @@ public class KeyHandler implements KeyListener {
 				}
 				
 				if (code == KeyEvent.VK_ESCAPE) {
-					gp.playSE(5);
+					gp.playSE(Sound.Select);
 					gp.gameState = gp.playState;
 				}
 			}
 
 			if(gp.ui.pauseSubState == 1) {
 				if(code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
-					gp.playSE(5);
+					gp.playSE(Sound.Select);
 					gp.ui.powNum--;
 					if(gp.ui.powNum < 0) {
 						gp.ui.powNum = 3;
@@ -224,7 +224,7 @@ public class KeyHandler implements KeyListener {
 				}
 				
 				if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
-					gp.playSE(5);
+					gp.playSE(Sound.Select);
 					gp.ui.powNum++;
 					if (gp.ui.powNum > 3) {
 						gp.ui.powNum = 0;
@@ -233,15 +233,16 @@ public class KeyHandler implements KeyListener {
 				}
 				
 				if (code == KeyEvent.VK_ENTER) {
-					gp.playSE(5);
+					gp.playSE(Sound.Select);
 					if (gp.ui.powNum == 0) {
 						gp.player.setHealth(gp.player.getHealth() + 10);
 						gp.ui.pauseSubState = 0;
 						gp.gameState = gp.playState;
 					}
 					if (gp.ui.powNum == 1) {
+						gp.player.setBulletDamage(gp.player.getBulletDamage() + 1);
 						for (Bullet bullet: gp.player.bullets) {
-							bullet.setDamage(bullet.getDamage() + 1);							
+							bullet.setDamage(gp.player.getBulletDamage() + 1);							
 						}
 						gp.ui.pauseSubState = 0;
 						gp.gameState = gp.playState;
@@ -257,9 +258,7 @@ public class KeyHandler implements KeyListener {
 						gp.gameState = gp.playState;
 					}
 				}
-				
 			}
-
 		}
 
 		// PLAY STATE
@@ -315,7 +314,5 @@ public class KeyHandler implements KeyListener {
 		if (code == KeyEvent.VK_SPACE) {
 			shoot = false;
 		}
-
 	}
-
 }

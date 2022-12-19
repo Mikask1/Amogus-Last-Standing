@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 
 import bullet.Bullet;
 import main.GamePanel;
+import main.Sound;
 
 public class MonLilMushroom extends Monster {
 
@@ -20,7 +21,11 @@ public class MonLilMushroom extends Monster {
 
 	int bulletDimension1 = 4;
 	int bulletDimension2 = 13;
-	private int bulletDamage;
+	
+	public static int DefaultHealth = 20;
+	public static int DefaultBodyDamage = 2;
+	public static int DefaultBulletDamage = 3;
+	public static int DefaultSpeed = 1;
 	
 	public MonLilMushroom(GamePanel gp) {
 		super(gp);
@@ -31,15 +36,15 @@ public class MonLilMushroom extends Monster {
 	}
 
 	private void setDefaultValues() {
-		setSpeed(1);
+		setSpeed(DefaultSpeed);
 		setShootSpeed(1);
-		setHealth(20);
-		setBodyDamage(2);
-		bulletDamage = 5;
+		setHealth(DefaultHealth);
+		setBodyDamage(DefaultBodyDamage);
+		setBulletDamage(DefaultBulletDamage);
 		direction = "left";
 
-		worldX = rand.nextInt(-200, 200) + gp.player.screenX;
-		worldY = rand.nextInt(-200, 200) + gp.player.screenY;
+		worldX = rand.nextInt(-Monster.randomSpawnRadius, Monster.randomSpawnRadius) + gp.player.screenX;
+		worldY = rand.nextInt(-Monster.randomSpawnRadius, Monster.randomSpawnRadius) + gp.player.screenY;
 
 		solidArea = new Rectangle();
 		solidArea.x = 20;
@@ -168,13 +173,12 @@ public class MonLilMushroom extends Monster {
 
 					if (gp.screenX + this.worldX <= gp.player.screenX) {
 						newBullet = new Bullet(gp, this, "right", bulletDimension2, bulletDimension1,
-								worldX + solidArea.x + solidArea.width + 20, worldY + gp.tileSize + 5, bulletDamage);
-						gp.playSE(2);
+								worldX + solidArea.x + solidArea.width + 20, worldY + gp.tileSize + 5, getBulletDamage());
 					} else {
 						newBullet = new Bullet(gp, this, "left", bulletDimension2, bulletDimension1, worldX,
-								worldY + gp.tileSize + 5, bulletDamage);
-						gp.playSE(2);
+								worldY + gp.tileSize + 5, getBulletDamage());
 					}
+					gp.playSE(Sound.MonsterGunshot);
 					monBullets.add(newBullet);
 				}
 				shoot_timer = gp.stopwatch;

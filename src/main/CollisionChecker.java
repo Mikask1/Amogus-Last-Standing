@@ -19,7 +19,7 @@ public class CollisionChecker {
 	}
 
 	public void insideMap(Character character) {
-		
+
 		int worldXNext = character.gp.screenX + character.worldX + character.footArea.x;
 		int width = character.footArea.width;
 		int worldYNext = character.gp.screenY + character.worldY + character.footArea.y;
@@ -63,17 +63,17 @@ public class CollisionChecker {
 				this.gp.player.bullets.remove(i);
 				monster.damageHealth(bullet.getDamage());
 			}
-			
+
 			bullet = null;
 		}
 
 		monsterSolidArea = null;
 	}
-	
+
 	public void checkBulletHitsPlayer(Monster monster) {
 		Rectangle playerSolidArea = new Rectangle(gp.player.screenX + gp.player.solidArea.x,
 				gp.player.screenY + gp.player.solidArea.y, gp.player.solidArea.width, gp.player.solidArea.height);
-		
+
 		for (int i = 0; i < monster.monBullets.size(); i++) {
 			Bullet bullet = monster.monBullets.get(i);
 			Rectangle bulletSolidArea = new Rectangle(gp.screenX + bullet.worldX + bullet.solidArea.x,
@@ -82,14 +82,13 @@ public class CollisionChecker {
 
 			if (hits) {
 				gp.player.hurt = true;
-				gp.playSE(3);
+				gp.playSE(Sound.Oof);
 				gp.player.damageHealth(bullet.getDamage());
 				if (bullet.character instanceof MonFireBat) {
 					gp.player.onFire = true;
 					gp.player.fireCounter = 0;
 					gp.player.onFireDuration = MonFireBat.fireDuration;
-				}
-				else if (bullet.character instanceof MonIceBat) {
+				} else if (bullet.character instanceof MonIceBat) {
 					gp.player.freeze = true;
 					gp.player.freezeCounter = 0;
 					gp.player.freezeDuration = MonIceBat.freezeDuration;
@@ -97,10 +96,10 @@ public class CollisionChecker {
 
 				monster.monBullets.remove(i);
 			}
-			
+
 			bullet = null;
 		}
-		
+
 		playerSolidArea = null;
 	}
 
@@ -112,55 +111,13 @@ public class CollisionChecker {
 		Rectangle playerSolidArea = new Rectangle(player.screenX + player.solidArea.x,
 				player.screenY + player.solidArea.y, player.solidArea.width, player.solidArea.height);
 
-		if (gp.stopwatch - bodyHitTimer >= 500000000) {
+		if (gp.stopwatch - bodyHitTimer >= 500 * GamePanel.NANO_TO_MILI) {
 			if (playerSolidArea.intersects(monsterSolidArea)) {
-				gp.playSE(3);
+				gp.playSE(Sound.Oof);
 				player.damageHealth(monster.getBodyDamage());
 				player.hurt = true;
 				bodyHitTimer = gp.stopwatch;
 			}
 		}
 	}
-
-//	public void monsterCollideMonster(Monster enemy) {
-//		enemy.collisionDown = false;
-//		enemy.collisionUp = false;
-//		enemy.collisionLeft = false;
-//		enemy.collisionRight = false;
-//
-//		int worldXNext = enemy.gp.screenX + enemy.worldX + enemy.footArea.x;
-//		int width = enemy.footArea.width;
-//		int worldYNext = enemy.gp.screenY + enemy.worldY + enemy.footArea.y;
-//		int height = enemy.footArea.height;
-//
-//		for (Monster enemy2 : gp.monsters) {
-//			if (enemy2 == enemy) {
-//				continue;
-//			}
-//			
-//			Rectangle enemy2FootArea = new Rectangle(gp.screenX + enemy2.worldX + enemy2.footArea.x,
-//					gp.screenY + enemy2.worldY + enemy2.footArea.y, enemy2.footArea.width, enemy2.footArea.height);
-//
-//			if (enemy.direction.contains("up")) {
-//				if (enemy2FootArea.intersects(worldXNext, worldYNext - enemy.getSpeed() - 1, width, height)) {
-//					enemy.collisionUp = true;
-//				}
-//			}
-//			if (enemy.direction.contains("down")) {
-//				if (enemy2FootArea.intersects(worldXNext, worldYNext + enemy.getSpeed() + 1, width, height)) {
-//					enemy.collisionDown = true;
-//				}
-//			}
-//			if (enemy.direction.contains("left")) {
-//				if (enemy2FootArea.intersects(worldXNext - enemy.getSpeed() - 1, worldYNext, width, height)) {
-//					enemy.collisionLeft = true;
-//				}
-//			}
-//			if (enemy.direction.contains("right")) {
-//				if (enemy2FootArea.intersects(worldXNext + enemy.getSpeed() + 1, worldYNext, width, height)) {
-//					enemy.collisionRight = true;
-//				}
-//			}
-//		}
-//	}
 }

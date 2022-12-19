@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 
 import bullet.Bullet;
 import main.GamePanel;
+import main.Sound;
 
 
 public class MonFireBat extends Monster {
@@ -18,9 +19,13 @@ public class MonFireBat extends Monster {
 	private final int playerDetectionOffset = 0;
 
 	int bulletDimension = 10;
-	private int bulletDamage;
 	public static long fireDuration = 5000;
   
+	public static int DefaultHealth = 20;
+	public static int DefaultBodyDamage = 2;
+	public static int DefaultBulletDamage = 3;
+	public static int DefaultSpeed = 1;
+	
 	public MonFireBat(GamePanel gp) {
 		super(gp);
 		size = 64;
@@ -30,15 +35,15 @@ public class MonFireBat extends Monster {
 	}
 
 	private void setDefaultValues() {
-		setSpeed(1);
+		setSpeed(DefaultSpeed);
 		setShootSpeed(1);
-		setHealth(20);
-		setBodyDamage(2);
-		bulletDamage = 5;
+		setHealth(DefaultHealth);
+		setBodyDamage(DefaultBodyDamage);
+		setBulletDamage(DefaultBulletDamage);
 		direction = "left";
 
-		worldX = rand.nextInt(-200, 200) + gp.player.screenX;
-		worldY = rand.nextInt(-200, 200) + gp.player.screenY;
+		worldX = rand.nextInt(-Monster.randomSpawnRadius, Monster.randomSpawnRadius) + gp.player.screenX;
+		worldY = rand.nextInt(-Monster.randomSpawnRadius, Monster.randomSpawnRadius) + gp.player.screenY;
 
 		solidArea = new Rectangle();
 		solidArea.x = 10;
@@ -173,12 +178,12 @@ public class MonFireBat extends Monster {
 
 					if (gp.screenX + this.worldX <= gp.player.screenX) {
 						newBullet = new Bullet(gp, this, "right", bulletDimension, bulletDimension,
-								worldX + solidArea.x + solidArea.width,(int) (worldY + solidArea.y + solidArea.height/2), bulletDamage);
+								worldX + solidArea.x + solidArea.width,(int) (worldY + solidArea.y + solidArea.height/2), getBulletDamage());
 					} else {
 						newBullet = new Bullet(gp, this, "left", bulletDimension, bulletDimension, worldX,
-								(int) (worldY + solidArea.y + solidArea.height/2), bulletDamage);
+								(int) (worldY + solidArea.y + solidArea.height/2), getBulletDamage());
 					}
-					gp.playSE(7);
+					gp.playSE(Sound.FireBullet);
 					monBullets.add(newBullet);
 				}
 				shoot_timer = gp.stopwatch;

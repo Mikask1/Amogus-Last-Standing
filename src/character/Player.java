@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import bullet.Bullet;
 import main.GamePanel;
 import main.KeyHandler;
+import main.Sound;
 
 public class Player extends Character {
 
@@ -20,8 +21,8 @@ public class Player extends Character {
 	public int screenX;
 	public int screenY;
 
-	int playerBulletDimension1 = 4;
-	int playerBulletDimension2 = 13;
+	int bulletWidth = 4; // actual measurements on the bullet
+	int bulletLength = 13;
 
 	public BufferedImage up, up1, up2, down, down1, down2, left, left1, left2, right, right1, right2;
 	public BufferedImage up_shoot, up1_shoot, up2_shoot, down_shoot, down1_shoot, down2_shoot, left_shoot, left1_shoot,
@@ -29,7 +30,13 @@ public class Player extends Character {
 
 	int diagonalSpeed;
 	private int bulletDamage;
-
+	private int normalSpeed;
+	
+	public static int DefaultHealth = 50;
+	public static int DefaultBulletDamage = 3;
+	public static int DefaultSpeed = 3;
+	public static int DefaultAttackSpeed = 8;
+	
 	public Player(GamePanel gp, KeyHandler keyH) {
 		super(gp);
 		this.gp = gp;
@@ -57,12 +64,15 @@ public class Player extends Character {
 	}
 
 	public void setDefaultValues() {
-		setShootSpeed(10);
-		setSpeed(5);
-		setBulletDamage(100);
+		setShootSpeed(DefaultAttackSpeed);
+		setSpeed(DefaultSpeed);
+		setBulletDamage(DefaultBulletDamage);
+		setHealth(DefaultHealth);
+		
+		onFire = false;
+		freeze = false;
+		
 		direction = "down";
-
-		setHealth(1000);
 		fireTimer = gp.stopwatch;
 		freezeTimer = gp.stopwatch;
 	}
@@ -103,7 +113,7 @@ public class Player extends Character {
 	public void update() {
 		if (keyH.upPressed == true || keyH.leftPressed == true || keyH.downPressed == true
 				|| keyH.rightPressed == true) {
-			
+
 			// CAN'T MOVE DIAGONALLY
 
 			if (keyH.upPressed == true) {
@@ -187,29 +197,29 @@ public class Player extends Character {
 		}
 
 		if (keyH.shoot) {
-			if ((gp.stopwatch - shoot_timer) >= 1000000000 / getShootSpeed()) {
-				gp.playSE(1);
+			if ((gp.stopwatch - shoot_timer) >= GamePanel.NANO_TO_MILI * 1000 / getShootSpeed()) {
+				gp.playSE(Sound.Gunshot);
 				switch (direction) {
 				case "up":
-					Bullet newBullet = new Bullet(gp, this, direction, playerBulletDimension1, playerBulletDimension2,
+					Bullet newBullet = new Bullet(gp, this, direction, bulletWidth, bulletLength,
 							worldX + gp.tileSize / 2 - 3, worldY, bulletDamage);
 					bullets.add(newBullet);
 					break;
 
 				case "down":
-					Bullet newBullet1 = new Bullet(gp, this, direction, playerBulletDimension1, playerBulletDimension2,
+					Bullet newBullet1 = new Bullet(gp, this, direction, bulletWidth, bulletLength,
 							worldX + gp.tileSize / 2 - 3, worldY + gp.tileSize / 2 + 4, bulletDamage);
 					bullets.add(newBullet1);
 					break;
 
 				case "left":
-					Bullet newBullet2 = new Bullet(gp, this, direction, playerBulletDimension2, playerBulletDimension1,
-							worldX, worldY + gp.tileSize / 2 - 4, bulletDamage);
+					Bullet newBullet2 = new Bullet(gp, this, direction, bulletLength, bulletWidth, worldX,
+							worldY + gp.tileSize / 2 - 4, bulletDamage);
 					bullets.add(newBullet2);
 					break;
 
 				case "right":
-					Bullet newBullet3 = new Bullet(gp, this, direction, playerBulletDimension2, playerBulletDimension1,
+					Bullet newBullet3 = new Bullet(gp, this, direction, bulletLength, bulletWidth,
 							worldX + gp.tileSize / 2 + 4, worldY + gp.tileSize / 2 - 4, bulletDamage);
 					bullets.add(newBullet3);
 					break;
@@ -217,50 +227,53 @@ public class Player extends Character {
 				shoot_timer = gp.stopwatch;
 			}
 		}
-		
-		if (onFire && (gp.stopwatch - fireTimer >= fireInterval * gp.NANO_TO_MILI)) {
-			hurt = true;
-			damageHealth(1);
-			fireTimer = gp.stopwatch;
+
+		if (onFire) {
+			if (gp.stopwatch - fireTimer >= fireInterval * GamePanel.NANO_TO_MILI) {
+				hurt = true;
+				damageHealth(1);
+				fireTimer = gp.stopwatch;
+			}
+
+			if (fireCounter >= onFireDuration / fireInterval) {
+				onFire = false;
+				onFireDuration = 0;
+				fireCounter = 0;
+				hurtCounter = 0;
+				fireTimer = gp.stopwatch;
+			}
 		}
 
-		if (onFire && fireCounter >= onFireDuration / fireInterval) {
-			onFire = false;
-			onFireDuration = 0;
-			fireCounter = 0;
-			hurtCounter = 0;
-			fireTimer = gp.stopwatch;
-		}
-		
-		if (freeze && (gp.stopwatch - freezeTimer >= freezeInterval * gp.NANO_TO_MILI)) {
-			setSpeed(2);
-			freezeTimer = gp.stopwatch;
-		}
-		
-		if (freeze && freezeCounter >= freezeDuration) {
-			freeze = false;
-			setSpeed(5);
-			freezeDuration = 0;
-			freezeCounter = 0;
-			freezeTimer = gp.stopwatch;
+		if (freeze) {
+			if (gp.stopwatch - freezeTimer >= freezeDuration * GamePanel.NANO_TO_MILI) {
+				slow();
+				freezeTimer = gp.stopwatch;
+			}
+
+			if (freezeCounter >= freezeDuration) {
+				freeze = false;
+				unslow();
+				freezeDuration = 0;
+				freezeCounter = 0;
+				freezeTimer = gp.stopwatch;
+			}
 		}
 
 		if (hurt == true) {
 			hurtCounter++;
-			if (hurtCounter > 30) {
+			if (hurtCounter > hurtDuration) {
 				if (onFire) {
 					fireCounter += 1;
-					gp.playSE(3);
+					gp.playSE(Sound.Oof);
 				}
 				hurt = false;
 				hurtCounter = 0;
 			}
 		}
-		
+
 		if (freeze) {
 			freezeCounter += 1;
 		}
-
 	}
 
 	public void draw(Graphics2D g2) {
@@ -402,14 +415,12 @@ public class Player extends Character {
 
 		}
 
-		if (hurt) {
-			g2.drawImage(tint(image, 1, 0.3, 0.3, 1), screenX, screenY, size, size, null);		
-		}
-		else if (freeze) {
+		if (hurt || onFire) {
+			g2.drawImage(tint(image, 1, 0.3, 0.3, 1), screenX, screenY, size, size, null);
+		} else if (freeze) {
 			g2.drawImage(tint(image, 0.2, 1, 1.9, 1), screenX, screenY, size, size, null);
-		}
-		else {
-			g2.drawImage(image, screenX, screenY, size, size, null);		
+		} else {
+			g2.drawImage(image, screenX, screenY, size, size, null);
 		}
 	}
 
@@ -417,23 +428,23 @@ public class Player extends Character {
 		for (Bullet bullet : bullets) {
 			switch (bullet.getDirection()) {
 			case "up":
-				g2.drawImage(bullet_up, gp.screenX + bullet.worldX, gp.screenY + bullet.worldY, playerBulletDimension1,
-						playerBulletDimension2, null);
+				g2.drawImage(bullet_up, gp.screenX + bullet.worldX, gp.screenY + bullet.worldY, bulletWidth,
+						bulletLength, null);
 				break;
 
 			case "down":
-				g2.drawImage(bullet_down, gp.screenX + bullet.worldX, gp.screenY + bullet.worldY,
-						playerBulletDimension1, playerBulletDimension2, null);
+				g2.drawImage(bullet_down, gp.screenX + bullet.worldX, gp.screenY + bullet.worldY, bulletWidth,
+						bulletLength, null);
 				break;
 
 			case "left":
-				g2.drawImage(bullet_left, gp.screenX + bullet.worldX, gp.screenY + bullet.worldY,
-						playerBulletDimension2, playerBulletDimension1, null);
+				g2.drawImage(bullet_left, gp.screenX + bullet.worldX, gp.screenY + bullet.worldY, bulletLength,
+						bulletWidth, null);
 				break;
 
 			case "right":
-				g2.drawImage(bullet_right, gp.screenX + bullet.worldX, gp.screenY + bullet.worldY,
-						playerBulletDimension2, playerBulletDimension1, null);
+				g2.drawImage(bullet_right, gp.screenX + bullet.worldX, gp.screenY + bullet.worldY, bulletLength,
+						bulletWidth, null);
 				break;
 			}
 
@@ -444,17 +455,33 @@ public class Player extends Character {
 	@Override
 	public void setSpeed(int speed) {
 		super.setSpeed(speed);
-		this.setDiagonalSpeed(speed);
+		setDiagonalSpeed(speed);
+		normalSpeed = speed;
 	}
 
 	void setDiagonalSpeed(int speed) {
 		this.diagonalSpeed = (int) Math.round(getSpeed() / Math.sqrt(2));
-		System.out.println(getSpeed());
-		System.out.println(diagonalSpeed);
+		if (this.diagonalSpeed == 0) {
+			this.diagonalSpeed = 1;
+		}
+	}
+
+	public void slow() {
+		System.out.println();
+		super.setSpeed((int) (getNormalSpeed() * 0.7));
+		setDiagonalSpeed((int) (getNormalSpeed() * 0.7));
+	}
+
+	public void unslow() {
+		setSpeed(getNormalSpeed());
 	}
 
 	int getDiagonalSpeed() {
 		return this.diagonalSpeed;
+	}
+
+	int getNormalSpeed() {
+		return normalSpeed;
 	}
 
 	protected BufferedImage tint(BufferedImage sprite, double d, double e, double f, double g) {

@@ -15,6 +15,10 @@ public class MonMushroom extends Monster {
 	
 	private final int playerDetectionOffset = 30;
 	
+	public static int DefaultHealth = 50;
+	public static int DefaultBodyDamage = 3;
+	public static int DefaultSpeed = 1;
+	
 	public MonMushroom(GamePanel gp) {
 		super(gp);
 		size = 112;
@@ -24,13 +28,13 @@ public class MonMushroom extends Monster {
 	}
 
 	private void setDefaultValues() {
-		setSpeed(1);
-		setHealth(50);
-		setBodyDamage(3);
+		setSpeed(DefaultSpeed);
+		setHealth(DefaultHealth);
+		setBodyDamage(DefaultBodyDamage);
 		direction = "left";
 
-		worldX = rand.nextInt(-200, 200) + gp.player.screenX;
-		worldY = rand.nextInt(-200, 200) + gp.player.screenY;
+		worldX = rand.nextInt(-Monster.randomSpawnRadius, Monster.randomSpawnRadius) + gp.player.screenX;
+		worldY = rand.nextInt(-Monster.randomSpawnRadius, Monster.randomSpawnRadius) + gp.player.screenY;
 
 		solidArea = new Rectangle();
 		solidArea.x = 25;

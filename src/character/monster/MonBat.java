@@ -11,7 +11,11 @@ import main.GamePanel;
 public class MonBat extends Monster {
 	Random rand = new Random();
 	String tempDir = "left";
-
+	
+	public static int DefaultBodyDamage = 4;
+	public static int DefaultHealth = 30;
+	public static int DefaultSpeed = 1;
+	
 	public MonBat(GamePanel gp) {
 		super(gp);
 		size = 64;
@@ -21,13 +25,13 @@ public class MonBat extends Monster {
 	}
 
 	private void setDefaultValues() {
-		setSpeed(1);
-		setHealth(30);
-		setBodyDamage(4);
+		setSpeed(DefaultSpeed);
+		setHealth(DefaultHealth);
+		setBodyDamage(DefaultBodyDamage);
 		direction = "left";
 
-		worldX = rand.nextInt(-200, 200) + gp.player.screenX;
-		worldY = rand.nextInt(-200, 200) + gp.player.screenY;
+		worldX = rand.nextInt(-Monster.randomSpawnRadius, Monster.randomSpawnRadius) + gp.player.screenX;
+		worldY = rand.nextInt(-Monster.randomSpawnRadius, Monster.randomSpawnRadius) + gp.player.screenY;
 
 		solidArea = new Rectangle();
 

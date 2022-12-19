@@ -30,7 +30,7 @@ import character.monster.Monster;;
 public class GamePanel extends JPanel implements Runnable {
 
 	// CONSTANTS
-	public final long NANO_TO_MILI = 1000000;
+	public static final long NANO_TO_MILI = 1000000;
 	
 	// SYSTEM
 	public CollisionChecker cChecker = new CollisionChecker(this);
@@ -102,7 +102,7 @@ public class GamePanel extends JPanel implements Runnable {
 		worldHeight = worldHeight / sizeMultiplier;
 
 		monsters.clear();
-
+		
 		wave = 0;
 		// SETUP
 		sizeMultiplier = multiplier;
@@ -110,7 +110,8 @@ public class GamePanel extends JPanel implements Runnable {
 		worldHeight = worldHeight * sizeMultiplier;
 		player.worldX = worldWidth / 3;
 		player.worldY = worldHeight / 3;
-
+		player.setDefaultValues();
+		
 		map = new Voronoi(worldWidth, worldHeight, this);
 		gameState = playState;
 	}
@@ -312,9 +313,9 @@ public class GamePanel extends JPanel implements Runnable {
 				gameState = pauseState;
 			}
 			wave++;
-			playSE(4);
+			playSE(Sound.StartGame);
 
-			if (wave >= 1) {
+			if (wave >= 1 && wave <= 3) {
 				int funcLower = (int) (1 * Math.sqrt(wave));
 				int funcUpper = (int) (3 * Math.sqrt(wave));
 				
@@ -325,11 +326,9 @@ public class GamePanel extends JPanel implements Runnable {
 				for (int i = 0; i < rnd.nextInt(funcLower, funcUpper); i++) {				
 					monsters.add(new MonBat(this));
 				}
-				monsters.add(new MonFireBat(this));
-				monsters.add(new MonIceBat(this));
 			}
 
-			if (wave >= 2) {
+			if (wave == 2 && wave >= 5) {
 				int funcLower = (int) (2 * Math.sqrt(wave));
 				int funcUpper = (int) (3 * Math.sqrt(wave));
 				
@@ -342,7 +341,7 @@ public class GamePanel extends JPanel implements Runnable {
 				}
 			}
 			
-			if (wave >= 3) {
+			if (wave >= 3 && wave != 4 && wave != 5 && wave != 7 && wave != 8) {
 				int funcLower = (int) (Math.pow(wave, 1.1));
 				int funcUpper = (int) (Math.pow(wave, 1.15));
 				
@@ -354,7 +353,7 @@ public class GamePanel extends JPanel implements Runnable {
 				}		
 			}
 			
-			if (wave >= 4) {
+			if (wave >= 4 && wave != 5 && wave != 6 && wave != 8) {
 				int funcLower = (int) (1 * Math.sqrt(wave));
 				int funcUpper = (int) (2 * Math.sqrt(wave));
 				
@@ -367,7 +366,19 @@ public class GamePanel extends JPanel implements Runnable {
 				}
 			}
 			
-			if (wave >= 5) {
+			if (wave >= 5 && wave != 6 && wave!= 7) {
+				int funcLower = (int) (Math.pow(wave, 1.1));
+				int funcUpper = (int) (Math.pow(wave, 1.15));
+
+				if (funcLower == funcUpper) {
+					funcUpper += 1;
+				}
+				for (int i = 0; i < rnd.nextInt(funcLower, funcUpper); i++) {
+					monsters.add(new MonIceBat(this));
+				}		
+			}
+			
+			if (wave >= 6) {
 				int funcLower = (int) (Math.pow(wave, 1.1));
 				int funcUpper = (int) (Math.pow(wave, 1.15));
 

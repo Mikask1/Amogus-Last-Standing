@@ -13,15 +13,18 @@ import javax.imageio.ImageIO;
 import main.GamePanel;
 
 public class MonMushroomCharge extends Monster {
-	final int NANO_TO_MILI = 1000000;
-
 	Random rand = new Random();
 	String tempDir = "left";
 
 	private int normalSize;
-
+	
+	
 	private final int playerDetectionOffset = 20;
-
+	
+	public static int DefaultHealth = 30;
+	public static int DefaultBodyDamage = 5;
+	public static int DefaultSpeed = 2;
+	
 	// Miliseconds
 	private long chargeCooldown = 5000;
 	private long chargePowerup = 2000;
@@ -40,17 +43,17 @@ public class MonMushroomCharge extends Monster {
 	}
 
 	private void setDefaultValues() {
-		setSpeed(2);
-		setHealth(30);
-		setBodyDamage(5);
+		setSpeed(DefaultSpeed);
+		setHealth(DefaultHealth);
+		setBodyDamage(DefaultBodyDamage);
 		size = 96;
 		normalSize = size;
 		chargeTimer = gp.stopwatch;
 
 		direction = "left";
 
-		worldX = rand.nextInt(-200, 200) + gp.player.screenX;
-		worldY = rand.nextInt(-200, 200) + gp.player.screenY;
+		worldX = rand.nextInt(-Monster.randomSpawnRadius, Monster.randomSpawnRadius) + gp.player.screenX;
+		worldY = rand.nextInt(-Monster.randomSpawnRadius, Monster.randomSpawnRadius) + gp.player.screenY;
 
 		solidArea = new Rectangle();
 		solidArea.x = 15;
@@ -121,13 +124,13 @@ public class MonMushroomCharge extends Monster {
 		gp.cChecker.insideMap(this);
 		int speed = getSpeed();
 
-		if (gp.stopwatch - chargeTimer >= chargeCooldown * NANO_TO_MILI) {
+		if (gp.stopwatch - chargeTimer >= chargeCooldown * GamePanel.NANO_TO_MILI) {
 			charge = true;
 			chargeTimer = gp.stopwatch;
 		}
 
 		if (charge) {
-			if (gp.stopwatch - chargeTimer <= chargePowerup * NANO_TO_MILI) {
+			if (gp.stopwatch - chargeTimer <= chargePowerup * GamePanel.NANO_TO_MILI) {
 				speed = 0;
 			} else {
 				chargeTimer = gp.stopwatch;
@@ -136,7 +139,7 @@ public class MonMushroomCharge extends Monster {
 		}
 
 		if (charge && release) {
-			if (gp.stopwatch - chargeTimer <= chargeDuration * NANO_TO_MILI) {
+			if (gp.stopwatch - chargeTimer <= chargeDuration * GamePanel.NANO_TO_MILI) {
 				speed += chargeSpeed;
 			} else {
 				charge = false;

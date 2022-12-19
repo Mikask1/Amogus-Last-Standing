@@ -377,8 +377,6 @@ public class UI {
 				e.printStackTrace();
 			}
 			
-			
-			
 		}
 
 	}

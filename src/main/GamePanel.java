@@ -13,10 +13,10 @@ import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.xml.crypto.dsig.keyinfo.PGPData;
 
 import MapGenerator.Voronoi;
 import bullet.Bullet;
-import character.Character;
 import character.Player;
 import character.monster.MonBat;
 import character.monster.MonFireBat;
@@ -247,9 +247,7 @@ public class GamePanel extends JPanel implements Runnable {
 			// Overlay
 			g2.setColor(Color.white);
 			g2.setFont(UI.OEM8514.deriveFont(Font.PLAIN, 20F));
-
 			g2.drawString("Wave: " + wave, screenWidth - 130, 25);
-			g2.drawString("HP:" + player.getHealth(), 25, 25);
 
 			if (stopwatch - animationTimer < animationDuration * 1000000) {
 				int alpha = (int) ((double) ((stopwatch - animationTimer) / 1000000) / animationDuration * 255);
@@ -284,7 +282,7 @@ public class GamePanel extends JPanel implements Runnable {
 				g2.fillRect(55, 108, 24, 24);
 				g2.drawImage(freezeStatusEffect, 57, 110, 20, 20, null);
 			}
-			
+
 		}
 
 		g2.dispose();

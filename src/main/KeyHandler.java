@@ -150,7 +150,7 @@ public class KeyHandler implements KeyListener {
 			if (gp.ui.titleSubState == 3) {
 				
 				if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
-					gp.playSE(5);
+					gp.playSE(5)
 					gp.ui.wikiNum--;
 					if(gp.ui.wikiNum < 0) {
 						gp.ui.wikiNum = 6;

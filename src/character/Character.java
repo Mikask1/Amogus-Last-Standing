@@ -24,7 +24,7 @@ public abstract class Character {
 	private int speed;
 	private int shootSpeed;
 	private int health;
-
+	
 	public boolean alive = true;
 	public boolean hurt = false;
 	public int hurtCounter = 0;
@@ -56,6 +56,8 @@ public abstract class Character {
 
 	public Character(GamePanel gp) {
 		this.gp = gp;
+		
+		// Default bullet image
 		try {
 			bullet_up = ImageIO.read(getClass().getResourceAsStream("/bullets/bullet_up.png")).getScaledInstance(4, 13,
 					Image.SCALE_DEFAULT);

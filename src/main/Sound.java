@@ -10,7 +10,7 @@ import javax.sound.sampled.FloatControl;
 public class Sound {
 
 	Clip clip;
-	URL soundURL[] = new URL[30];
+	URL soundURL[] = new URL[100];
 	
 	public Sound() {
 		soundURL[0] = getClass().getResource("/sound/Amogus.wav");
@@ -38,7 +38,7 @@ public class Sound {
 		
 		FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 		gainControl.setValue(gainControl.getValue()-10.0f);
-		
+
 	}
 	
 	public void play() {

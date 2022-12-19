@@ -6,6 +6,7 @@ import character.Character;
 import character.Player;
 import character.monster.MonFireBat;
 import character.monster.MonIceBat;
+
 import character.monster.Monster;
 import main.GamePanel;
 
@@ -93,6 +94,7 @@ public class CollisionChecker {
 					gp.player.freezeCounter = 0;
 					gp.player.freezeDuration = MonIceBat.freezeDuration;
 				}
+
 				monster.monBullets.remove(i);
 			}
 			

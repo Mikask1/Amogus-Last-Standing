@@ -11,8 +11,8 @@ import javax.imageio.ImageIO;
 import bullet.Bullet;
 import main.GamePanel;
 
-public class MonFireBat extends Monster{
 
+public class MonFireBat extends Monster {
 	Random rand = new Random();
 	String tempDir = "left";
 	private final int playerDetectionOffset = 0;
@@ -20,7 +20,7 @@ public class MonFireBat extends Monster{
 	int bulletDimension = 10;
 	private int bulletDamage;
 	public static long fireDuration = 5000;
-
+  
 	public MonFireBat(GamePanel gp) {
 		super(gp);
 		size = 64;
@@ -34,7 +34,7 @@ public class MonFireBat extends Monster{
 		setShootSpeed(1);
 		setHealth(20);
 		setBodyDamage(2);
-		bulletDamage = 0;
+		bulletDamage = 5;
 		direction = "left";
 
 		worldX = rand.nextInt(-200, 200) + gp.player.screenX;

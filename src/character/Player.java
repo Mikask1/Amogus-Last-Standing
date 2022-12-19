@@ -2,7 +2,6 @@ package character;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -23,19 +22,19 @@ public class Player extends Character {
 
 	int playerBulletDimension1 = 4;
 	int playerBulletDimension2 = 13;
-	
+
 	public BufferedImage up, up1, up2, down, down1, down2, left, left1, left2, right, right1, right2;
 	public BufferedImage up_shoot, up1_shoot, up2_shoot, down_shoot, down1_shoot, down2_shoot, left_shoot, left1_shoot,
 			left2_shoot, right_shoot, right1_shoot, right2_shoot;
-	
+
 	int diagonalSpeed;
 	private int bulletDamage;
-	
+
 	public Player(GamePanel gp, KeyHandler keyH) {
 		super(gp);
 		this.gp = gp;
 		this.keyH = keyH;
-		
+
 		size = 48;
 		screenX = gp.worldWidth / 2 - gp.tileSize / 2;
 		screenY = gp.worldHeight / 2 - gp.tileSize / 2;
@@ -60,13 +59,14 @@ public class Player extends Character {
 	public void setDefaultValues() {
 		setShootSpeed(10);
 		setSpeed(5);
-		setBulletDamage(1000);
+		setBulletDamage(100);
 		direction = "down";
+
 		setHealth(1000);
 		fireTimer = gp.stopwatch;
 		freezeTimer = gp.stopwatch;
 	}
-	
+
 	public void getPlayerImage() {
 		try {
 			up = ImageIO.read(getClass().getResourceAsStream("/player/amog-back.png"));
@@ -125,55 +125,50 @@ public class Player extends Character {
 			// Collision Check
 			collisionOn = false;
 			gp.cChecker.insideMap(this);
-			
-			if(keyH.upPressed == true) {
+
+			if (keyH.upPressed == true) {
 				direction = "up";
-				if(collisionOn == false) {		
+				if (collisionOn == false) {
 					if (keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
 						worldY -= getDiagonalSpeed();
-					}
-					else {
+					} else {
 						worldY -= getSpeed();
 					}
 				}
 			}
-			
-			if(keyH.downPressed == true) {
+
+			if (keyH.downPressed == true) {
 				direction = "down";
-				if(collisionOn == false) {
+				if (collisionOn == false) {
 					if (keyH.upPressed || keyH.leftPressed || keyH.rightPressed) {
 						worldY += getDiagonalSpeed();
-					}
-					else {
+					} else {
 						worldY += getSpeed();
-					}				
+					}
 				}
 			}
-			
-			if(keyH.leftPressed == true) {
+
+			if (keyH.leftPressed == true) {
 				direction = "left";
-				if(collisionOn == false) {
+				if (collisionOn == false) {
 					if (keyH.upPressed || keyH.rightPressed || keyH.downPressed) {
 						worldX -= getDiagonalSpeed();
-					}
-					else {
+					} else {
 						worldX -= getSpeed();
-					}					
-				}	
-			}
-			
-			if(keyH.rightPressed == true) {
-				direction = "right";	
-				if(collisionOn == false) {
-					if (keyH.upPressed || keyH.leftPressed || keyH.downPressed) {
-						worldX += getDiagonalSpeed();
 					}
-					else {
-						worldX += getSpeed();
-					}		
-				}					
+				}
 			}
 
+			if (keyH.rightPressed == true) {
+				direction = "right";
+				if (collisionOn == false) {
+					if (keyH.upPressed || keyH.leftPressed || keyH.downPressed) {
+						worldX += getDiagonalSpeed();
+					} else {
+						worldX += getSpeed();
+					}
+				}
+			}
 
 			spriteCounter++;
 			if (spriteCounter > 6) {
@@ -196,22 +191,26 @@ public class Player extends Character {
 				gp.playSE(1);
 				switch (direction) {
 				case "up":
-					Bullet newBullet = new Bullet(gp, this, direction, playerBulletDimension1, playerBulletDimension2, worldX + gp.tileSize/2 - 3, worldY, bulletDamage);
+					Bullet newBullet = new Bullet(gp, this, direction, playerBulletDimension1, playerBulletDimension2,
+							worldX + gp.tileSize / 2 - 3, worldY, bulletDamage);
 					bullets.add(newBullet);
 					break;
 
 				case "down":
-					Bullet newBullet1 = new Bullet(gp, this, direction, playerBulletDimension1, playerBulletDimension2, worldX + gp.tileSize/2 - 3, worldY + gp.tileSize/2 + 4, bulletDamage);
+					Bullet newBullet1 = new Bullet(gp, this, direction, playerBulletDimension1, playerBulletDimension2,
+							worldX + gp.tileSize / 2 - 3, worldY + gp.tileSize / 2 + 4, bulletDamage);
 					bullets.add(newBullet1);
 					break;
 
 				case "left":
-					Bullet newBullet2 = new Bullet(gp, this, direction, playerBulletDimension2, playerBulletDimension1, worldX, worldY + gp.tileSize/2 - 4, bulletDamage);
+					Bullet newBullet2 = new Bullet(gp, this, direction, playerBulletDimension2, playerBulletDimension1,
+							worldX, worldY + gp.tileSize / 2 - 4, bulletDamage);
 					bullets.add(newBullet2);
 					break;
 
 				case "right":
-					Bullet newBullet3 = new Bullet(gp, this, direction, playerBulletDimension2, playerBulletDimension1, worldX + gp.tileSize/2 + 4, worldY + gp.tileSize/2 - 4, bulletDamage);
+					Bullet newBullet3 = new Bullet(gp, this, direction, playerBulletDimension2, playerBulletDimension1,
+							worldX + gp.tileSize / 2 + 4, worldY + gp.tileSize / 2 - 4, bulletDamage);
 					bullets.add(newBullet3);
 					break;
 				}
@@ -245,7 +244,7 @@ public class Player extends Character {
 			freezeCounter = 0;
 			freezeTimer = gp.stopwatch;
 		}
-		
+
 		if (hurt == true) {
 			hurtCounter++;
 			if (hurtCounter > 30) {
@@ -261,6 +260,7 @@ public class Player extends Character {
 		if (freeze) {
 			freezeCounter += 1;
 		}
+
 	}
 
 	public void draw(Graphics2D g2) {
@@ -440,23 +440,23 @@ public class Player extends Character {
 			g2.setColor(Color.white);
 		}
 	}
-	
+
 	@Override
 	public void setSpeed(int speed) {
 		super.setSpeed(speed);
 		this.setDiagonalSpeed(speed);
 	}
-	
+
 	void setDiagonalSpeed(int speed) {
 		this.diagonalSpeed = (int) Math.round(getSpeed() / Math.sqrt(2));
 		System.out.println(getSpeed());
 		System.out.println(diagonalSpeed);
 	}
-	
+
 	int getDiagonalSpeed() {
 		return this.diagonalSpeed;
 	}
-	
+
 	protected BufferedImage tint(BufferedImage sprite, double d, double e, double f, double g) {
 		BufferedImage tintedSprite = new BufferedImage(sprite.getWidth(), sprite.getHeight(),
 				BufferedImage.TRANSLUCENT);
